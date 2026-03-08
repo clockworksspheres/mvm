@@ -139,13 +139,11 @@ class VmCtlUi(QMainWindow):
         # REAL FIX: UNAMBIGUOUS SHORTCUTS
         # -------------------------------
         if sys.platform.lower().startswith("darwin"):
+            # macOS: use Command
             QShortcut(QKeySequence(Qt.META | Qt.Key_Equal), self, activated=self.ui.textBrowser.zoom_in)
             QShortcut(QKeySequence(Qt.META | Qt.Key_Plus), self, activated=self.ui.textBrowser.zoom_in)
-
             QShortcut(QKeySequence(Qt.META | Qt.Key_Minus), self, activated=self.ui.textBrowser.zoom_out)
-
             QShortcut(QKeySequence(Qt.META | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
-
             QShortcut(QKeySequence(Qt.META | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
 
         else:
