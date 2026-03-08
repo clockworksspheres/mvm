@@ -98,9 +98,9 @@ class VmCtlUi(QMainWindow):
         sys.stderr = self.stderr_stream
 
         # Initial messages
-        message = "Second post!!"
-        print("Application started.")
-        print(f"Argparse message: {message}")
+        # message = "Second post!!"
+        # print("Application started.")
+        # print(f"Argparse message: {message}")
 
         # Zoom In
         act_zoom_in = QAction("Zoom In", self)
