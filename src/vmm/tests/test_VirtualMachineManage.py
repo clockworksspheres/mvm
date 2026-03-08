@@ -43,7 +43,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     @patch("VirtualMachineManage.CyLogger")
     def test_virtualbox_macos(self, mock_logger, mock_runwith, mock_vbox):
         with patch.object(sys, "platform", "darwin"):
-            vmm = VirtualMachineManage("VirtualBox")
+            vmm = VirtualMachineManage("virtualbox")
 
         mock_vbox.assert_called_once_with(mock_logger.return_value)
         self.assertIs(vmm.vmm, mock_vbox.return_value)
@@ -56,7 +56,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     @patch("VirtualMachineManage.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_runwith, mock_vbox):
         with patch.object(sys, "platform", "win32"):
-            vmm = VirtualMachineManage("VirtualBox")
+            vmm = VirtualMachineManage("virtualbox")
 
         mock_vbox.assert_called_once_with(mock_logger.return_value)
         self.assertIs(vmm.vmm, mock_vbox.return_value)
