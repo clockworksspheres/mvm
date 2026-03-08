@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTextBrowser, QStackedWidget
 )
 from PySide6.QtCore import QObject, Signal
+from PySide6.QtGui import QFont
 
 # ---------------------------------------------------------
 # URL detection for clickable links
@@ -53,6 +54,15 @@ class ConsoleStream(QObject):
 class SimpleConsole(QTextBrowser):
     def __init__(self):
         super().__init__()
+
+        # Fixed-width font for proper alignment
+        font = QFont("Menlo")  # macOS default monospace
+        font.setStyleHint(QFont.Monospace)
+        font.setFixedPitch(True)
+        font.setPointSize(12)
+
+        self.setFont(font)
+
         self.setOpenExternalLinks(True)
         self.setOpenLinks(True)
 

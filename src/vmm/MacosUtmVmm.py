@@ -3,7 +3,9 @@ from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
 from lib.run_commands import RunWith
 from VirtualMachineManageTemplate import VirtualMachineManageTemplate
-
+from lib.mac_utm_list_status import (utm_list,
+                                     utm_status,
+                                    )
 
 class MacosUtmVmm(VirtualMachineManageTemplate):
 
@@ -26,10 +28,29 @@ class MacosUtmVmm(VirtualMachineManageTemplate):
         """
         List available VMs 
         """
-        cmd = [self.utmctl, "list"]
-        self.run.setCommand(cmd)
-        out, _, _ = self.run.communicate()
-        print(f"{out}")
+        vms = utm_list()
+
+        if not vms:
+            print("No VMs found or utmctl produced no output.")
+            return
+
+        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+        #print(f"{vms}\n")
+
+        for vm in vms:
+            uuid = vm["uuid"]
+            name = vm["name"]
+
+            # Get detailed status + IP
+            state, ip = utm_status(uuid)
+
+            # Fallback to list state if status didn't return one
+            state = state or vm["state"]
+            ip = ip or "no-ip"
+
+            print(f"{name:25} {state:15} {ip or 'N/A'}")
+            # print(f"{name} | {state} | {ip}")
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
@@ -79,11 +100,38 @@ class MacosUtmVmm(VirtualMachineManageTemplate):
         """
         Get the status of a virtual machine 
         """
+        vms = utm_list()
+
+        if not vms:
+            print("No VMs found or utmctl produced no output.")
+            return
+
+        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+        # print(f"{vms}\n")
+
+        for vm in vms:
+            uuid = vm["uuid"]
+            name = vm["name"]
+
+            # Get detailed status + IP
+            state, ip = utm_status(uuid)
+
+            # Fallback to list state if status didn't return one
+            state = state or vm["state"]
+            ip = ip or "no-ip"
+
+            print(f"{name:25} {state:15} {ip or 'N/A'}")
+            # print(f"{name} | {state} | {ip}")
+
+
+        """
         cmd = [self.utmctl, "status", vm]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
+        """
 
     def get_ip(self, vm: str = ""):
         """

@@ -87,7 +87,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
         """
         Get the status of a VM
         """
-        pass
+        self.vmm.get_vm_status()
 
     def get_ip(self, vm: str = "", **kwargs):
         """

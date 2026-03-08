@@ -54,6 +54,19 @@ def find_all_vmx_files(root):
     """Recursively find all .vmx files under a directory."""
     return list(Path(root).rglob("*.vmx"))
 
+def print_status4all_vms(vms):
+    running_set = list_running_vms()
+
+    print(f"{'VM Name':30} {'Status':12} {'IP Address'}")
+    print("-" * 60)
+
+    vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+    for vmx in vmx_files:
+        name = vmx.stem
+        status = detect_vm_status(str(vmx), running_set)
+        ip = get_vm_ip(str(vmx)) if status == "running" else None
+
+        print(f"{name:30} {status:12} {ip or 'N/A'}")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -77,6 +90,8 @@ def main():
 
     running_set = list_running_vms()
 
+    print_status4all_vms(vms)
+    """
     print(f"{'VM Name':25} {'Status':12} {'IP Address'}")
     print("-" * 60)
 
@@ -86,7 +101,7 @@ def main():
         ip = get_vm_ip(str(vmx)) if status == "running" else None
 
         print(f"{name:25} {status:12} {ip or 'N/A'}")
-
+    """
 
 if __name__ == "__main__":
     main()

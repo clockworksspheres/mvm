@@ -5,8 +5,9 @@ from lib.run_commands import RunWith
 from VirtualMachineManageTemplate import VirtualMachineManageTemplate
 from lib.vmware_fusion_list_status import (find_all_vmx_files,
                                            detect_vm_status,
-                                           list_running_vms,
-                                           get_vm_ip)
+                                           get_vm_ip,
+                                           print_status4all_vms,
+                                           list_running_vms)
 
 
 class MacosVmwareVmm(VirtualMachineManageTemplate):
@@ -35,14 +36,15 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
-
+        print_status4all_vms(vmx_files)
+        """
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
             ip = get_vm_ip(str(vmx)) if status == "running" else None
 
             print(f"{name:25} {status:12} {ip or 'N/A'}")
-        """
+        ""
         cmd = [self.vmrun, "list"]
         self.run.setCommand(cmd)
         output, _, _ = self.run.communicate()
@@ -94,11 +96,28 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         Get the status of a virtual machine 
         """
+        # print("Got into macosVmwareVmm list method...")
+        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+        # print(f"{vmx_files}")
+
+        #running_set = list_running_vms()
+
+        print(f"{'VM Name':30} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+
+        for vmx in vmx_files:
+            name = vmx.stem
+            status = detect_vm_status(str(vmx), running_set)
+            ip = get_vm_ip(str(vmx)) if status == "running" else None
+
+            print(f"{name:30} {status:12} {ip or 'N/A'}")
+        """
         cmd = [self.vmrun, "list", vm]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
+        """
 
     def get_ip(self, vm: str = ""):
         """
