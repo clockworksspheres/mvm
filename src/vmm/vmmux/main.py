@@ -43,6 +43,8 @@ class VmCtlUi(QMainWindow):
         # Platform-specific combo items
         platform = sys.platform.lower()
 
+        self.setWindowTitle("vmctl UI")
+
         #####
         # Do not change the names in either dictionary in
         # any way, or this code will not work.  The strings
@@ -102,37 +104,59 @@ class VmCtlUi(QMainWindow):
         # print("Application started.")
         # print(f"Argparse message: {message}")
 
+        # add a menu
+        menubar = self.ui.menubar
+        menubar.setNativeMenuBar(False)
+
+        # add view menu item
+        view_menu = self.ui.menubar.addMenu("View")
+
         # Zoom In
         act_zoom_in = QAction("Zoom In", self)
+        act_zoom_in.setShortcut("Ctrl++")
         act_zoom_in.triggered.connect(self.ui.textBrowser.zoom_in)
-        # view_menu.addAction(act_zoom_in)
+        view_menu.addAction(act_zoom_in)
 
         # Zoom Out
         act_zoom_out = QAction("Zoom Out", self)
+        act_zoom_out.setShortcut("Ctrl+-")
         act_zoom_out.triggered.connect(self.ui.textBrowser.zoom_out)
-        # view_menu.addAction(act_zoom_out)
+        view_menu.addAction(act_zoom_out)
 
         # Reset Zoom
         act_reset = QAction("Reset Zoom", self)
+        act_reset.setShortcut("Ctrl+0")
         act_reset.triggered.connect(self.ui.textBrowser.reset_zoom)
-        # view_menu.addAction(act_reset)
+        view_menu.addAction(act_reset)
 
         # Clear Console
-        act_clear = QAction("Clear Console", self)
+        act_clear = QAction("Clear Console  ", self)
+        act_clear.setShortcut("Ctrl+L")
         act_clear.triggered.connect(self.ui.textBrowser.clear_console)
-        # view_menu.addAction(act_clear)
+        view_menu.addAction(act_clear)
 
         # -------------------------------
         # REAL FIX: UNAMBIGUOUS SHORTCUTS
         # -------------------------------
-        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Equal), self, activated=self.ui.textBrowser.zoom_in)
-        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Plus), self, activated=self.ui.textBrowser.zoom_in)
+        if sys.platform.lower().startswith("darwin"):
+            QShortcut(QKeySequence(Qt.META | Qt.Key_Equal), self, activated=self.ui.textBrowser.zoom_in)
+            QShortcut(QKeySequence(Qt.META | Qt.Key_Plus), self, activated=self.ui.textBrowser.zoom_in)
 
-        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Minus), self, activated=self.ui.textBrowser.zoom_out)
+            QShortcut(QKeySequence(Qt.META | Qt.Key_Minus), self, activated=self.ui.textBrowser.zoom_out)
 
-        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
+            QShortcut(QKeySequence(Qt.META | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
 
-        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
+            QShortcut(QKeySequence(Qt.META | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
+
+        else:
+            # Windows/Linux: use Ctrl
+            QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Equal), self, activated=self.ui.textBrowser.zoom_in)
+            QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Plus), self, activated=self.ui.textBrowser.zoom_in)
+            QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Minus), self, activated=self.ui.textBrowser.zoom_out)
+            QShortcut(QKeySequence(Qt.CTRL | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
+            QShortcut(QKeySequence(Qt.CTRL | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
+
+
 
     def handle_combo_action(self, index):
         """
