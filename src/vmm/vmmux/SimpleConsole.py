@@ -56,11 +56,11 @@ class SimpleConsole(QTextBrowser):
         super().__init__()
 
         # Fixed-width font for proper alignment
+        self.font_size = 12
         font = QFont("Menlo")  # macOS default monospace
         font.setStyleHint(QFont.Monospace)
         font.setFixedPitch(True)
-        font.setPointSize(12)
-
+        font.setPointSize(self.font_size)
         self.setFont(font)
 
         self.setOpenExternalLinks(True)
@@ -68,6 +68,27 @@ class SimpleConsole(QTextBrowser):
 
     def append_html(self, html):
         self.append(html)
+
+    def zoom_in(self):
+        self.font_size += 1
+        self._apply_font()
+
+    def zoom_out(self):
+        if self.font_size > 6:
+            self.font_size -= 1
+        self._apply_font()
+
+    def reset_zoom(self):
+        self.font_size = 12
+        self._apply_font()
+
+    def clear_console(self):
+        self.clear()
+
+    def _apply_font(self):
+        font = self.font()
+        font.setPointSize(self.font_size)
+        self.setFont(font)
 
 
 # ---------------------------------------------------------

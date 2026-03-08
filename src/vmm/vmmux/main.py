@@ -12,6 +12,8 @@ from argparse import Namespace
 
 
 from PySide6.QtWidgets import (QApplication, QMainWindow)
+from PySide6.QtGui import QAction, QShortcut, QKeySequence
+from PySide6.QtCore import Qt
 
 from vmmux.mainwindow_ui import Ui_MainWindow
 from vmm_run import vmm_run
@@ -96,9 +98,41 @@ class VmCtlUi(QMainWindow):
         sys.stderr = self.stderr_stream
 
         # Initial messages
-        #message = "Second post!!"
-        #print("Application started.")
-        #print(f"Argparse message: {message}")
+        message = "Second post!!"
+        print("Application started.")
+        print(f"Argparse message: {message}")
+
+        # Zoom In
+        act_zoom_in = QAction("Zoom In", self)
+        act_zoom_in.triggered.connect(self.ui.textBrowser.zoom_in)
+        # view_menu.addAction(act_zoom_in)
+
+        # Zoom Out
+        act_zoom_out = QAction("Zoom Out", self)
+        act_zoom_out.triggered.connect(self.ui.textBrowser.zoom_out)
+        # view_menu.addAction(act_zoom_out)
+
+        # Reset Zoom
+        act_reset = QAction("Reset Zoom", self)
+        act_reset.triggered.connect(self.ui.textBrowser.reset_zoom)
+        # view_menu.addAction(act_reset)
+
+        # Clear Console
+        act_clear = QAction("Clear Console", self)
+        act_clear.triggered.connect(self.ui.textBrowser.clear_console)
+        # view_menu.addAction(act_clear)
+
+        # -------------------------------
+        # REAL FIX: UNAMBIGUOUS SHORTCUTS
+        # -------------------------------
+        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Equal), self, activated=self.ui.textBrowser.zoom_in)
+        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Plus), self, activated=self.ui.textBrowser.zoom_in)
+
+        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_Minus), self, activated=self.ui.textBrowser.zoom_out)
+
+        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
+
+        QShortcut(QKeySequence(Qt.CTRL | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
 
     def handle_combo_action(self, index):
         """
