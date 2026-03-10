@@ -2,8 +2,6 @@
 import argparse
 import sys
 
-from PySide6.QtWidgets import QApplication
-
 from VirtualMachineManage import VirtualMachineManage
 from vmmux.main import VmCtlUi
 from vmm_run import vmm_run
@@ -150,13 +148,22 @@ Examples:
 """
     )
 
-    if len(sys.argv) == 1:
+    args = parser.parse_args()
+
+
+    if sys.platform.lower().startswith("darwin"):
+        exe_path = sys.executable
+        print(f"{exe_path}")
+        file_path = exe_path.split("/")
+        if "vmctl.app" in file_path:
+            args.gui = True
+
+    if len(sys.argv) == 1 and args.gui is False:
         parser.print_help()
         sys.exit(1)
 
-    args = parser.parse_args()
-
     if args.gui:
+        from PySide6.QtWidgets import QApplication
         app = QApplication(sys.argv)
         # print("started app...")
         window = VmCtlUi()
@@ -172,5 +179,6 @@ Examples:
 
 
 if __name__ == "__main__":
+
     main()
 

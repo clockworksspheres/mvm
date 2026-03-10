@@ -29,14 +29,14 @@ exe = EXE(
     strip=True,
     upx=False,             # <-- No UPX = faster load
     upx_exclude=[],
-    runtime_tmpdir=None,   # <-- Uses system temp (fastest)
+    runtime_tmpdir="/tmp",   # <-- Uses system temp (fastest)
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    onefile=True,          # <-- You requested onefile
+    onefile=False,          # <-- You requested onefile
     noarchive=True,
 )
 
