@@ -26,6 +26,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=True,
+    runtime_tmpdir="C:\\TEMP"
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
