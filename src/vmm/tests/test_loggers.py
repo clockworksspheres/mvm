@@ -13,11 +13,12 @@ import traceback
 import tracemalloc
 from datetime import datetime
 
-#####
-# Include the parent project directory in the PYTHONPATH
-#appendDir = "/".join(os.path.abspath(os.path.dirname(__file__)).split('/')[:-1])
-appendDir = ".."
-sys.path.append(appendDir)
+from pathlib import Path
+
+# Get the parent directory of the current file's parent directory
+#  and add it to sys.path
+parent_dir = Path(__file__).parent.parent
+sys.path.append(str(parent_dir))
 
 
 # --- Non-native python libraries in this source tree
