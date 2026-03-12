@@ -26,6 +26,7 @@ if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    pip install requests
    pip install pytest
    pip install pywin32
+   pip install pyside6
 } else {
     .\packenv\Scripts\Activate.ps1
 }
