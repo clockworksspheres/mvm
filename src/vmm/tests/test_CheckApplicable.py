@@ -1,20 +1,7 @@
-#!/usr/bin/env -S python -u
-"""
-Test for basic functionality of CheckApplicable
-
-"""
-
-# --- Native python libraries
-import os
 import sys
 import unittest
-from datetime import datetime
 from pathlib import Path
-
-#####
-# Include the parent project directory in the PYTHONPATH
-#appendDir = "/".join(os.path.abspath(os.path.dirname(__file__)).split('/')[:-1])
-#sys.path.append(appendDir)
+from unittest.mock import MagicMock, patch
 
 # Get the parent directory of the current file's parent directory
 #  and add it to sys.path
@@ -22,113 +9,153 @@ parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 
 
-#--- non-native python libraries in this source tree
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith
-from lib.environment import Environment
-from lib.CheckApplicable import CheckApplicable
+class TestCheckApplicable(unittest.TestCase):
 
-LOGGER = CyLogger()
-#LOGGER.setInitialLoggingLevel(30)
+    def setUp(self):
+        # Mock logger
+        self.mock_logger = MagicMock()
+        self.mock_logger.log = MagicMock()
 
-class test_CheckApplicable(unittest.TestCase):
-    """
-    """
+        # Mock environment
+        self.mock_env = MagicMock()
+        self.mock_env.getosfamily.return_value = "Linux"
+        self.mock_env.getosver.return_value = "10.2"
+        self.mock_env.getostype.return_value = "Ubuntu"
+        self.mock_env.getsystemfismacat.return_value = "med"
+        self.mock_env.geteuid.return_value = 1000
 
-    ##################################
+        # Import class under test
+        from lib.CheckApplicable import CheckApplicable
+        self.CheckApplicable = CheckApplicable
 
-    @classmethod
-    def setUpClass(self):
-        """
-        """
-        #####
-        # Set up logging
-        self.logger = CyLogger(debug_mode=True)
-        self.logger.initializeLogs()
-        self.rw = RunWith(self.logger)
+        # Instance under test
+        self.chk = CheckApplicable(self.mock_env, self.mock_logger)
 
-        self.enviro = Environment()
-        self.ca = CheckApplicable(self.enviro, LOGGER)
+    # ---------------------------------------------------------
+    # isApplicableValid
+    # ---------------------------------------------------------
+    def test_isApplicableValid_good_dict(self):
+        applicable = {
+            "type": "white",
+            "family": ["Linux"],
+            "noroot": False,
+            "fisma": "low",
+            "os": {"Ubuntu": ["10.2"]}
+        }
+        self.assertTrue(self.chk.isApplicableValid(applicable))
 
-        #####
-        # Start timer in miliseconds
-        self.testStartTime = datetime.now()
+    def test_isApplicableValid_bad_key(self):
+        applicable = {"invalidKey": True}
+        self.assertFalse(self.chk.isApplicableValid(applicable))
 
-    ##################################
+    def test_isApplicableValid_bad_value(self):
+        applicable = {"type": "not_valid"}
+        self.assertFalse(self.chk.isApplicableValid(applicable))
 
-    @classmethod
-    def tearDownClass(self):
-        """
-        """
-        #####
-        # capture end time
-        testEndTime = datetime.now()
+    # ---------------------------------------------------------
+    # isInRange
+    # ---------------------------------------------------------
+    def test_isInRange_plus(self):
+        self.chk.myosversion = "10.5"
+        self.assertTrue(self.chk.isInRange(["10.2", "+"]))
 
-        #####
-        # Calculate and log how long it took...
-        test_time = (testEndTime - self.testStartTime)
-        # print str(test_time)
-        # global LOGGER
-        self.logger.log(lp.INFO, self.__module__ + " took " + str(test_time) + " time so far...")
+    def test_isInRange_minus(self):
+        self.chk.myosversion = "9.1"
+        self.assertTrue(self.chk.isInRange(["10.2", "-"]))
 
-   ##################################
+    def test_isInRange_range(self):
+        self.chk.myosversion = "10.5"
+        self.assertTrue(self.chk.isInRange(["10.2", "r", "11.0"]))
 
-    def testCheckRedHatApplicable(self):
-        """
-        """
-        self.ca.setOsFamily
+    def test_isInRange_explicit(self):
+        self.chk.myosversion = "10.2"
+        self.assertTrue(self.chk.isInRange(["10.2"]))
 
-    ##################################
+    # ---------------------------------------------------------
+    # isApplicable
+    # ---------------------------------------------------------
+    def test_isApplicable_default(self):
+        self.chk.applicable = {
+            "type": "white",
+            "family": ["Linux"]
+        }
+        self.assertTrue(self.chk.isApplicable({"default": "default"}))
 
-    def testCheckLinuxApplicable(self):
-        """
-        """
+    def test_isApplicable_blacklist_family(self):
+        applicable = {
+            "type": "black",
+            "family": ["Linux"]
+        }
+        self.assertFalse(self.chk.isApplicable(applicable))
 
-    ##################################
+    def test_isApplicable_whitelist_family(self):
+        applicable = {
+            "type": "white",
+            "family": ["Linux"]
+        }
+        self.assertTrue(self.chk.isApplicable(applicable))
 
-    def testCheckDebianApplicable(self):
-        """
-        """
+    @patch("re.search", return_value=True)
+    def test_isApplicable_os_match(self, _):
+        applicable = {
+            "type": "white",
+            "os": {"Ubuntu": ["10.2"]}
+        }
+        self.assertTrue(self.chk.isApplicable(applicable))
 
-    ##################################
+    def test_isApplicable_noroot(self):
+        self.mock_env.geteuid.return_value = 0
+        applicable = {
+            "type": "white",
+            "family": ["Linux"],
+            "noroot": True
+        }
+        self.assertFalse(self.chk.isApplicable(applicable))
 
-    def testCheckUbuntuApplicable(self):
-        """
-        """
+    # ---------------------------------------------------------
+    # fismaApplicable
+    # ---------------------------------------------------------
+    def test_fismaApplicable_low_system_med(self):
+        self.mock_env.getsystemfismacat.return_value = "med"
+        # According to implementation, this should be False
+        self.assertFalse(self.chk.fismaApplicable("low", "med"))
 
-    ##################################
+    def test_fismaApplicable_low_system_high(self):
+        self.mock_env.getsystemfismacat.return_value = "high"
+        self.assertFalse(self.chk.fismaApplicable("low", "high"))
 
-    def testCheckCentOS6Applicable(self):
-        """
-        """
+    def test_fismaApplicable_high_system_med(self):
+        self.mock_env.getsystemfismacat.return_value = "med"
+        self.assertFalse(self.chk.fismaApplicable("high", "med"))
 
-    ##################################
+    def test_fismaApplicable_invalid_level(self):
+        # Force getSystemFismaLevel() to fail
+        self.chk.getSystemFismaLevel = MagicMock(side_effect=KeyError("boom"))
 
-    def testCheckCentOS7Applicable(self):
-        """
-        """
+        with self.assertRaises(ValueError):
+            self.chk.fismaApplicable("invalid", "med")
 
-    ##################################
+    # ---------------------------------------------------------
+    # Getters / Setters
+    # ---------------------------------------------------------
+    def test_setters_and_getters(self):
+        self.chk.setOsFamily("Debian")
+        self.chk.setOsType("DebianType")
+        self.chk.setOsVer("9.9")
+        self.chk.setSystemFismaLevel("high")
 
-    def testCheckMacOS1011Applicable(self):
-        """
-        """
+        self.assertEqual(self.chk.getOsFamily(), "Debian")
+        self.assertEqual(self.chk.getOsType(), "DebianType")
+        self.assertEqual(self.chk.getOsVer(), "9.9")
+        self.assertEqual(self.chk.getSystemFismaLevel(), "high")
 
-    ##################################
-    def testCheckMacOS1011to12Applicable(self):
-        """
-        """
-
-    ##################################
-    def testCheckMacOS1011to13Applicable(self):
-        """
-        """
-
-###############################################################################
+    def test_setOsBasedOnEnv(self):
+        self.chk.setOsBasedOnEnv()
+        self.assertEqual(self.chk.myosfamily, "Linux")
+        self.assertEqual(self.chk.myosversion, "10.2")
+        self.assertEqual(self.chk.myostype, "Ubuntu")
 
 
 if __name__ == "__main__":
-
     unittest.main()
 
