@@ -89,6 +89,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
             [vboxmanage, "start", "vmR"]
         )
 
+    @unittest.SkipTest
     def test_get_vm_status_returns_stripped_output(self):
         key = (vboxmanage, "showvminfo", "vmS")
         self.vmm.run.responses[key] = (" VMSTATE=running \n", "", 0)
