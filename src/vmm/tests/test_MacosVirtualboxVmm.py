@@ -57,7 +57,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         self.vmm.start_vm("TestVM")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "startvm", "TestVM"]
+            [vboxmanage, "startvm", "TestVM"]
         )
 
     def test_stop_vm_sets_correct_command(self):
