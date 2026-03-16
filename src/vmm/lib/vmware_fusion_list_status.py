@@ -3,7 +3,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-
+vmrun = "/Applications/VMware Fusion.app/Contents/Public/vmrun"
 def run_vmrun(args):
     """Run vmrun and return output as text."""
     try:
@@ -15,7 +15,7 @@ def run_vmrun(args):
 
 def list_running_vms():
     """Return a set of VMX paths that are currently running."""
-    output = run_vmrun(["vmrun", "list"])
+    output = run_vmrun([vmrun, "list"])
     running = set()
 
     for line in output.splitlines():
@@ -27,7 +27,7 @@ def list_running_vms():
 
 def get_vm_ip(vmx_path):
     """Return the VM's IP address if available."""
-    output = run_vmrun(["vmrun", "getGuestIPAddress", vmx_path, "-wait"])
+    output = run_vmrun([vmrun, "getGuestIPAddress", vmx_path, "-wait"])
 
     if "Error" in output or "Unable" in output:
         return None
