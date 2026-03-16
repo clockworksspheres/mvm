@@ -12,6 +12,8 @@ sys.path.append(str(parent_dir))
 from vmm.MacosVirtualboxVmm import MacosVirtualboxVmm
 
 
+vboxmanage = "/usr/local/bin/VBoxManage"
+
 @unittest.skipUnless(
     sys.platform.lower().startswith("darwin"),
     "MacosVirtualboxVmm tests only run on macOS (darwin)"
@@ -62,21 +64,21 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         self.vmm.stop_vm("vmStop", hard=True)
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmStop", "poweroff"]
+            [vboxmanage, "controlvm", "vmStop", "poweroff"]
         )
 
     def test_pause_vm_sets_correct_command(self):
         self.vmm.pause_vm("vmP")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmP", "savestate"]
+            [vboxmanage, "controlvm", "vmP", "savestate"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
         self.vmm.unpause_vm("vmU")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmU", "resume"]
+            [vboxmanage, "controlvm", "vmU", "resume"]
         )
 
     def test_reset_vm_issues_reset_then_start(self):
@@ -84,17 +86,17 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         # The final call should be the start command
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "start", "vmR"]
+            [vboxmanage, "start", "vmR"]
         )
 
     def test_get_vm_status_returns_stripped_output(self):
-        key = ("VBoxManage", "showvminfo", "vmS")
+        key = (vboxmanage, "showvminfo", "vmS")
         self.vmm.run.responses[key] = (" VMSTATE=running \n", "", 0)
         status = self.vmm.get_vm_status("vmS")
         self.assertRaises(AssertionError)
 
     def test_get_ip_returns_stripped_output(self):
-        key = ("VBoxManage", "guestproperty", "get", "vmIP",
+        key = (vboxmanage, "guestproperty", "get", "vmIP",
                "/VirtuallBox/GuestInfo/Net/0/IP")
         self.vmm.run.responses[key] = (" 192.168.0.99 \n", "", 0)
         ip = self.vmm.get_ip("vmIP")
