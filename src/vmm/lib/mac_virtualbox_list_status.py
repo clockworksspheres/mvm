@@ -3,6 +3,8 @@ import argparse
 import subprocess
 import re
 
+vboxmanage = "/usr/local/bin/VBoxManage"
+
 
 def run(cmd):
     """Run a shell command and return output as text."""
@@ -15,7 +17,7 @@ def run(cmd):
 
 def list_vms():
     """Return a dict: {vmname: uuid} for all VMs."""
-    output = run(["VBoxManage", "list", "vms"])
+    output = run([vboxmanage, "list", "vms"])
     vms = {}
     for line in output.splitlines():
         match = re.match(r'^"(.+)"\s+\{(.+)\}$', line)
@@ -26,7 +28,7 @@ def list_vms():
 
 def list_running_vms():
     """Return a set of UUIDs for running VMs."""
-    output = run(["VBoxManage", "list", "runningvms"])
+    output = run([vboxmanage, "list", "runningvms"])
     running = set()
     for line in output.splitlines():
         match = re.match(r'^"(.+)"\s+\{(.+)\}$', line)
@@ -37,7 +39,7 @@ def list_running_vms():
 
 def get_vm_state(uuid):
     """Return VirtualBox VM state: running, paused, saved, powered off."""
-    output = run(["VBoxManage", "showvminfo", uuid, "--machinereadable"])
+    output = run([vboxmanage, "showvminfo", uuid, "--machinereadable"])
     for line in output.splitlines():
         if line.startswith("VMState="):
             return line.split("=")[1].strip('"')
@@ -52,7 +54,7 @@ def get_vm_ip(uuid):
       - Guest Additions installed
     """
     output = run([
-        "VBoxManage", "guestproperty", "get", uuid,
+        vboxmanage, "guestproperty", "get", uuid,
         "/VirtualBox/GuestInfo/Net/0/V4/IP"
     ])
 

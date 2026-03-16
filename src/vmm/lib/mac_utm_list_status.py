@@ -3,6 +3,7 @@ import subprocess
 import argparse
 import re
 
+utmctl = "/opt/homebrew/bin/utmctl"
 
 def run_cmd(cmd):
     """Run a command and return stdout, capturing stderr."""
@@ -17,7 +18,7 @@ def run_cmd(cmd):
 # Parse "utmctl list" table format
 # ---------------------------------------------------------
 def utm_list():
-    output = run_cmd(["utmctl", "list"])
+    output = run_cmd([utmctl, "list"])
     lines = output.splitlines()
 
     vms = []
@@ -41,7 +42,7 @@ def utm_list():
 # Parse "utmctl status <uuid>" to extract IP
 # ---------------------------------------------------------
 def utm_status(uuid):
-    output = run_cmd(["utmctl", "status", uuid])
+    output = run_cmd([utmctl, "status", uuid])
 
     ip = None
     state = None
