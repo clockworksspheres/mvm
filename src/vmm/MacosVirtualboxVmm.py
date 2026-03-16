@@ -23,7 +23,7 @@ class MacosVirtualboxVmm(VirtualMachineManageTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vboxmanage = "VBoxManage"
+        self.vboxmanage = "/usr/local/bin/VBoxManage"
 
     def list_vms(self):
         """
