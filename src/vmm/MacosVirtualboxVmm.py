@@ -45,7 +45,7 @@ class MacosVirtualboxVmm(VirtualMachineManageTemplate):
                 ip = None
 
             print(f"{name:25} {state:15} {ip or 'N/A'}")
-        return name, state, ip     
+        #return name, state, ip     
 
 
     def start_vm(self, vm: str = "", headless: bool = False):
