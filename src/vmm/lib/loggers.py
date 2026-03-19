@@ -244,8 +244,6 @@ class CyLogger(Singleton):
 
         @NOTE: This only sets up the root logger.
 
-        @note: Interface borrowed from Stonix's LogDispatcher.initializeLogs
-        
         """
         self.initialized = True
         if not filename:
@@ -371,7 +369,6 @@ class CyLogger(Singleton):
 
     def log(self, priority=0, msg="", format="long"):
         """
-        Interface to work similar to Stonix's LogDispatcher.py
 
         @param priority:  (Default value = 0)
         @param msg:  (Default value = "")
@@ -512,8 +509,6 @@ class CyLogger(Singleton):
 
 class LogPriority(object):
     """
-    Similar to LogPriority in the Stonix project LogDispatcher, only using
-    numbers instead of strings.
 
     """
     DEBUG = int(10)

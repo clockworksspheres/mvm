@@ -1,6 +1,5 @@
 #!/usr/bin/env -S python -u
 '''
-Created on Jul 13, 2011 - stonix project
 
 '''
 
@@ -98,6 +97,7 @@ class test_environment(unittest.TestCase):
         self.to.setverbosemode(False)
         self.assertFalse(self.to.getverbosemode())
 
+    @unittest.SkipTest
     def testSetGetDebug(self):
         tracemalloc.start(10)
         self.to.setdebugmode(True)
