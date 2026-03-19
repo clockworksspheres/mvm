@@ -9,6 +9,10 @@ try:
 except ModuleNotFoundError as err:
     from packaging.version import parse as LooseVersion
 
+from pathlib import Path
+
+parent_dir = Path(__file__).parent.parent
+sys.path.append(str(parent_dir))
 
 #--- non-native python libraries in this source tree
 from lib.loggers import LogPriority
