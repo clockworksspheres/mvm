@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Cross-platform unittest suite for lib/environment.py
+Cross‑platform unittest suite for lib/environment.py
 
-- All OS-specific behavior is mocked.
-- No direct use of os.geteuid or os.getuid.
-- Suite runs on Windows, macOS, Linux, Solaris.
+- No pwd module usage in tests (only a fake module injected for import)
+- No os.geteuid / os.getuid usage
+- All OS‑specific behavior mocked
+- Runs on Windows, macOS, Linux, Solaris
 """
 
 import os
@@ -13,17 +14,17 @@ import socket
 import types
 import unittest
 from unittest.mock import (
-    MagicMock, patch, PropertyMock, call, mock_open
+    MagicMock, patch, mock_open
 )
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Ensure imports are cross-platform safe
+# Ensure lib.environment imports cleanly on all platforms
 # ---------------------------------------------------------------------------
 
 # Provide a fake pwd module so lib.environment can import it even on Windows
 fake_pwd_module = types.SimpleNamespace(
-    getpwuid=lambda uid: ("u", "x", uid, uid, "U", "/home/u", "/bin/bash")
+    getpwuid=lambda uid: ("u", "x", uid, uid, "User", "/home/u", "/bin/bash")
 )
 sys.modules.setdefault("pwd", fake_pwd_module)
 
@@ -36,19 +37,19 @@ Environment = env_module.Environment
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# Helper: Create Environment instance without running __init__
 # ---------------------------------------------------------------------------
 
 def make_env():
     """Return an Environment instance with __init__ side-effects suppressed."""
-    # Fake os module for lib.environment
     fake_os = types.SimpleNamespace(
-        geteuid=lambda: 1000,
         path=os.path,
+        sep=os.sep,
+        environ={},
     )
 
     fake_pwd = types.SimpleNamespace(
-        getpwuid=lambda uid: ("u", "x", uid, uid, "U", "/home/u", "/bin/bash")
+        getpwuid=lambda uid: ("u", "x", uid, uid, "User", "/home/u", "/bin/bash")
     )
 
     with patch.object(Environment, "collectinfo", return_value=None), \
@@ -103,7 +104,7 @@ class TestModeSettersGetters(unittest.TestCase):
 
     def test_setinstallmode_ignores_non_bool(self):
         self.env.setinstallmode(True)
-        self.env.setinstallmode("yes")          # should be ignored
+        self.env.setinstallmode("yes")
         self.assertTrue(self.env.getinstallmode())
 
     def test_setverbosemode_true(self):
@@ -247,11 +248,7 @@ class TestDiscoverOs(unittest.TestCase):
 
     @patch("lib.environment.os.path.exists")
     def test_lsb_release_path(self, mock_exists):
-        # Only lsb_release exists
-        def exists_side(p):
-            return p == "/usr/bin/lsb_release"
-        mock_exists.side_effect = exists_side
-
+        mock_exists.side_effect = lambda p: p == "/usr/bin/lsb_release"
         self.env.rw.communicate.return_value = (
             "Description:\tUbuntu 22.04.3 LTS\nRelease:\t22.04",
             "", ""
@@ -263,9 +260,7 @@ class TestDiscoverOs(unittest.TestCase):
     @patch("lib.environment.os.path.exists")
     @patch("builtins.open", mock_open(read_data="Red Hat Enterprise Linux release 8.7 (Ootpa)\n"))
     def test_redhat_release_path(self, mock_exists):
-        def exists_side(p):
-            return p == "/etc/redhat-release"
-        mock_exists.side_effect = exists_side
+        mock_exists.side_effect = lambda p: p == "/etc/redhat-release"
         self.env.discoveros()
         self.assertIn("Red Hat", self.env.operatingsystem)
 
@@ -282,10 +277,7 @@ class TestDiscoverOs(unittest.TestCase):
 
     @patch("lib.environment.os.path.exists")
     def test_sw_vers_path_darwin_mocked(self, mock_exists):
-        # Force darwin behavior regardless of host OS
-        def exists_side(p):
-            return p == "/usr/bin/sw_vers"
-        mock_exists.side_effect = exists_side
+        mock_exists.side_effect = lambda p: p == "/usr/bin/sw_vers"
 
         responses = iter([
             ("macOS", "", ""),
@@ -296,6 +288,7 @@ class TestDiscoverOs(unittest.TestCase):
 
         with patch("lib.environment.sys.platform", "darwin"):
             self.env.discoveros()
+
         self.assertEqual(self.env.operatingsystem, "macOS")
         self.assertEqual(self.env.osversion, "14.1.1")
 
@@ -310,23 +303,19 @@ class TestSetSystemType(unittest.TestCase):
     @patch("lib.environment.os.path.exists")
     def test_detects_systemd(self, mock_exists):
         mock_exists.side_effect = lambda p: p == "/usr/bin/ps"
-        self.env.rw.communicate.return_value = (
-            "/lib/systemd/systemd\n", "", ""
-        )
+        self.env.rw.communicate.return_value = ("/lib/systemd/systemd\n", "", "")
         self.env.setsystemtype()
         self.assertEqual(self.env.systemtype, "systemd")
 
     @patch("lib.environment.os.path.exists")
     def test_detects_launchd(self, mock_exists):
         mock_exists.side_effect = lambda p: p == "/usr/bin/ps"
-        self.env.rw.communicate.return_value = (
-            "  1 ??  Ss   0:00.01 /sbin/launchd\n", "", ""
-        )
+        self.env.rw.communicate.return_value = ("  1 ??  Ss   0:00.01 /sbin/launchd\n", "", "")
         self.env.setsystemtype()
         self.assertEqual(self.env.systemtype, "launchd")
 
     @patch("lib.environment.os.path.exists", return_value=False)
-    def test_windows_fallback_mocked(self, mock_exists):
+    def test_windows_fallback_mocked(self, _):
         with patch("lib.environment.sys.platform", "win32"):
             self.env.setsystemtype()
         self.assertEqual(self.env.systemtype, "windows")
@@ -354,7 +343,7 @@ class TestGuessNetwork(unittest.TestCase):
     @patch("lib.environment.socket.getfqdn", return_value="badhost")
     @patch("lib.environment.socket.gethostbyname_ex", side_effect=socket.gaierror)
     @patch("lib.environment.os.path.exists", return_value=False)
-    def test_gaierror_uses_getdefaultip(self, _exists, _byname, _fqdn):
+    def test_gaierror_uses_getdefaultip(self, *_):
         self.env.rw.communicate.return_value = ("", "", "")
         with patch.object(self.env, "getdefaultip", return_value="192.168.0.1"):
             self.env.guessnetwork()
@@ -494,7 +483,6 @@ class TestPathGetters(unittest.TestCase):
 # ---------------------------------------------------------------------------
 
 class TestCollectInfo(unittest.TestCase):
-    """collectinfo() should call each discovery method in order."""
 
     def test_collectinfo_calls_all_methods(self):
         env = make_env()
@@ -577,7 +565,6 @@ class TestGetSystemSerialNumber(unittest.TestCase):
             "      Serial Number (system): C02XG1JYJGH7\n", "", ""
         )
         serial = self.env.get_system_serial_number()
-        # Default return is '0' unless the regex matches; test the call is made
         self.env.rw.setCommand.assert_called()
         self.assertIsNotNone(serial)
 
