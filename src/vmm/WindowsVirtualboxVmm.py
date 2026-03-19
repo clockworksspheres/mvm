@@ -45,7 +45,7 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
          Stop a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "acpipowerbutton"]
+        cmd = [self.vboxmanage, "controlvm", vm, "poweroff" if hard else "acpipowerbutton"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -72,9 +72,9 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         cmd1 = [self.vboxmanage, "controlvm", vm, "reset"]
         self.run.setCommand(cmd1)
         self.run.communicate()
-        cmd2 = [self.vboxmanage, "start", vm]
-        self.run.setCommand(cmd2)
-        self.run.communicate()
+        # cmd2 = [self.vboxmanage, "start", vm]
+        # self.run.setCommand(cmd2)
+        # self.run.communicate()
 
     def get_vm_status(self, vm: str):
         """
@@ -90,7 +90,7 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         get the IP address of a virtual machine 
         """
-        cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtuallBox/GuestInfo/Net/0/IP"]
+        cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtualBox/GuestInfo/Net/0/IP"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")

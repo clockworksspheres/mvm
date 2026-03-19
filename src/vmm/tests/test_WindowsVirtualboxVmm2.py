@@ -34,6 +34,8 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
         self.mock_run.setCommand = MagicMock()
         self.mock_run.communicate = MagicMock()
 
+        self.mock_run.communicate = MagicMock(return_value=("", "", 0))
+
     def tearDown(self):
         self.run_patch.stop()
 
