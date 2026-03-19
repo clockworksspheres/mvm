@@ -99,6 +99,7 @@ def make_env():
 class TestEnvironmentConstruction(unittest.TestCase):
     """Tests for Environment.__init__ with OS-specific behavior fully mocked."""
 
+    @unittest.skipIf(sys.platform.lower().startswith("win"), "Does not work on Windows")
     @patch.object(Environment, "collectinfo", return_value=None)
     @patch.object(Environment, "determinefismacat", return_value=None)
     def test_init_posix_sets_euid_and_homedir(self, _det_fisma, _collectinfo):

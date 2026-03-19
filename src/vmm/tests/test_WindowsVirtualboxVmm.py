@@ -8,6 +8,7 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 
+VBM = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 
 @unittest.skipUnless(
     sys.platform.lower().startswith("win32"),
@@ -46,14 +47,14 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
         self.vmm.list_vms()
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "list", "vms"]
+            [VBM, "list", "vms"]
         )
 
     def test_start_vm_sets_correct_command(self):
         self.vmm.start_vm("TestVM")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "startvm", "TestVM"]
+            [VBM, "startvm", "TestVM"]
         )
 
     def test_stop_vm_sets_correct_command(self):
@@ -61,21 +62,21 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
         # On Windows, closing VM might use "controlvm <name> poweroff"
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmStop", "poweroff"]
+            [VBM, "controlvm", "vmStop", "poweroff"]
         )
 
     def test_pause_vm_sets_correct_command(self):
         self.vmm.pause_vm("vmP")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmP", "savestate"]
+            [VBM, "controlvm", "vmP", "savestate"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
         self.vmm.unpause_vm("vmU")
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmU", "resume"]
+            [VBM, "controlvm", "vmU", "resume"]
         )
 
     def test_reset_vm_sets_correct_command(self):
@@ -83,18 +84,18 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
         # VirtualBox reset usually maps to controlvm reset (hard)
         self.assertEqual(
             self.vmm.run.last_command,
-            ["VBoxManage", "controlvm", "vmR", "reset"]
+            [VBM, "controlvm", "vmR", "reset"]
         )
 
     def test_get_vm_status_returns_stripped_output(self):
-        key = ("VBoxManage", "showvminfo", "vmS")
+        key = (VBM, "showvminfo", "vmS")
         self.vmm.run.responses[key] = (" running \n", "", 0)
         status = self.vmm.get_vm_status("vmS")
         self.assertEqual(status, "running")
 
     def test_get_ip_returns_stripped_output(self):
         key = (
-            "VBoxManage", "guestproperty", "get", "vmIP",
+            VBM, "guestproperty", "get", "vmIP",
             "/VirtualBox/GuestInfo/Net/0/IP"
         )
         self.vmm.run.responses[key] = (" 10.0.2.15 \n", "", 0)
