@@ -20,11 +20,12 @@ import traceback
 import subprocess
 from subprocess import Popen, PIPE
 from subprocess import SubprocessError as SubprocessError
+from pathlib import Path
 
-sys.path.append("./../..")
-sys.path.append("./..")
-
-sys.path.append("./..")
+# Get the parent directory of the current file's parent directory
+#  and add it to sys.path
+parent_dir = Path(__file__).parent.parent
+sys.path.append(str(parent_dir))
 
 from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
