@@ -330,6 +330,7 @@ class TestSetSystemType(unittest.TestCase):
         self.env.setsystemtype()
         self.assertEqual(self.env.systemtype, "launchd")
 
+    @unittest.skipUnless(sys.platform.lower().startswith("win32"), "only works on Windows")
     @patch("lib.environment.os.path.exists", return_value=False)
     def test_windows_fallback(self, mock_exists):
         with patch("lib.environment.sys.platform", "win32"):
