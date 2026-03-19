@@ -20,7 +20,7 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vboxmanage = "VBoxManage"
+        self.vboxmanage = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 
     def list_vms(self):
         """
