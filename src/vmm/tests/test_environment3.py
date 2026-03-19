@@ -12,10 +12,10 @@ import os
 import sys
 import socket
 import types
+import time
 import unittest
-from unittest.mock import (
-    MagicMock, patch, mock_open
-)
+from contextlib import ExitStack
+from unittest.mock import MagicMock, patch, mock_open
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -52,10 +52,13 @@ def make_env():
         getpwuid=lambda uid: ("u", "x", uid, uid, "User", "/home/u", "/bin/bash")
     )
 
-    with patch.object(Environment, "collectinfo", return_value=None), \
-         patch.object(Environment, "determinefismacat", return_value="low"), \
-         patch("lib.environment.os", fake_os), \
-         patch("lib.environment.pwd", fake_pwd):
+    with ExitStack() as stack:
+        stack.enter_context(patch.object(Environment, "collectinfo", return_value=None))
+        stack.enter_context(patch.object(Environment, "determinefismacat", return_value="low"))
+        stack.enter_context(patch("lib.environment.os", fake_os))
+
+        if hasattr(env_module, "pwd"):
+            stack.enter_context(patch("lib.environment.pwd", fake_pwd))
 
         env = Environment.__new__(Environment)
         env.rw = MagicMock()
@@ -76,7 +79,11 @@ def make_env():
         env.homedir = "/home/testuser"
         env.test_mode = False
         env.script_path = parent_dir
+        env.resources_path = ""
+        env.rules_path = ""
         env.log_path = "/var/log"
+        env.icon_path = ""
+        env.conf_path = ""
         env.installmode = False
         env.verbosemode = False
         env.debugmode = False
@@ -86,10 +93,51 @@ def make_env():
 
 
 # ===========================================================================
-# Test Cases
+# 1. Environment construction (__init__)
 # ===========================================================================
 
-class TestModeSettersGetters(unittest.TestCase):
+class TestEnvironmentConstruction(unittest.TestCase):
+    """Tests for Environment.__init__ with OS-specific behavior fully mocked."""
+
+    @patch.object(Environment, "collectinfo", return_value=None)
+    @patch.object(Environment, "determinefismacat", return_value=None)
+    def test_init_posix_sets_euid_and_homedir(self, _det_fisma, _collectinfo):
+        fake_pwd = types.SimpleNamespace(
+            getpwuid=lambda uid: ("u", "x", uid, uid, "User", "/home/posixuser", "/bin/bash")
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch("lib.environment.sys.platform", "linux"))
+            stack.enter_context(patch("lib.environment.os.geteuid", return_value=1000))
+            stack.enter_context(patch.object(env_module, "pwd", fake_pwd))
+
+            env = Environment()
+
+        self.assertEqual(env.euid, 1000)
+        self.assertEqual(env.homedir, "/home/posixuser")
+        self.assertEqual(env.systemfismacat, "low")
+
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "works only on windows")
+    @patch.object(Environment, "collectinfo", return_value=None)
+    @patch.object(Environment, "determinefismacat", return_value=None)
+    def test_init_windows_sets_euid_and_homedir(self, _det_fisma, _collectinfo):
+        with ExitStack() as stack:
+            stack.enter_context(patch("lib.environment.sys.platform", "win32"))
+            stack.enter_context(patch("lib.environment.win32api.GetUserName", return_value="winuser"))
+            stack.enter_context(patch.dict("lib.environment.os.environ", {"USERPROFILE": r"C:\Users\WinUser"}, clear=True))
+
+            env = Environment()
+
+        self.assertEqual(env.euid, "winuser")
+        self.assertEqual(env.homedir, r"C:\Users\WinUser")
+        self.assertEqual(env.systemfismacat, "low")
+
+
+# ===========================================================================
+# 2. Mode flags (install, verbose, debug)
+# ===========================================================================
+
+class TestModeFlags(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -124,7 +172,9 @@ class TestModeSettersGetters(unittest.TestCase):
         self.assertFalse(self.env.getdebugmode())
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 3. Simple getters
+# ===========================================================================
 
 class TestSimpleGetters(unittest.TestCase):
 
@@ -175,7 +225,9 @@ class TestSimpleGetters(unittest.TestCase):
         self.assertEqual(self.env.getruntime(), "2024-06-01 12:00:00")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 4. OS version parsing
+# ===========================================================================
 
 class TestOsVersionParsing(unittest.TestCase):
 
@@ -207,9 +259,11 @@ class TestOsVersionParsing(unittest.TestCase):
         self.assertEqual(self.env.getostrivialver(), "22.04")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 5. OS family detection
+# ===========================================================================
 
-class TestSetOsFamily(unittest.TestCase):
+class TestOsFamily(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -239,7 +293,9 @@ class TestSetOsFamily(unittest.TestCase):
         self.assertEqual(self.env.osfamily, "windows")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 6. OS discovery
+# ===========================================================================
 
 class TestDiscoverOs(unittest.TestCase):
 
@@ -293,9 +349,11 @@ class TestDiscoverOs(unittest.TestCase):
         self.assertEqual(self.env.osversion, "14.1.1")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 7. System type detection
+# ===========================================================================
 
-class TestSetSystemType(unittest.TestCase):
+class TestSystemType(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -325,15 +383,17 @@ class TestSetSystemType(unittest.TestCase):
         self.assertEqual(self.env.getsystemtype(), "systemd")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 8. Networking (guessnetwork + default IP)
+# ===========================================================================
 
-class TestGuessNetwork(unittest.TestCase):
+class TestNetworking(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
 
     @patch("lib.environment.sys.platform", "darwin")
-    def test_darwin_returns_early(self):
+    def test_darwin_guessnetwork_returns_early(self):
         self.env.guessnetwork()
         self.assertEqual(self.env.hostname, "")
         self.assertEqual(self.env.ipaddress, "")
@@ -350,9 +410,37 @@ class TestGuessNetwork(unittest.TestCase):
         self.assertEqual(self.env.ipaddress, "192.168.0.1")
 
 
-# ---------------------------------------------------------------------------
+class TestDefaultIp(unittest.TestCase):
 
-class TestMatchIp(unittest.TestCase):
+    def setUp(self):
+        self.env = make_env()
+
+    @patch("lib.environment.sys.platform", "darwin")
+    def test_darwin_returns_empty(self):
+        result = self.env.getdefaultip()
+        self.assertEqual(result, "")
+
+    @patch("lib.environment.sys.platform", "linux")
+    @patch("lib.environment.os.path.exists")
+    @patch("lib.environment.subprocess.Popen")
+    def test_linux_lsb_release_path(self, mock_popen, mock_exists):
+        mock_exists.side_effect = lambda p: p == "/usr/bin/lsb_release"
+        proc = MagicMock()
+        proc.stdout.readlines.return_value = [
+            "default  10.0.0.1  0.0.0.0  255.255.255.0  eth0\n"
+        ]
+        mock_popen.return_value = proc
+        with patch.object(self.env, "getallips", return_value=["10.0.0.5"]), \
+             patch.object(self.env, "matchip", return_value=["10.0.0.5"]):
+            result = self.env.getdefaultip()
+        self.assertEqual(result, "10.0.0.5")
+
+
+# ===========================================================================
+# 9. IP matching
+# ===========================================================================
+
+class TestIPMatching(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -378,9 +466,11 @@ class TestMatchIp(unittest.TestCase):
         self.assertEqual(result, ["127.0.0.1"])
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 10. IP discovery (getallips)
+# ===========================================================================
 
-class TestGetAllIps(unittest.TestCase):
+class TestIPDiscovery(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -398,9 +488,11 @@ class TestGetAllIps(unittest.TestCase):
         self.assertIn("192.168.1.100", ips)
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 11. FISMA category
+# ===========================================================================
 
-class TestFismaCat(unittest.TestCase):
+class TestFisma(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -444,7 +536,9 @@ class TestFismaCat(unittest.TestCase):
         self.assertEqual(self.env.systemfismacat, "high")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 12. Number of rules
+# ===========================================================================
 
 class TestNumRules(unittest.TestCase):
 
@@ -468,9 +562,11 @@ class TestNumRules(unittest.TestCase):
             self.env.setnumrules("five")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 13. Paths and test mode
+# ===========================================================================
 
-class TestPathGetters(unittest.TestCase):
+class TestPaths(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -480,7 +576,9 @@ class TestPathGetters(unittest.TestCase):
         self.assertTrue(self.env.get_test_mode())
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 14. collectinfo orchestration
+# ===========================================================================
 
 class TestCollectInfo(unittest.TestCase):
 
@@ -497,9 +595,11 @@ class TestCollectInfo(unittest.TestCase):
             mocks[m].assert_called_once()
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 15. Mobile detection
+# ===========================================================================
 
-class TestIsmobile(unittest.TestCase):
+class TestMobileDetection(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -522,9 +622,11 @@ class TestIsmobile(unittest.TestCase):
         self.assertFalse(result)
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 16. Snitch detection
+# ===========================================================================
 
-class TestIssnitchActive(unittest.TestCase):
+class TestSnitch(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -550,9 +652,11 @@ class TestIssnitchActive(unittest.TestCase):
         self.assertFalse(self.env.issnitchactive())
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 17. System serial number
+# ===========================================================================
 
-class TestGetSystemSerialNumber(unittest.TestCase):
+class TestSerialNumber(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -574,9 +678,11 @@ class TestGetSystemSerialNumber(unittest.TestCase):
         self.assertEqual(result, "0")
 
 
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 18. System UUID
+# ===========================================================================
 
-class TestGetSysUuid(unittest.TestCase):
+class TestUUID(unittest.TestCase):
 
     def setUp(self):
         self.env = make_env()
@@ -590,35 +696,9 @@ class TestGetSysUuid(unittest.TestCase):
         self.assertEqual(uuid, "SOME-UUID-1234\n")
 
 
-# ---------------------------------------------------------------------------
-
-class TestGetDefaultIp(unittest.TestCase):
-
-    def setUp(self):
-        self.env = make_env()
-
-    @patch("lib.environment.sys.platform", "darwin")
-    def test_darwin_returns_empty(self):
-        result = self.env.getdefaultip()
-        self.assertEqual(result, "")
-
-    @patch("lib.environment.sys.platform", "linux")
-    @patch("lib.environment.os.path.exists")
-    @patch("lib.environment.subprocess.Popen")
-    def test_linux_lsb_release_path(self, mock_popen, mock_exists):
-        mock_exists.side_effect = lambda p: p == "/usr/bin/lsb_release"
-        proc = MagicMock()
-        proc.stdout.readlines.return_value = [
-            "default  10.0.0.1  0.0.0.0  255.255.255.0  eth0\n"
-        ]
-        mock_popen.return_value = proc
-        with patch.object(self.env, "getallips", return_value=["10.0.0.5"]), \
-             patch.object(self.env, "matchip", return_value=["10.0.0.5"]):
-            result = self.env.getdefaultip()
-        self.assertEqual(result, "10.0.0.5")
-
-
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# 19. RunWith integration
+# ===========================================================================
 
 class TestRunWithIntegration(unittest.TestCase):
     """
