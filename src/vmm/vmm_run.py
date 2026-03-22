@@ -1,7 +1,8 @@
 import psutil
-# import sys
+import sys
 
 from VirtualMachineManage import VirtualMachineManage
+from lib.libHelperExceptions import HypervisorNotApplicable
 
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
 
@@ -33,7 +34,11 @@ def vmm_run(args):
         print(message)
         raise HypervisorNotValid(message)
 
-    vmm = VirtualMachineManage(hyper)
+    try:
+        vmm = VirtualMachineManage(hyper)
+    except HypervisorNotApplicable:
+        print("Cannot run this hypervisor on this OS setup")
+        sys.exit()
 
     cmd = args.command
 
