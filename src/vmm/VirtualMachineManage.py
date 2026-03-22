@@ -29,21 +29,30 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
                 from MacosVmwareVmm import MacosVmwareVmm
                 self.vmm = MacosVmwareVmm(self.logger)
             elif sys.platform.lower().startswith("win32"):
-                from WindowsVmwareVmm import WindowsVmwareVmm
-                self.vmm = WindowsVmwareVmm(self.logger)
+                if hyper_v_enabled():
+                    raise HyperviserNotApplicable
+                else:
+                    from WindowsVmwareVmm import WindowsVmwareVmm
+                    self.vmm = WindowsVmwareVmm(self.logger)
         elif self.framework == "virtualbox":
             if sys.platform.lower().startswith("darwin"):
                 from MacosVirtualboxVmm import MacosVirtualboxVmm
                 self.vmm = MacosVirtualboxVmm(self.logger)
             elif sys.platform.lower().startswith("win32"):
-                from WindowsVirtualboxVmm import WindowsVirtualboxVmm
-                self.vmm = WindowsVirtualboxVmm(self.logger)
+                if hyper_v_enabled():
+                    raise HyperviserNotApplicable
+                else:
+                    from WindowsVirtualboxVmm import WindowsVirtualboxVmm
+                    self.vmm = WindowsVirtualboxVmm(self.logger)
         elif self.framework == "utm" and sys.platform.lower().startswith("darwin"):
             from MacosUtmVmm import MacosUtmVmm
             self.vmm = MacosUtmVmm(self.logger)
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
-            from WindowsHypervVmm import WindowsHypervVmm
-            self.vmm = WindowsHypervVmm(self.logger)
+            if not hyper_v_enabled():
+                raise HyperviserNotApplicable
+            else:
+                from WindowsHypervVmm import WindowsHypervVmm
+                self.vmm = WindowsHypervVmm(self.logger)
         else:
             self.logger.log(lp.ERROR, f"{self.framework} hasn't been implemented")
 
