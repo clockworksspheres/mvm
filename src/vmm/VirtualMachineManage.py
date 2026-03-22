@@ -29,6 +29,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
                 from MacosVmwareVmm import MacosVmwareVmm
                 self.vmm = MacosVmwareVmm(self.logger)
             elif sys.platform.lower().startswith("win32"):
+                from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
                     raise HyperviserNotApplicable
                 else:
@@ -39,6 +40,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
                 from MacosVirtualboxVmm import MacosVirtualboxVmm
                 self.vmm = MacosVirtualboxVmm(self.logger)
             elif sys.platform.lower().startswith("win32"):
+                from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
                     raise HyperviserNotApplicable
                 else:
@@ -48,6 +50,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
             from MacosUtmVmm import MacosUtmVmm
             self.vmm = MacosUtmVmm(self.logger)
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
+            from lib.windows_utilities import hyper_v_enabled
             if not hyper_v_enabled():
                 raise HyperviserNotApplicable
             else:

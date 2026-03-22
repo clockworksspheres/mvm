@@ -29,7 +29,8 @@ class TestVirtualMachineManage(unittest.TestCase):
 
     # ----------------------------------------------------------------------
     # VMware on Windows
-    # ----------------------------------------------------------------------
+    # ---------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
     @patch("WindowsVmwareVmm.WindowsVmwareVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
@@ -56,6 +57,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     # ----------------------------------------------------------------------
     # VirtualBox on Windows
     # ----------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
     @patch("WindowsVirtualboxVmm.WindowsVirtualboxVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
@@ -82,6 +84,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     # ----------------------------------------------------------------------
     # Hyper-V on Windows
     # ----------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
     @patch("WindowsHypervVmm.WindowsHypervVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
