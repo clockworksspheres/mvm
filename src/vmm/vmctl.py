@@ -3,7 +3,7 @@ import argparse
 import sys
 
 from VirtualMachineManage import VirtualMachineManage
-from vmmux.main import VmCtlUi
+from ui.main import VmCtlUi
 from vmm_run import vmm_run
 
 

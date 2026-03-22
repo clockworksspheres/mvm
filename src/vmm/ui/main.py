@@ -10,20 +10,22 @@ import psutil
 import re
 from argparse import Namespace
 
+from pathlib import Path
+
+parent_dir = Path(__file__).parent.parent
+sys.path.append(str(parent_dir))
 
 from PySide6.QtWidgets import (QApplication, QMainWindow)
 from PySide6.QtGui import QAction, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
 
-from vmmux.mainwindow_ui import Ui_MainWindow
+from ui.mainwindow_ui import Ui_MainWindow
 from vmm_run import vmm_run
-
-sys.path.append("./..")
 
 from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
 from lib.run_commands import start_detached, RunWith
-from vmmux.SimpleConsole import SimpleConsole, ConsoleStream
+from ui.SimpleConsole import SimpleConsole, ConsoleStream
 
 
 class VmCtlUi(QMainWindow):
