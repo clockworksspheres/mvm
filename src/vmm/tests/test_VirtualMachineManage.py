@@ -41,12 +41,12 @@ class TestVirtualMachineManage(unittest.TestCase):
 
         if hyper_v_enabled():
             unittest.SkipTest
+        else:
+            with patch.object(sys, "platform", "win32"):
+                vmm = VirtualMachineManage("vmware")
 
-        with patch.object(sys, "platform", "win32"):
-            vmm = VirtualMachineManage("vmware")
-
-        mock_vmware.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_vmware.return_value)
+            mock_vmware.assert_called_once_with(mock_logger.return_value)
+            self.assertIs(vmm.vmm, mock_vmware.return_value)
 
     # ----------------------------------------------------------------------
     # VirtualBox on macOS
@@ -71,12 +71,12 @@ class TestVirtualMachineManage(unittest.TestCase):
     def test_virtualbox_windows(self, mock_logger, mock_runwith, mock_vbox):
         if hyper_v_enabled():
             unittest.SkipTest
+        else:
+            with patch.object(sys, "platform", "win32"):
+                vmm = VirtualMachineManage("virtualbox")
 
-        with patch.object(sys, "platform", "win32"):
-            vmm = VirtualMachineManage("virtualbox")
-
-        mock_vbox.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_vbox.return_value)
+            mock_vbox.assert_called_once_with(mock_logger.return_value)
+            self.assertIs(vmm.vmm, mock_vbox.return_value)
 
     # ----------------------------------------------------------------------
     # UTM on macOS
@@ -101,12 +101,12 @@ class TestVirtualMachineManage(unittest.TestCase):
     def test_hyperv_windows(self, mock_logger, mock_runwith, mock_hyperv):
         if not hyper_v_enabled():
             unittest.SkipTest
+        else:
+            with patch.object(sys, "platform", "win32"):
+                vmm = VirtualMachineManage("hyperv")
 
-        with patch.object(sys, "platform", "win32"):
-            vmm = VirtualMachineManage("hyperv")
-
-        mock_hyperv.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_hyperv.return_value)
+            mock_hyperv.assert_called_once_with(mock_logger.return_value)
+            self.assertIs(vmm.vmm, mock_hyperv.return_value)
 
     # ----------------------------------------------------------------------
     # Unsupported framework logs error
