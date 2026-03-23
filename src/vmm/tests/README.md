@@ -12,4 +12,7 @@ Still need to create installer builds for project across operating
 systems, to get the CD part going.  Jenkins server currently running
 in a container.
 
+Skipped tests are not necessarily bad, they just are not applicable to the
+operating system they are being run on.
+
 
