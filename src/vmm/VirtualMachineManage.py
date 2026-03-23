@@ -8,6 +8,7 @@ import sys
 from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
 from lib.run_commands import RunWith
+from lib.libHelperExceptions import HypervisorNotApplicable
 from VirtualMachineManageTemplate import VirtualMachineManageTemplate
 
 class VirtualMachineManage(VirtualMachineManageTemplate):
@@ -31,7 +32,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    raise HyperviserNotApplicable
+                    raise HypervisorNotApplicable
                 else:
                     from WindowsVmwareVmm import WindowsVmwareVmm
                     self.vmm = WindowsVmwareVmm(self.logger)
@@ -42,7 +43,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    raise HyperviserNotApplicable
+                    raise HypervisorNotApplicable
                 else:
                     from WindowsVirtualboxVmm import WindowsVirtualboxVmm
                     self.vmm = WindowsVirtualboxVmm(self.logger)
@@ -52,7 +53,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
             from lib.windows_utilities import hyper_v_enabled
             if not hyper_v_enabled():
-                raise HyperviserNotApplicable
+                raise HypervisorNotApplicable("Hyperv isn't applicable...")
             else:
                 from WindowsHypervVmm import WindowsHypervVmm
                 self.vmm = WindowsHypervVmm(self.logger)

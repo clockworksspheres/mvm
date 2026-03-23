@@ -11,6 +11,8 @@ sys.path.append(str(parent_dir))
 
 from VirtualMachineManage import VirtualMachineManage
 
+from lib.windows_utilities import hyper_v_enabled
+from lib.libHelperExceptions import HypervisorNotApplicable
 
 class TestVirtualMachineManage(unittest.TestCase):
 
@@ -31,6 +33,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VMware on Windows
     # ---------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
+    @unittest.skipIf(hyper_v_enabled(), "Hyper-V is enabled, skipping VMware test")
     @patch("WindowsVmwareVmm.WindowsVmwareVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
@@ -58,6 +61,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VirtualBox on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
+    @unittest.skipIf(hyper_v_enabled(), "Hyper-V is enabled, skipping VirtualBox test")
     @patch("WindowsVirtualboxVmm.WindowsVirtualboxVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
@@ -85,6 +89,7 @@ class TestVirtualMachineManage(unittest.TestCase):
     # Hyper-V on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
+    @unittest.skipIf(not hyper_v_enabled(), "Hyper-V is not enabled, skipping Hyper-V test")
     @patch("WindowsHypervVmm.WindowsHypervVmm")
     @patch("VirtualMachineManage.RunWith")
     @patch("VirtualMachineManage.CyLogger")
