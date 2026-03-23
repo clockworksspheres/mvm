@@ -9,7 +9,7 @@
 To get the latest command line options, run the command:
 
 ```
-vmm -h
+vmctl -h
 ```
 
 # Todo's
