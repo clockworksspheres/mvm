@@ -20,7 +20,6 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 
-
 # --- Non-native python libraries in this source tree
 from lib.environment import Environment
 from lib.loggers import CyLogger

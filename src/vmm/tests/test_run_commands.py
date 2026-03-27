@@ -56,7 +56,8 @@ class test_run_commands(unittest.TestCase):
         command = ['/bin/ls', 1, '.']
         self.assertRaises(SetCommandTypeError,
                           self.rw.setCommand, [command])
-
+    
+    @unittest.skipIf(sys.platform.lower().startswith("win"), "doesn't work on Windows, need to write windows specific tests")
     def test_communicate(self):
         """
         """
@@ -78,6 +79,7 @@ class test_run_commands(unittest.TestCase):
 
         self.logger.log(lp.DEBUG, "=============== Ending test_communicate...")
 
+    @unittest.skipIf(sys.platform.lower().startswith("win"), "doesn't work on Windows, need to write windows specific tests")
     def test_wait(self):
         """
         """
@@ -90,7 +92,7 @@ class test_run_commands(unittest.TestCase):
         except Exception as err:
             self.logger.log(lp.ERROR, traceback.format_exc())
             # raise err
-        '''
+
         self.assertEqual(retval, 0,
                           "Valid [] command execution failed: " +
                           '/bin/ls /var/spool --- retval: ' + str(retval))
@@ -105,7 +107,7 @@ class test_run_commands(unittest.TestCase):
         self.assertEqual(retval, 0,
                           "Valid [] command execution failed: " +
                           '/bin/ls -l /usr/local --- retval: ' + str(retval))
-        
+        '''
         temporarily commented out may not work the same on python 3.10.x
         self.rw.setCommand(['/bin/ls', '/1', '/'])
         tracemalloc.start(25)
