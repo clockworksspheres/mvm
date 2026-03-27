@@ -1,7 +1,7 @@
 import inspect
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.run_commands import RunWith
 
 
 class MethodNotImplementedError(Exception):

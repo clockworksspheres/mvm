@@ -12,8 +12,8 @@ sys.path.append(str(parent_dir))
 from VirtualMachineManage import VirtualMachineManage
 
 if sys.platform.lower().startswith("win"):
-    from lib.windows_utilities import hyper_v_enabled
-from lib.libHelperExceptions import HypervisorNotApplicable
+    from vmm.lib.windows_utilities import hyper_v_enabled
+from vmm.lib.libHelperExceptions import HypervisorNotApplicable
 
 class TestVirtualMachineManage(unittest.TestCase):
 
@@ -34,9 +34,9 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VMware on Windows
     # ---------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("WindowsVmwareVmm.WindowsVmwareVmm")
-    @patch("VirtualMachineManage.RunWith")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("vmm.WindowsVmwareVmm.WindowsVmwareVmm")
+    @patch("vmm.VirtualMachineManage.RunWith")
+    @patch("vmm.VirtualMachineManage.CyLogger")
     def test_vmware_windows(self, mock_logger, mock_runwith, mock_vmware):
 
         if hyper_v_enabled():
@@ -65,9 +65,9 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VirtualBox on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("WindowsVirtualboxVmm.WindowsVirtualboxVmm")
-    @patch("VirtualMachineManage.RunWith")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("vmm.WindowsVirtualboxVmm.WindowsVirtualboxVmm")
+    @patch("vmm.VirtualMachineManage.RunWith")
+    @patch("vmm.VirtualMachineManage.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_runwith, mock_vbox):
         if hyper_v_enabled():
             unittest.SkipTest
@@ -95,9 +95,9 @@ class TestVirtualMachineManage(unittest.TestCase):
     # Hyper-V on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("WindowsHypervVmm.WindowsHypervVmm")
-    @patch("VirtualMachineManage.RunWith")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("vmm.WindowsHypervVmm.WindowsHypervVmm")
+    @patch("vmm.VirtualMachineManage.RunWith")
+    @patch("vmm.VirtualMachineManage.CyLogger")
     def test_hyperv_windows(self, mock_logger, mock_runwith, mock_hyperv):
         if not hyper_v_enabled():
             unittest.SkipTest
@@ -124,8 +124,8 @@ class TestVirtualMachineManage(unittest.TestCase):
     # ----------------------------------------------------------------------
     # Wrapper methods forward correctly
     # ----------------------------------------------------------------------
-    @patch("VirtualMachineManage.CyLogger")
-    @patch("VirtualMachineManage.RunWith")
+    @patch("vmm.VirtualMachineManage.CyLogger")
+    @patch("vmm.VirtualMachineManage.RunWith")
     def test_wrapper_methods(self, mock_runwith, mock_logger):
         fake_vmm = MagicMock()
 

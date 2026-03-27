@@ -1,13 +1,18 @@
+import sys
 import inspect
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith
-from VirtualMachineManageTemplate import VirtualMachineManageTemplate
-from lib.vmware_fusion_list_status import (find_all_vmx_files,
-                                           detect_vm_status,
-                                           get_vm_ip,
-                                           print_status4all_vms,
-                                           list_running_vms)
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.run_commands import RunWith
+from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
+from vmm.lib.vmware_fusion_list_status import (find_all_vmx_files,
+                                               detect_vm_status,
+                                               get_vm_ip,
+                                               print_status4all_vms,
+                                               list_running_vms)
 
 
 class MacosVmwareVmm(VirtualMachineManageTemplate):

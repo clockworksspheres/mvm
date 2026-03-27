@@ -6,10 +6,9 @@ from pathlib import Path
 # Get the parent directory of the current file's parent directory
 #  and add it to sys.path
 parent_dir = Path(__file__).parent.parent
-sys.path.append(str(parent_dir))
 
 # Adjust import path to match your project structure
-from MacosVirtualboxVmm import MacosVirtualboxVmm
+from vmm.MacosVirtualboxVmm import MacosVirtualboxVmm
 
 
 class TestMacosVirtualboxVmm(unittest.TestCase):
@@ -19,7 +18,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Helper: create instance with mocked RunWith
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def create_vmm(self, mock_runwith):
         mock_run = MagicMock()
         mock_runwith.return_value = mock_run
@@ -31,10 +30,10 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test list_vms()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.get_vm_ip")
-    @patch("MacosVirtualboxVmm.get_vm_state")
-    @patch("MacosVirtualboxVmm.list_running_vms")
-    @patch("MacosVirtualboxVmm.list_vms")
+    @patch("vmm.MacosVirtualboxVmm.get_vm_ip")
+    @patch("vmm.MacosVirtualboxVmm.get_vm_state")
+    @patch("vmm.MacosVirtualboxVmm.list_running_vms")
+    @patch("vmm.MacosVirtualboxVmm.list_vms")
     def test_list_vms(self, mock_list_vms, mock_list_running, mock_state, mock_ip):
         mock_list_vms.return_value = {"TestVM": "UUID123"}
         mock_list_running.return_value = ["UUID123"]
@@ -54,7 +53,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test start_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_start_vm(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -70,7 +69,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test stop_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_stop_vm(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -86,7 +85,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test pause_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_pause_vm(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -102,7 +101,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test unpause_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_unpause_vm(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -118,7 +117,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test reset_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_reset_vm(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -139,7 +138,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test get_ip()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.RunWith")
+    @patch("vmm.MacosVirtualboxVmm.RunWith")
     def test_get_ip(self, mock_runwith):
         vmm, mock_run = self.create_vmm()
 
@@ -158,7 +157,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test get_vm_status()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("MacosVirtualboxVmm.MacosVirtualboxVmm.list_vms")
+    @patch("vmm.MacosVirtualboxVmm.MacosVirtualboxVmm.list_vms")
     def test_get_vm_status(self, mock_list_vms):
         mock_list_vms.return_value = ("TestVM", "running", "192.168.56.10")
 

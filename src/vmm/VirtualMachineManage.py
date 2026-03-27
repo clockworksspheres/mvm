@@ -4,12 +4,15 @@ Factory Class to spawn concrete Virtual Machine Managers
 """
 import inspect
 import sys
+from pathlib import Path
 
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith
-from lib.libHelperExceptions import HypervisorNotApplicable
-from VirtualMachineManageTemplate import VirtualMachineManageTemplate
+sys.path.append(str(Path(__file__).parent.parent))
+
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.run_commands import RunWith
+from vmm.lib.libHelperExceptions import HypervisorNotApplicable
+from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
 
 class VirtualMachineManage(VirtualMachineManageTemplate):
 

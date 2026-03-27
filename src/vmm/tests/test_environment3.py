@@ -17,6 +17,7 @@ import unittest
 from contextlib import ExitStack
 from unittest.mock import MagicMock, patch, mock_open
 from pathlib import Path
+parent_dir = str(Path(__file__).parent.parent)
 
 # ---------------------------------------------------------------------------
 # Ensure lib.environment imports cleanly on all platforms
@@ -28,11 +29,8 @@ fake_pwd_module = types.SimpleNamespace(
 )
 sys.modules.setdefault("pwd", fake_pwd_module)
 
-# Ensure project root is on sys.path so lib.environment can be imported
-parent_dir = Path(__file__).parent.parent
-sys.path.append(str(parent_dir))
 
-import lib.environment as env_module
+import vmm.lib.environment as env_module
 Environment = env_module.Environment
 
 

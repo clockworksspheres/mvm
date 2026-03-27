@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+from pathlib import Path
 
-from VirtualMachineManage import VirtualMachineManage
-from ui.main import VmCtlUi
-from vmm_run import vmm_run
+sys.path.append(str(Path(__file__).parent.parent))
+
+from vmm.VirtualMachineManage import VirtualMachineManage
+from vmm.ui.main import VmCtlUi
+from vmm.vmm_run import vmm_run
 
 
 HYPERVISORS = {"vmware", "virtualbox", "utm"}
