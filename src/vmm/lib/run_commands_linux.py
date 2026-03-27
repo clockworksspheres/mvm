@@ -13,10 +13,10 @@ import os
 import re
 import sys
 
-from lib.libHelperExceptions import NotValidForThisOS
+from vmm.lib.libHelperExceptions import NotValidForThisOS
 
-if not sys.platform.startswith("linux"):
-    raise NotValidForThisOS("Not Valid For This OS...")
+#if not sys.platform.lower().startswith("linux"):
+#    raise NotValidForThisOS("Not Valid For This OS...")
 
 import pty
 import time
@@ -29,12 +29,9 @@ import traceback
 from subprocess import Popen, PIPE
 from subprocess import SubprocessError as SubprocessError
 
-sys.path.append("../..")
-
-from ramdisk.lib.loggers import CyLogger
-from ramdisk.lib.loggers import LogPriority as lp
-from ramdisk.lib.loggers import MockLogger
-from ramdisk.lib.getLibc.linuxGetLibc import getLibc
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.loggers import MockLogger
 
 
 class OSNotValidForRunWith(BaseException):

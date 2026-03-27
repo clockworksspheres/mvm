@@ -1,43 +1,45 @@
 import subprocess
+import sys
 
-#####
-# come from the external library pywin32
-# needed for function is_windows_process_elevated()
-import win32security
-import win32process
-import win32api
-#####
+if sys.platform.lower().startswith("win"):
+    #####
+    # come from the external library pywin32
+    # needed for function is_windows_process_elevated()
+    import win32security
+    import win32process
+    import win32api
+    #####
 
-def is_windows_process_elevated():
-    try:
-        # Open the process token
-        hProcess = win32process.GetCurrentProcess()
-        hToken = win32security.OpenProcessToken(hProcess, win32security.TOKEN_QUERY)
-
+    def is_windows_process_elevated():
         try:
-            # Get the administrators group SID
-            sid = win32security.LookupAccountName(None, "Administrators")[0]
+            # Open the process token
+            hProcess = win32process.GetCurrentProcess()
+            hToken = win32security.OpenProcessToken(hProcess, win32security.TOKEN_QUERY)
 
-            # Check if the token is a member of the administrators group
-            is_admin = win32security.CheckTokenMembership(hToken, sid)
+            try:
+                # Get the administrators group SID
+                sid = win32security.LookupAccountName(None, "Administrators")[0]
 
-            return is_admin
+                # Check if the token is a member of the administrators group
+                is_admin = win32security.CheckTokenMembership(hToken, sid)
+
+                return is_admin
+            except Exception as e:
+                print(f"Error checking token membership: {e}")
+                return False
+            finally:
+                # Close the token handle
+                win32api.CloseHandle(hToken)
         except Exception as e:
-            print(f"Error checking token membership: {e}")
+            print(f"Error opening process token: {e}")
             return False
-        finally:
-            # Close the token handle
-            win32api.CloseHandle(hToken)
-    except Exception as e:
-        print(f"Error opening process token: {e}")
-        return False
 
-def hyper_v_enabled():
-    ps_command = "Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-ALL"
-    try:
-        output = subprocess.check_output(["powershell", "-Command", ps_command], stderr=subprocess.STDOUT, text=True)
-        return "State : Enabled" in output
-    except subprocess.CalledProcessError as e:
-        print(f"Error checking Hyper-V status: {e.output}")
-        return False
+    def hyper_v_enabled():
+        ps_command = "Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-ALL"
+        try:
+            output = subprocess.check_output(["powershell", "-Command", ps_command], stderr=subprocess.STDOUT, text=True)
+            return "State : Enabled" in output
+        except subprocess.CalledProcessError as e:
+            print(f"Error checking Hyper-V status: {e.output}")
+            return False
 

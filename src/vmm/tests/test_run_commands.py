@@ -12,12 +12,11 @@ from pathlib import Path
 # Get the parent directory of the current file's parent directory
 #  and add it to sys.path
 parent_dir = Path(__file__).parent.parent
-sys.path.append(str(parent_dir))
 
 #--- non-native python libraries in this source tree
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith, SetCommandTypeError
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.run_commands import RunWith, SetCommandTypeError
 
 
 class test_run_commands(unittest.TestCase):

@@ -7,7 +7,6 @@ from pathlib import Path
 # Get the parent directory of the current file's parent directory
 #  and add it to sys.path
 parent_dir = Path(__file__).parent.parent
-sys.path.append(str(parent_dir))
 
 from vmm.MacosUtmVmm import MacosUtmVmm
 

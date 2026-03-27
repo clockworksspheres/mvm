@@ -1,8 +1,11 @@
 import psutil
 import sys
+from pathlib import Path
 
-from VirtualMachineManage import VirtualMachineManage
-from lib.libHelperExceptions import HypervisorNotApplicable
+sys.path.append(str(Path(__file__).parent.parent))
+
+from vmm.VirtualMachineManage import VirtualMachineManage
+from vmm.lib.libHelperExceptions import HypervisorNotApplicable
 
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
 

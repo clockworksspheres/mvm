@@ -1,8 +1,8 @@
 import inspect
-from lib.loggers import CyLogger
-from lib.loggers import LogPriority as lp
-from lib.run_commands import RunWith
-from VirtualMachineManageTemplate import VirtualMachineManageTemplate
+from vmm.lib.loggers import CyLogger
+from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.run_commands import RunWith
+from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
 
 
 class WindowsVmwareVmm(VirtualMachineManageTemplate):
