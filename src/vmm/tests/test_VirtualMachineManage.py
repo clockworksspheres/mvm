@@ -34,9 +34,9 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VMware on Windows
     # ---------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("vmm.WindowsVmwareVmm.WindowsVmwareVmm")
-    @patch("vmm.VirtualMachineManage.RunWith")
-    @patch("vmm.VirtualMachineManage.CyLogger")
+    @patch("WindowsVmwareVmm.WindowsVmwareVmm")
+    @patch("VirtualMachineManage.RunWith")
+    @patch("VirtualMachineManage.CyLogger")
     def test_vmware_windows(self, mock_logger, mock_runwith, mock_vmware):
 
         if hyper_v_enabled():
@@ -65,9 +65,9 @@ class TestVirtualMachineManage(unittest.TestCase):
     # VirtualBox on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("vmm.WindowsVirtualboxVmm.WindowsVirtualboxVmm")
-    @patch("vmm.VirtualMachineManage.RunWith")
-    @patch("vmm.VirtualMachineManage.CyLogger")
+    @patch("WindowsVirtualboxVmm.WindowsVirtualboxVmm")
+    @patch("VirtualMachineManage.RunWith")
+    @patch("VirtualMachineManage.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_runwith, mock_vbox):
         if hyper_v_enabled():
             unittest.SkipTest
