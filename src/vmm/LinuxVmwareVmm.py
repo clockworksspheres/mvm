@@ -21,6 +21,10 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
     def __init__(self, logger, **kwargs):
         """
         """
+        hw_platform = tell_hw_platform()
+        if hw_platform == "arm64" or not hw_platform:
+            raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
+
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
