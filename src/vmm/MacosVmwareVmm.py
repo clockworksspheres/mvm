@@ -6,6 +6,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
+from vmm.lib.vmx import find_vm_by_display_name
 from vmm.lib.run_commands import RunWith
 from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
 from vmm.lib.vmware_fusion_list_status import (find_all_vmx_files,
@@ -31,6 +32,19 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         self.run = RunWith(self.logger)
 
         self.vmrun = "/Applications/VMware Fusion.app/Contents/Library/vmrun"
+
+    def find_vm_by_display_name(self, vmname=""):
+        """
+        Find the first VM with vmname in the list of paths the searched.
+        """
+        vmpath = ""
+        vmpaths = find_vm_by_display_name(vmname)
+        for vmpath in vmpaths:
+            print("Found:", vmpath)
+            # return the first found in the search
+            break
+
+        return vmpath[0]
 
     def list_vms(self, **kwargs):
         """
@@ -61,7 +75,9 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
          Start a virtual machine
 
         """
-        cmd = [self.vmrun, "-T", "fusion", "start", vm, "nogui" if headless else "gui"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        print(vmpath)
+        cmd = [self.vmrun, "-T", "fusion", "start", str(vmpath), "nogui" if headless else "gui"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -69,7 +85,8 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
          Stop a virtual machine
         """
-        cmd = [self.vmrun, "stop", vm, "hard" if hard else "soft"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vmrun, "stop", str(vmpath), "hard" if hard else "soft"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -77,7 +94,8 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vmrun, "pause", vm, "soft"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vmrun, "pause", str(vmpath), "soft"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -85,7 +103,8 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vmrun, "unpause", vm, "soft"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vmrun, "unpause", str(vmpath), "soft"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -93,7 +112,8 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         Reset a virtual machine 
         """
-        cmd = [self.vmrun, "reset", vm, "hard" if hard else "soft"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vmrun, "reset", str(vmpath), "hard" if hard else "soft"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -128,7 +148,8 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         get the IP address of a virtual machine 
         """
-        cmd = [self.vmrun, "getGuestIPAddress", vm, "-wait"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vmrun, "getGuestIPAddress", str(vmpath), "-wait"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")

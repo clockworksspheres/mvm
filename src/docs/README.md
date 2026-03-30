@@ -12,6 +12,4 @@
 
 # Further References
 
-# FAQ
-
 
