@@ -1,4 +1,5 @@
 import inspect
+from vmm.lib.vmx import find_vm_by_display_name
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
 from vmm.lib.run_commands import RunWith
@@ -22,6 +23,19 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
 
         self.vboxmanage = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 
+    def find_vm_by_display_name(self, vmname=""):
+        """
+        Find the first VM with vmname in the list of paths the searched.
+        """
+        vmpath = ""
+        vmpaths = find_vm_by_display_name(vmname)
+        for vmpath in vmpaths:
+            print("Found:", vmpath)
+            # return the first found in the search
+            break
+
+        return vmpath[0]
+
     def list_vms(self):
         """
         List available VMs 
@@ -35,7 +49,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
          Start a virtual machine
         """
-        cmd = [self.vboxmanage, "startvm", vm]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "startvm", vmpath]
         if headless:
             cmd += ["--type", "headless"]
         self.run.setCommand(cmd)
@@ -45,7 +60,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
          Stop a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "poweroff" if hard else "acpipowerbutton"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "controlvm", vmpath, "poweroff" if hard else "acpipowerbutton"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -53,7 +69,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "savestate"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "controlvm", vmpath, "savestate"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -61,7 +78,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "resume"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "controlvm", vmpath, "resume"]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -69,7 +87,9 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Reset a virtual machine 
         """
-        cmd1 = [self.vboxmanage, "controlvm", vm, "reset"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+
+        cmd1 = [self.vboxmanage, "controlvm", vmpath, "reset"]
         self.run.setCommand(cmd1)
         self.run.communicate()
         # cmd2 = [self.vboxmanage, "start", vm]
@@ -80,7 +100,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Get the status of a virtual machine 
         """
-        cmd = [self.vboxmanage, "showvminfo", vm]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "showvminfo", vmpath]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")
@@ -90,7 +111,8 @@ class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
         """
         get the IP address of a virtual machine 
         """
-        cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtualBox/GuestInfo/Net/0/IP"]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        cmd = [self.vboxmanage, "guestproperty", "get", vmpath, "/VirtualBox/GuestInfo/Net/0/IP"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()
         print(f"{out.strip()}")
