@@ -7,6 +7,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
 from vmm.lib.run_commands import RunWith
+from vmm.lib.hardware import tell_hw_platform
+from vmm.lib.libHelperExceptions import HardwareNotApplicable
 from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
 from vmm.lib.mac_virtualbox_list_status import (list_vms,
                                                 list_running_vms,
@@ -18,6 +20,10 @@ class LinuxVirtualboxVmm(VirtualMachineManageTemplate):
     def __init__(self, logger, **kwargs):
         """
         """
+        hw_platform = tell_hw_platform()
+        if hw_platform == "arm64" or not hw_platform:
+            raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
+
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
@@ -29,6 +35,8 @@ class LinuxVirtualboxVmm(VirtualMachineManageTemplate):
         self.run = RunWith(self.logger)
 
         self.vboxmanage = "/usr/local/bin/VBoxManage"
+
+
 
     def list_vms(self):
         """
