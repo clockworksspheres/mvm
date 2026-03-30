@@ -9,13 +9,21 @@ being used.
 The hypervisor needs to be running prior to use
 of this code.
 
-Currently this is designed for macOS, and the 
+Currently this is designed for macOS and Windows, with the 
 following hypervisors:
 
  * VmWare Fusion and Workstation
  * Virtualbox
  * UTM
  * HyperV
+
+Linux support on the roadmap for:
+
+ * VmWare Fusion and Workstation
+ * Virtualbox
+ * KVM
+ * Xen
+ * QEMU
 
 ## Directories
 
@@ -27,7 +35,6 @@ following hypervisors:
 ├── vmm      # root of the source code
 └── vmmBoard # eisenban kanban board directory
 ```
-
 
 ## Types of hypervisors
 
@@ -75,4 +82,14 @@ Type 2 hypervisor
 
 Type 1 hypervisor
 
+## KVM VM notes
 
+Type 1 hypervisor
+
+## Xen VM notes
+
+Type 1 hypervisor
+
+# QEMU VM notes
+
+Type 2 hypervisor
