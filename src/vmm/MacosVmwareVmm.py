@@ -21,7 +21,7 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
     def __init__(self, logger, **kwargs):
         """
         """
-        if isinstance(logger, CyLogger):
+        if isinstance(logger, type(CyLogger)):
             self.logger = CyLogger()
         else:
             self.logger = CyLogger()
@@ -39,11 +39,12 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
         vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
+        print(str(vmpaths))
         for vmpath in vmpaths:
             print("Found:", vmpath)
             # return the first found in the search
             break
-
+        print(str(vmpath))
         return vmpath[0]
 
     def list_vms(self, **kwargs):
@@ -146,9 +147,10 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
 
     def get_ip(self, vm: str = ""):
         """
-        get the IP address of a virtual machine 
+        get the IP address of a virtual machine
         """
-        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        vmpath = find_vm_by_display_name(str(vm))
+        raise Exception(f"vmpath: {vmpath}")
         cmd = [self.vmrun, "getGuestIPAddress", str(vmpath), "-wait"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()

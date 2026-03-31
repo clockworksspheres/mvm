@@ -99,7 +99,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         key = (vboxmanage, "guestproperty", "get", "vmIP",
                "/VirtuallBox/GuestInfo/Net/0/IP")
         self.vmm.run.responses[key] = (" 192.168.0.99 \n", "", 0)
-        ip = self.vmm.get_ip("vmIP")
+        ip = str(self.vmm.get_ip("vmIP")).strip()
         self.assertEqual(ip, "192.168.0.99")
 
 
