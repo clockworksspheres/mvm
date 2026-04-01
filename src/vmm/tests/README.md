@@ -15,4 +15,9 @@ in a container.
 Skipped tests are not necessarily bad, they just are not applicable to the
 operating system they are being run on.
 
+Need to add linux tests for vmware workstation and oracle virtualbox -
+should be pretty simple once I can get on a linux box... May set up
+hyperv in a way I can do nested virtualization to do this type of
+testing as I don't have direct access to a linux box.
+
 

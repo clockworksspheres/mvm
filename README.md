@@ -2,9 +2,11 @@
 
 Basic virtual machine management, meant for developers to
 manage UTM, HyperV, Vmware Fusion and Workstation and
-Virtualbox VM's.  Script can be used to automate local
-developer Jenkins or ci/cd processes, pipelines, etc.
+Virtualbox VM's.  Creating Linux based support for type
+two hypervisors is in the works.
 
+Script can be used to automate local developer Jenkins
+or ci/cd processes, pipelines, etc.
 
 Related jenkins process automation repo:  
 https://github.com/clockworksspheres/jenkinsTools
