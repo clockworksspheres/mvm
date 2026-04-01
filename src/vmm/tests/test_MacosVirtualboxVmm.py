@@ -77,7 +77,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         self.vmm.unpause_vm("vmU")
         self.assertEqual(
             self.vmm.run.last_command,
-            [vboxmanage, "controlvm", "vmU", "resume"]
+            [vboxmanage, "startvm", "vmU"]
         )
 
     def test_reset_vm_issues_reset_then_start(self):
@@ -85,7 +85,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         # The final call should be the start command
         self.assertEqual(
             self.vmm.run.last_command,
-            [vboxmanage, "start", "vmR"]
+            [vboxmanage, "controlvm", "vmR", "reset"]
         )
 
     @unittest.SkipTest

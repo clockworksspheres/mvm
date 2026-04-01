@@ -108,7 +108,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         vmm.unpause_vm("TestVM")
 
         mock_run.setCommand.assert_called_with(
-            ["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "resume"]
+            ["/usr/local/bin/VBoxManage", "startvm", "TestVM"]
         )
         mock_run.communicate.assert_called_once()
 
@@ -124,14 +124,13 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
         vmm.reset_vm("TestVM")
 
         expected_calls = [
-            (["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "reset"],),
-            ([ "/usr/local/bin/VBoxManage", "start", "TestVM"],)
+            (["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "reset"],)
         ]
 
         actual_calls = [call.args for call in mock_run.setCommand.call_args_list]
 
         self.assertEqual(actual_calls, expected_calls)
-        self.assertEqual(mock_run.communicate.call_count, 2)
+        self.assertEqual(mock_run.communicate.call_count, 1)
 
     #
     # ────────────────────────────────────────────────────────────────
