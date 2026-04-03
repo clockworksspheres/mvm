@@ -9,11 +9,11 @@ from vmm.lib.loggers import LogPriority as lp
 from vmm.lib.vmx import find_vm_by_display_name
 from vmm.lib.run_commands import RunWith
 from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
-from vmm.lib.vmware_fusion_list_status import (find_all_vmx_files,
-                                               detect_vm_status,
-                                               get_vm_ip,
-                                               print_status4all_vms,
-                                               list_running_vms)
+from vmm.lib.vmware_list_status import (find_all_vmx_files,
+                                        detect_vm_status,
+                                        get_vm_ip,
+                                        print_status4all_vms,
+                                        list_running_vms)
 
 
 class MacosVmwareVmm(VirtualMachineManageTemplate):
