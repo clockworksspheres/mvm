@@ -2,9 +2,12 @@
 import argparse
 import subprocess
 import re
+import sys
 
-vboxmanage = "/usr/local/bin/VBoxManage"
-
+if sys.platform.lower().startswith("darwin"):
+    vboxmanage = "/usr/local/bin/VBoxManage"
+elif sys.platform.lower().startswith("linux"):
+    vboxmanage = "/usr/bin/VBoxManage"
 
 def run(cmd):
     """Run a shell command and return output as text."""
