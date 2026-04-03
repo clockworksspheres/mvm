@@ -8,10 +8,10 @@ from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
 from vmm.lib.run_commands import RunWith
 from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
-from vmm.lib.mac_virtualbox_list_status import (list_vms,
-                                                list_running_vms,
-                                                get_vm_state,
-                                                get_vm_ip)
+from vmm.lib.virtualbox_list_status import (list_vms,
+                                            list_running_vms,
+                                            get_vm_state,
+                                            get_vm_ip)
 
 class MacosVirtualboxVmm(VirtualMachineManageTemplate):
 
