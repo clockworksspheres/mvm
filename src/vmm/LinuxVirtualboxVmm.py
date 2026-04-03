@@ -91,7 +91,7 @@ class LinuxVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "resume"]
+        cmd = [self.vboxmanage, "start", vm]
         self.run.setCommand(cmd)
         self.run.communicate()
 
