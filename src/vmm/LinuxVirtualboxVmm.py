@@ -34,7 +34,7 @@ class LinuxVirtualboxVmm(VirtualMachineManageTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vboxmanage = "/usr/local/bin/VBoxManage"
+        self.vboxmanage = "/usr/bin/VBoxManage"
 
 
 
