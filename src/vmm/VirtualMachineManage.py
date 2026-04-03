@@ -50,6 +50,9 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
                 else:
                     from WindowsVirtualboxVmm import WindowsVirtualboxVmm
                     self.vmm = WindowsVirtualboxVmm(self.logger)
+            elif sys.platform.lower().startswith("linux"):
+                from LinuxVirtualboxVmm import LinuxVirtualboxVmm
+                self.vmm = LinuxVirtualboxVmm(self.logger)
         elif self.framework == "utm" and sys.platform.lower().startswith("darwin"):
             from MacosUtmVmm import MacosUtmVmm
             self.vmm = MacosUtmVmm(self.logger)
