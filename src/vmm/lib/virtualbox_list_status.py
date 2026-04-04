@@ -8,6 +8,9 @@ if sys.platform.lower().startswith("darwin"):
     vboxmanage = "/usr/local/bin/VBoxManage"
 elif sys.platform.lower().startswith("linux"):
     vboxmanage = "/usr/bin/VBoxManage"
+elif sys.platform.lower().startswith("win"):
+    vboxmanage = "C:\\Program Files\\Oracle\\VirtualBoxi\\VBoxManage.exe"
+
 
 def run(cmd):
     """Run a shell command and return output as text."""
