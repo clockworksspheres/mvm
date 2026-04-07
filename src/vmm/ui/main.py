@@ -52,14 +52,17 @@ class VmCtlUi(QMainWindow):
         # any way, or this code will not work.  The strings
         # below must match the process name acquired by 
         # psutil.process_iter for the specific hypervisor.
-        if platform.startswith("darwin"):
+        if platform.lower().startswith("darwin"):
             self.ui.hypervisorComboBox.addItems(["VMware Fusion",
                                                  "UTM",
                                                  "VirtualBox"])
-        elif platform.startswith("win"):
+        elif platform.lower().startswith("win"):
             self.ui.hypervisorComboBox.addItems(["VMware Workstation",
                                                  "HyperV",
                                                  "VirtualBox"])
+        elif platform.lower().startswith("linux"):
+            self.ui.hypervisorComboBox.addItems(["VMware Workstation",
+                                                 "VirtualBox"])            
 
         self.ui.actionComboBox.addItems(["start", "stop", "reset",
                                          "pause", "unpause",
