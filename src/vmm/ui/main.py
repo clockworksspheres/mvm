@@ -187,6 +187,9 @@ class VmCtlUi(QMainWindow):
         elif sys.platform.lower().startswith("win32"):
             winHypervisors = { 0: "vmware", 1: "hyperv", 2: "virtualbox"}
             hypervisor2run = winHypervisors[current_hypervisor_index]
+        elif sys.platform.lower().startswith("linux"):
+            linuxHypervisors = {0: "vmware", 1: "virtualbox"}
+            hypervisor2run = linuxHypervisors[current_hypervisor_index]
 
         matched = None
         hypervisorName = current_hypervisor_name.strip()
