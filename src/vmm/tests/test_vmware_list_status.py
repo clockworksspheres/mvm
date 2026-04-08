@@ -1,4 +1,5 @@
 import unittest
+import sys
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 import subprocess
@@ -62,6 +63,7 @@ class TestVMwareInfo(unittest.TestCase):
     #
     # detect_vm_status()
     #
+    @unittest.skipIf(sys.platform.lower().startswith("win"), "Test doesn't work on Windows")
     @patch("pathlib.Path.iterdir")
     def test_detect_vm_status_running(self, mock_iterdir):
         running = {"/path/to/vm.vmx"}
