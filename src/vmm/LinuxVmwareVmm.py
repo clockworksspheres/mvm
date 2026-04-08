@@ -15,7 +15,7 @@ from vmm.lib.vmware_list_status import (find_all_vmx_files,
                                         print_status4all_vms,
                                         list_running_vms)
 
-
+@unittest.skipUnless(sys.platform.lower().startswith("linux"), "Needs to run on Linux...")
 class LinuxVmwareVmm(VirtualMachineManageTemplate):
 
     def __init__(self, logger, **kwargs):
