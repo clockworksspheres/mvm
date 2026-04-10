@@ -3,7 +3,11 @@ import argparse
 import subprocess
 from pathlib import Path
 
+from vmm.lib.run_commands import RunWith
+
 vmrun = "/Applications/VMware Fusion.app/Contents/Public/vmrun"
+
+
 def run_vmrun(args):
     """Run vmrun and return output as text."""
     try:
@@ -27,7 +31,12 @@ def list_running_vms():
 
 def get_vm_ip(vmx_path):
     """Return the VM's IP address if available."""
-    output = run_vmrun([vmrun, "getGuestIPAddress", vmx_path, "-wait"])
+    rw = RunWith()
+
+    cmd = [vmrun, "getGuestIPAddress", vmx_path, "-wait"]
+
+    rw.setCommand(cmd)
+    status, output =  rw.runCommand2check("Encrypted virtual machine password:")
 
     if "Error" in output or "Unable" in output:
         return None
