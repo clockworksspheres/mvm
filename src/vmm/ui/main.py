@@ -181,12 +181,15 @@ class VmCtlUi(QMainWindow):
         current_hypervisor_name = self.ui.hypervisorComboBox.currentText()
 
         # build command
+
         hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
+        hyperMap = {0: "vmware", 1: "virtualbox", 2: "utm"}
 
         if sys.platform.lower().startswith("win"):
-            hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VBoxSDS.exe", "utm": "UTM"}
+            hypervisorMap = {"vmware": "VMware Workstation", "virtualbox": "VBoxSDS.exe", "hyperv": "Hyper-V"}
+            hyperMap = {0: "vmware", 1: "virtualbox", 2: "hyperv"}
 
-        hypervisorApp = hypervisorMap[current_hypervisor_name.lower().strip()]
+        hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
 
         matched = None
         for proc in psutil.process_iter(['pid', 'name']):
@@ -201,7 +204,7 @@ class VmCtlUi(QMainWindow):
                 args = Namespace(
                     command = action,
                     vm = vmach,
-                    hypervisor = current_hypervisor_name.lower(),
+                    hypervisor = hyperMap[current_hypervisor_index],
                     headless = False,
                     hard = True,
                 )
