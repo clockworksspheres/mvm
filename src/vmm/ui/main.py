@@ -187,9 +187,11 @@ class VmCtlUi(QMainWindow):
 
         if sys.platform.lower().startswith("win"):
             hypervisorMap = {"vmware": "VMware Workstation", "virtualbox": "VBoxSDS.exe", "hyperv": "Hyper-V"}
-            hyperMap = {0: "vmware", 1: "virtualbox", 2: "hyperv"}
+            hyperMap = {1: "vmware", 2: "virtualbox", 3: "hyperv"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
+
+        print(f"Looking for: {hypervisorApp}")
 
         matched = None
         for proc in psutil.process_iter(['pid', 'name']):
