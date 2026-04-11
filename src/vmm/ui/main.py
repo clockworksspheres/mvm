@@ -181,13 +181,13 @@ class VmCtlUi(QMainWindow):
         current_hypervisor_name = self.ui.hypervisorComboBox.currentText()
 
         # build command
-
-        hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
-        hyperMap = {0: "vmware", 1: "virtualbox", 2: "utm"}
+        if sys.platform.lower().startswith("darwin"):
+            hypervisorMap = {"vmware": "VMware Fusion", "utm": "UTM", "virtualbox": "VirtualBox"}
+            hyperMap = {0: "vmware", 1: "utm", 2: "virtualbox"}
 
         if sys.platform.lower().startswith("win"):
             hypervisorMap = {"vmware": "VMware Workstation", "virtualbox": "VBoxSDS.exe", "hyperv": "Hyper-V"}
-            hyperMap = {1: "vmware", 2: "virtualbox", 3: "hyperv"}
+            hyperMap = {0: "vmware", 1: "virtualbox", 2: "hyperv"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
 
@@ -216,77 +216,6 @@ class VmCtlUi(QMainWindow):
         if not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")
 
-
-
-
-
-
-
-        '''
-        if not matched:
-            message = f"Hypervisor {hypervisorApp} not running, start {hypervisorApp} first"
-            print(message)
-            raise HypervisorNotValid(message)
-
-        try:
-            vmm = VirtualMachineManage(hyper)
-        except HypervisorNotApplicable:
-            print("Cannot run this hypervisor on this OS setup")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        current_hypervisor_index = self.ui.hypervisorComboBox.currentIndex()
-        current_hypervisor_name = self.ui.hypervisorComboBox.currentText()
-
-        if sys.platform.lower().startswith("darwin"):
-            macHypervisors = { 0: "vmware", 1: "utm", 2: "virtualbox"}
-            hypervisor2run = macHypervisors[current_hypervisor_index]
-
-        elif sys.platform.lower().startswith("win32"):
-            winHypervisors = { 0: "vmware", 1: "hyperv", 2: "VBoxSDS.exe"}
-            hypervisor2run = winHypervisors[current_hypervisor_index]
-        elif sys.platform.lower().startswith("linux"):
-            linuxHypervisors = {0: "vmware", 1: "virtualbox"}
-            hypervisor2run = linuxHypervisors[current_hypervisor_index]
-
-        matched = None
-        hypervisorName = hypervisor2run.strip()
-        for proc in psutil.process_iter(['pid', 'name']):
-            #if re.match(re.escape(hypervisor), proc.info['name']):
-            if hypervisorName == proc.info['name'].strip():
-                #print(f"{proc.info['name']}")
-                matched = proc.info['name']
-
-                action = self.ui.actionComboBox.currentText().strip()
-
-                vmach = self.ui.vmNameLineEdit.text().strip()
-
-                args = Namespace(
-                    command = action,
-                    vm = vmach,
-                    hypervisor = hypervisor2run,
-                    headless = False,
-                    hard = True,
-                )
-                self.ui.textBrowser.append("=========================")
-                vmm_run(args)
-
-        if not matched:
-            print(f"Hypervisor {hypervisor2run} not running, start {hypervisor2run} first")
-        '''
 
 if __name__=="__main__":
     app = QApplication(sys.argv)
