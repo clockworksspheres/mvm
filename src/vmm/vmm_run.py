@@ -9,6 +9,10 @@ from lib.libHelperExceptions import HypervisorNotApplicable
 
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
 
+if sys.platform.lower().startswith("win"):
+    hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VBoxSDS.exe", "utm": "UTM"}
+
+
 
 class HypervisorNotValid(BaseException):
     """
