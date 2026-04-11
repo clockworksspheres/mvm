@@ -52,6 +52,8 @@ class VmCtlUi(QMainWindow):
         # any way, or this code will not work.  The strings
         # below must match the process name acquired by 
         # psutil.process_iter for the specific hypervisor.
+        # -- If you change the selections here, change the
+        # associated dictionaries in the spawn_vm method.
         if platform.lower().startswith("darwin"):
             self.ui.hypervisorComboBox.addItems(["VMware Fusion",
                                                  "UTM",
