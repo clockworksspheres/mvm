@@ -10,7 +10,7 @@ from ui.main import VmCtlUi
 from vmm_run import vmm_run
 
 
-HYPERVISORS = {"vmware", "virtualbox", "utm"}
+HYPERVISORS = {"vmware", "virtualbox", "utm", "hyperv"}
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
     # Common arguments for most commands
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("hypervisor", choices=HYPERVISORS,
-                        help="vmware | virtualbox | utm")
+                        help="vmware | virtualbox | utm | hyperv")
 
     common.add_argument("vm", nargs="?", 
                         help="VM name or full path to .vmx / .vbox file")

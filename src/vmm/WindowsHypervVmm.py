@@ -1,4 +1,5 @@
 import inspect
+import subprocess
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
 from vmm.lib.run_commands import RunWith
