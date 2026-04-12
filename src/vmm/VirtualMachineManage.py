@@ -35,10 +35,10 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    raise HypervisorNotApplicable
-                else:
                     from WindowsVmwareVmm import WindowsVmwareVmm
                     self.vmm = WindowsVmwareVmm(self.logger)
+                else:
+                    raise HypervisorNotApplicable
         elif self.framework == "virtualbox":
             if sys.platform.lower().startswith("darwin"):
                 from MacosVirtualboxVmm import MacosVirtualboxVmm
@@ -46,10 +46,10 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    raise HypervisorNotApplicable
-                else:
                     from WindowsVirtualboxVmm import WindowsVirtualboxVmm
                     self.vmm = WindowsVirtualboxVmm(self.logger)
+                else:
+                    raise HypervisorNotApplicable
             elif sys.platform.lower().startswith("linux"):
                 from LinuxVirtualboxVmm import LinuxVirtualboxVmm
                 self.vmm = LinuxVirtualboxVmm(self.logger)
