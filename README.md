@@ -20,5 +20,11 @@ The tool is meant for developers, scientists, engineers
 and others to automate local CI/CT processes, that may
 feed into enterprise CI/CD process as well.
 
+## Nested virtualization
+
+Currently done by the project for cross platform testing, as the project doesn't have enough hardware for all OS's to have direct testing support.   Some setup documentation is provided.
+
+---
+
 A [clockworksspheres](https://clockworksspheres.github.io/) project.
 
