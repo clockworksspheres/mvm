@@ -30,8 +30,7 @@ Linux support on the roadmap for:
 ```
 ├── BuildScripts # pyinstaller build scripts
 ├── docs     # Support documentation
-├── packenv  # python environment created a build run
-├── proto    # Prototyping directory
+├── packenv  # python environment created a build run, created with a build run
 ├── vmm      # root of the source code
 └── vmmBoard # eisenban kanban board directory
 ```

@@ -1,6 +1,6 @@
 # Cross Platform Splash Screen
 
-Grock prompt:
+Grok prompt:
 
 # Can I do a tk splash screen cross platform?
 
