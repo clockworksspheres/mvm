@@ -1,15 +1,18 @@
 # README for vmm
 
-# Directories
+The script/executable that runs this project is vmctl.py / vmctl / vmctl.exe
 
-## Design_Thoughts
+The src/BuildScripts directory has scripts that build executables out of the python vmctl.py with pyinstaller.  In future, the scripts will also create OS installers.
 
-## Proto
+# Related Repos
+
+For automating running current Jenkins pipeline(s)
+http://github.com/clockworksspheres/jenkinsTools
+
+A project that is tested with vmm outside vmm and jenkinsTools:
+https://github.com/clockworksspheres/ramdisk
 
 # References
 
-# Docs & Repos
-
-# Further References
-
+TBD
 

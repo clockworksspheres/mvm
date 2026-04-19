@@ -1,5 +1,9 @@
 # Testing Matrix for the vmm project
 
+## Testing Methods
+
+Some of the testing is provided by a Jenkins pipeline, but most of the testing is currently done by hand.
+
 ### Runs on
 
  | macOS Host | Windows Host | Linux Host
