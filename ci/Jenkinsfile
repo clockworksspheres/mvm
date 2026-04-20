@@ -55,7 +55,7 @@ pipeline {
                             steps {
                                 dir('src/vmm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
-                                    sh """#!/bin/bash 
+                                    sh """ 
                                         ls -l
                                         VENV=../../packenv
                                         source ${VENV}/bin/activate
