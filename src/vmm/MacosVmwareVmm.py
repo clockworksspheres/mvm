@@ -73,7 +73,7 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         """
          Stop a virtual machine
         """
-        vmpath = find_vm_by_display_name(f"{vm}")[1]
+        vmpath = find_vm_by_display_name(f"{vm}")[0]
         cmd = [self.vmrun, "stop", str(vmpath), "hard" if hard else "soft"]
         self.run.setCommand(cmd)
         self.run.communicate()
