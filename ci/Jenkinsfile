@@ -57,7 +57,7 @@ pipeline {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l
-                                        VENV=../../packenv
+                                        export VENV='../../packenv'
                                         source ${VENV}/bin/activate
                                         ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
                                     """ 
