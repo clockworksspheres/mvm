@@ -76,7 +76,7 @@ pipeline {
                     stages {
                         stage('Rocky10 Test') { 
                             steps {
-                                dir('src/jenkinsTools/tests') {
+                                dir('src/vmm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l
@@ -99,7 +99,7 @@ pipeline {
                     stages {
                         stage('Debian Test') { 
                             steps {
-                                dir('src/jenkinsTools/tests') {
+                                dir('src/vmm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l
