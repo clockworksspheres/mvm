@@ -20,7 +20,6 @@ pipeline {
                         }
                     }
                 }
-            }
                 stage('Rocky 10 Pipeline') {
                     agent { label 'rocky10' }
                     stages {
@@ -68,7 +67,6 @@ pipeline {
                         }
                     }
                 }
-            }
                 stage('Rocky 10 Pipeline') {
                     agent { label 'rocky10' }
                     environment {
