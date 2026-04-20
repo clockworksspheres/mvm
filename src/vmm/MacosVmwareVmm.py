@@ -57,19 +57,6 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
 
         running_set = list_running_vms()
         print_status4all_vms(vmx_files)
-        """
-        for vmx in vmx_files:
-            name = vmx.stem
-            status = detect_vm_status(str(vmx), running_set)
-            ip = get_vm_ip(str(vmx)) if status == "running" else None
-
-            print(f"{name:25} {status:12} {ip or 'N/A'}")
-        ""
-        cmd = [self.vmrun, "list"]
-        self.run.setCommand(cmd)
-        output, _, _ = self.run.communicate()
-        print(f"{output}")
-        """
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
@@ -137,13 +124,6 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
             ip = get_vm_ip(str(vmx)) if status == "running" else None
 
             print(f"{name:30} {status:12} {ip or 'N/A'}")
-        """
-        cmd = [self.vmrun, "list", vm]
-        self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
-        print(f"{out.strip()}")
-        return out.strip()
-        """
 
     def get_ip(self, vm: str = ""):
         """
