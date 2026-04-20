@@ -50,6 +50,10 @@ pipeline {
             parallel {
                 stage('macOS Pipeline') {
                     agent { label 'macos' }
+                    environment {
+                        VENV = "../../packenv"
+                        QT_QPA_PLATFORM = "offscreen"
+                    }   
                     stages {
                         stage('macOS Test') { 
                             steps {
