@@ -55,12 +55,8 @@ pipeline {
                             steps {
                                 dir('src/vmm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
-                                    sh """ 
-                                        ls -l
-                                        VENV=../../packenv
-                                        source ${VENV}/bin/activate
-                                        ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
-                                    """ 
+                                    sh 'ls -l'
+                                    sh  'pytest -v --junit-xml test-reports/results.xml'
                                     echo '----------=====### Finished Tests ###=====----------'
                                     junit 'test-reports/results.xml' 
                                 }
