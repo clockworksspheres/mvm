@@ -125,15 +125,6 @@ class MacosUtmVmm(VirtualMachineManageTemplate):
             print(f"{name:25} {state:15} {ip or 'N/A'}")
             # print(f"{name} | {state} | {ip}")
 
-
-        """
-        cmd = [self.utmctl, "status", vm]
-        self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
-        print(f"{out.strip()}")
-        return out.strip()
-        """
-
     def get_ip(self, vm: str = ""):
         """
         get the IP address of a virtual machine 
@@ -144,9 +135,4 @@ class MacosUtmVmm(VirtualMachineManageTemplate):
         message = "Not supported for the UTM hypervisor"
         print(message)
         return message
-        #cmd = [self.utmctl, "ip-address", vm]
-        #self.run.setCommand(cmd)
-        #out, err, retval = self.run.communicate()
-        #print(f"{out.strip()}")
-        #return out.strip()
 

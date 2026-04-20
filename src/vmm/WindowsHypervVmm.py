@@ -51,7 +51,6 @@ class WindowsHypervVmm(VirtualMachineManageTemplate):
         cmd = self.PS_PREFIX + [script]
         return self.run(cmd, capture_output=capture_output, shell=False)
 
-
     def list_vms(self):
         """
         List available VMs 
