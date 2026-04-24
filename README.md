@@ -2,11 +2,16 @@
 
 Basic virtual machine management, meant for developers to
 manage UTM, HyperV, Vmware Fusion and Workstation and
-Virtualbox VM's.  Creating Linux based support for type
+Virtualbox VM's.  The purpose is to abstract a consistent 
+_core_ start, stop, reset, pause, unpause and status 
+functionality.
+
+Creating Linux based support for type
 two hypervisors is in the works.
 
-Script can be used to automate local developer Jenkins
-or ci/cd processes, pipelines, etc.
+Script can be used to automate local developer VM's for
+CI/CD piplines with Jenkins or other ci/cd processes, 
+pipelines, etc.
 
 Related jenkins process automation repo:  
 https://github.com/clockworksspheres/jenkinsTools
@@ -22,7 +27,7 @@ feed into enterprise CI/CD process as well.
 
 ## Nested virtualization
 
-Currently done by the project for cross platform testing, as the project doesn't have enough hardware for all OS's to have direct testing support.   Some setup documentation is provided.
+Currently done by the project for cross platform testing, as the project doesn't have enough hardware for all OS's to have direct testing support.   Some very basic setup documentation is provided.
 
 ---
 
