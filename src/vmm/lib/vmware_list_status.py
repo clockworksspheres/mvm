@@ -99,18 +99,8 @@ def main():
 
     running_set = list_running_vms()
 
-    print_status4all_vms(vms)
-    """
-    print(f"{'VM Name':25} {'Status':12} {'IP Address'}")
-    print("-" * 60)
+    # print_status4all_vms(vms)
 
-    for vmx in vmx_files:
-        name = vmx.stem
-        status = detect_vm_status(str(vmx), running_set)
-        ip = get_vm_ip(str(vmx)) if status == "running" else None
-
-        print(f"{name:25} {status:12} {ip or 'N/A'}")
-    """
 
 if __name__ == "__main__":
     main()

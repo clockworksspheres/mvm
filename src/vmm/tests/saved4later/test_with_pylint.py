@@ -69,12 +69,13 @@ def genTestData(fileList=[], excludeFiles=[], excludeFromLines=[]):
                 #print myfile
                 jsonData = processFile(myfile)
                 jsonData = pIface.processFile(myfile)
-                print(json.dumps(jsonData, indent=4))
+                # print(json.dumps(jsonData, indent=4))
                 for item in jsonData:
                     # print(item[4])
                     try:
                         if item["category"] in ("error", "fatal"):
                             #print("Found: " + str(item[4]) + " (" + str(item[10]) + ") : " + str(item[2]))
+                            #print(json.dumps(jsonData, indent=4))
                             message = re.sub("'", "", item["message"])
                             #####
                             # Don't include json data that has a string from the
@@ -264,12 +265,13 @@ if __name__=="__main__":
         #print str(specificError)
         myfile, lineNum, text = specificError
         test_name = "test_with_pylint_{0}_{1}_{2}".format("_".join("_".join(myfile.split("/")).split(".")), lineNum, "_".join("_".join(text.split(" ")).split("'")))
-        #print test_name
+        print(test_name)
         error_case = pylint_test_template(*specificError)
         setattr(test_with_pylint, test_name, error_case)
 
     # test_suite.addTest(unittest.makeSuite(test_with_pylint))
-    unittest.defaultTestLoader.loadTestsFromTestCase(test_with_pylint)
+    # unittest.defaultTestLoader.loadTestsFromTestCase(test_with_pylint)
+    test_suite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(test_with_pylint))   
     runner = unittest.TextTestRunner()
     testResults  = runner.run(test_suite)  # output goes to stderr
 

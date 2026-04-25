@@ -83,7 +83,7 @@ class PylintIface:
     def __init__(self, compiledPackages: str = "PySide6"):
         self.compiledPackages = compiledPackages
         self.args = ["--extension-pkg-whitelist=" + self.compiledPackages,
-                     "--ignored-modules=psutil,requests",
+                     "--ignored-modules=psutil,requests,pywin32,win32security,win32process,win32api",
                      "--ignore=__pycache__,.pytest_cache,.qtcreator"]
 
     @contextlib.contextmanager
@@ -123,5 +123,4 @@ class PylintIface:
         messages = reporter.get_messages()
         self.acquiredData[filename] = messages
         return messages   # <-- FIXED
-
 
