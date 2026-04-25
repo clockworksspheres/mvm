@@ -10,9 +10,6 @@ from io import StringIO
 from pylint.lint import Run
 from pylint.reporters.json_reporter import JSONReporter
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-
 
 # ---------------------------------------------------------------------------
 # Stream patching helper
@@ -59,26 +56,6 @@ class AjsonReporter(JSONReporter):
 # ---------------------------------------------------------------------------
 # Standalone function interface
 # ---------------------------------------------------------------------------
-"""
-def processFile(filename, compiledPackages="PyQt5,PyQt4"):
-    ""
-    Process a file using Pylint and return JSON text (pretty‑printed).
-    ""
-    out = StringIO()
-    reporter = AjsonReporter(out)
-
-    # exit=False is critical to avoid SystemExit under pytest
-    with _patch_streams(out):
-        Run(
-            [filename, "--extension-pkg-whitelist=" + compiledPackages],
-            reporter=reporter,
-            exit=False,
-        )
-
-    messages = reporter.get_messages()
-    return json.dumps(messages, indent=4)
-"""
-
 def processFile(filename, compiledPackages="PyQt5,PyQt4"):
     out = StringIO()
     reporter = AjsonReporter(out)
@@ -103,8 +80,7 @@ class PylintIface:
 
     acquiredData = {}
 
-    def __init__(self, logger: CyLogger, compiledPackages: str = "PySide6"):
-        self.logger = logger
+    def __init__(self, compiledPackages: str = "PySide6"):
         self.compiledPackages = compiledPackages
         self.args = ["--extension-pkg-whitelist=" + self.compiledPackages,
                      "--ignored-modules=psutil,requests",
@@ -136,30 +112,7 @@ class PylintIface:
                     "confidence": m.confidence,
                 })
             return out
-    '''
-    def processFile(self, filename: str) -> str:
-        """
-        Process a file and return deterministic JSON text (pretty‑printed).
-        """
-        out = StringIO()
-        reporter = self.AjsonReporter(out)
 
-        # exit=False prevents Pylint from calling sys.exit()
-        with self._patch_streams(out):
-            Run(
-                [filename] + self.args,
-                reporter=reporter,
-                exit=False,
-            )
-
-        messages = reporter.get_messages()
-        json_out = json.dumps(messages, indent=4)
-
-        # Optionally store for later inspection
-        self.acquiredData[filename] = messages
-
-        return json_out
-    '''
     def processFile(self, filename):
         out = StringIO()
         reporter = self.AjsonReporter(out)

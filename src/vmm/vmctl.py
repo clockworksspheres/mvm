@@ -12,7 +12,6 @@ from vmm_run import vmm_run
 
 HYPERVISORS = {"vmware", "virtualbox", "utm", "hyperv"}
 
-
 def main():
     # HYPERVISORS = {"vmware", "virtualbox", "utm"}
 

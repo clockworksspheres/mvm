@@ -11,13 +11,9 @@ from subprocess import Popen, PIPE
 from optparse import OptionParser
 from optparse import Option, OptionValueError
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.tests.PylintIface import PylintIface, processFile
+# from vmm.tests.PylintIface import PylintIface, processFile
+from PylintIface import PylintIface, processFile
 
-
-logger = CyLogger()
-logger.initializeLogs()
 
 excludeUnlessUid0 = ["environment.py"]
 
@@ -58,7 +54,7 @@ def genTestData(fileList=[], excludeFiles=[], excludeFromLines=[]):
         #print "Cannot generate data from nothing..."
         sys.exit(1)
 
-    pIface = PylintIface(logger)
+    pIface = PylintIface()
     for myfile in fileList:
         
         #####
@@ -90,7 +86,7 @@ def genTestData(fileList=[], excludeFiles=[], excludeFromLines=[]):
                                 if re.search("%s"%searchItem, message):
                                     found = True
                             if not found:
-                                    test_case_data.append((myfile, item[10], message))
+                                    test_case_data.append((myfile, item["path"], message))
                     except KeyError:
                         print(traceback.format_exc())
         except AttributeError:
@@ -188,27 +184,8 @@ if __name__=="__main__":
     #print "Arguments: " + str(args)
     #print "Options  : " + str(opts)
 
-    if opts.verbose != 0:
-        level = CyLogger(level=lp.INFO)
-    elif opts.debug != 0:
-        level = CyLogger(level=lp.DEBUG)
-    else:
-        level=lp.WARNING
-    '''
-    if opts.doFiles and (opts.excludeLinesWith or opts.excludeFiles):
-        print "-f cannot be used with either -x or -l\n"
-        parser.parse_args(["--help"])
-        sys.exit(0)
-    '''
 
     test_case_data = []
-    '''
-    print "\n\n"
-    print str(opts.doFiles)
-    print opts.dirToCheck
-    print os.path.abspath(opts.treeRoot)
-    print "\n\n"
-    '''
 
     if not opts.treeRoot and not opts.dirToCheck and not opts.doFiles and not opts.confFile:
         print("\n\n\nNeed to choose a file acquisition method.\n\n")
@@ -291,7 +268,8 @@ if __name__=="__main__":
         error_case = pylint_test_template(*specificError)
         setattr(test_with_pylint, test_name, error_case)
 
-    test_suite.addTest(unittest.makeSuite(test_with_pylint))
+    # test_suite.addTest(unittest.makeSuite(test_with_pylint))
+    unittest.defaultTestLoader.loadTestsFromTestCase(test_with_pylint)
     runner = unittest.TextTestRunner()
     testResults  = runner.run(test_suite)  # output goes to stderr
 
