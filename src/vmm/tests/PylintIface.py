@@ -124,11 +124,6 @@ class PylintIface:
             return out
 
     def processFile(self, filename):
-        self.args = ["--extension-pkg-whitelist=" + self.compiledPackages,
-                     "--ignored-modules=psutil,requests,pywin32,win32security,win32process,win32api",
-                     "--ignore-paths=*/ui/*$", "--recursive=y",
-                     "--ignore=,__pycache__,.pytest_cache,.qtcreator"]
-
         out = StringIO()
         areporter = self.AjsonReporter(out)
 
