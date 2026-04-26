@@ -10,7 +10,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.run_commands import RunWith
 from vmm.lib.libHelperExceptions import HypervisorNotApplicable
 from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
 
@@ -23,8 +22,6 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
         self.logger.initializeLogs()
 
         #self.logger.log(lp.ERROR, f"Initializing {self.__class__.__name__} class")
-
-        self.run = RunWith(self.logger)
 
         self.framework = framework
 
@@ -106,7 +103,7 @@ class VirtualMachineManage(VirtualMachineManageTemplate):
         """
         Get the status of a VM
         """
-        self.vmm.get_vm_status()
+        self.vmm.get_vm_status(vm)
 
     def get_ip(self, vm: str = "", **kwargs):
         """

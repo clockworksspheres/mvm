@@ -113,7 +113,7 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
-        #running_set = list_running_vms()
+        running_set = list_running_vms()
 
         print(f"{'VM Name':30} {'State':15} {'IP Address'}")
         print("-" * 60) 

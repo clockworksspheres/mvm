@@ -1,7 +1,6 @@
 import inspect
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.run_commands import RunWith
 
 
 class MethodNotImplementedError(Exception):
@@ -22,8 +21,6 @@ class VirtualMachineManageTemplate:
         self.logger.initializeLogs()
 
         self.logger.log(lp.ERROR, f"Initializing {self.__class__.__name__} class")
-
-        self.run = RunWith(self.logger)
 
     def __calledBy(self):
         """

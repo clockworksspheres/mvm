@@ -99,8 +99,9 @@ class MacosVirtualboxVmm(VirtualMachineManageTemplate):
         """
         Get the status of a virtual machine 
         """
-        name, state, ip = self.list_vms()
-        return name, state, ip
+        self.list_vms()
+        #name, state, ip = self.list_vms()
+        #return name, state, ip
 
     def get_ip(self, vm: str = ""):
         """

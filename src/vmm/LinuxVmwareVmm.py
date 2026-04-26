@@ -15,15 +15,15 @@ from vmm.lib.vmware_list_status import (find_all_vmx_files,
                                         print_status4all_vms,
                                         list_running_vms)
 
-@unittest.skipUnless(sys.platform.lower().startswith("linux"), "Needs to run on Linux...")
+
 class LinuxVmwareVmm(VirtualMachineManageTemplate):
 
     def __init__(self, logger, **kwargs):
         """
         """
-        hw_platform = tell_hw_platform()
-        if hw_platform == "arm64" or not hw_platform:
-            raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
+        #hw_platform = tell_hw_platform()
+        #if hw_platform == "arm64" or not hw_platform:
+        #    raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
 
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
@@ -116,7 +116,7 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
         vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
-        #running_set = list_running_vms()
+        running_set = list_running_vms()
 
         print(f"{'VM Name':30} {'State':15} {'IP Address'}")
         print("-" * 60) 
@@ -124,6 +124,7 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
+            #status = detect_vm_status(str(vmx))
             ip = get_vm_ip(str(vmx)) if status == "running" else None
 
             print(f"{name:30} {status:12} {ip or 'N/A'}")

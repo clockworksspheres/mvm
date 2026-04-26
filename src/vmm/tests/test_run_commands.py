@@ -167,6 +167,7 @@ class test_run_commands(unittest.TestCase):
 
         tracemalloc.start(25)
 
+        ping = ""
         if os.path.exists("/sbin/ping"):
             ping = "/sbin/ping"
         elif os.path.exists('/bin/ping'):
@@ -175,6 +176,7 @@ class test_run_commands(unittest.TestCase):
             ping = "C:\\WINDOWS\\system32\\PING.EXE"
 
         self.rw.setCommand([ping, '-c', '12', '8.8.8.8'])
+        elapsed = 0
         try:
             startTime = time.time()
             self.rw.timeout(3)

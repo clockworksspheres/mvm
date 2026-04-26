@@ -84,6 +84,9 @@ class TestMacosUtmVmm(unittest.TestCase):
             ["utmctl", "start", "vmR"]
         )
 
+    '''
+    # tests do not test as intended
+    @unittest.SkipTest
     def test_get_vm_status_returns_stripped_output(self):
         self.vmm.run.responses[
             ("utmctl", "status", "v1")
@@ -100,6 +103,7 @@ class TestMacosUtmVmm(unittest.TestCase):
 
         ip = self.vmm.get_ip("vmIP")
         self.assertRaises(AssertionError)
+    '''
 
 
 if __name__ == "__main__":

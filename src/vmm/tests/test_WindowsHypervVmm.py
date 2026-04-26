@@ -19,6 +19,8 @@ class DummyLogger:
     def initializeLogs(self): pass
     def log(self, *args, **kwargs): pass
 
+
+@unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
 class TestWindowsHypervVmm(unittest.TestCase):
     def setUp(self):
         self.logger = DummyLogger()
@@ -28,7 +30,8 @@ class TestWindowsHypervVmm(unittest.TestCase):
     def test_run_success(self, mock_run):
         """run() should call run with given command."""
         mock_run.return_value = subprocess.CompletedProcess(args=['foo'], returncode=0)
-        result = self.vmm.run(['foo'], check=True, capture_output=False, text=True, encoding='utf-8', shell=False)
+        # result = self.vmm.run(['foo'], check=True, capture_output=False, text=True, encoding='utf-8', shell=False)
+        result = self.vmm.run(['foo'], check=True, capture_output=False, text=True, shell=False)
 
         mock_run.assert_called_once_with(
             ['foo'], check=True, capture_output=False, text=True,

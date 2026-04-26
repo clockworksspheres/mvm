@@ -252,6 +252,7 @@ class CyLogger(Singleton):
         self.syslog = syslog
         self.rotate = False
         self.fileHandler = False
+     
         if extension_type in ["none", "epoch", "time", "inc", "sys"]:
             if extension_type == "none":
                 ####
@@ -316,7 +317,7 @@ class CyLogger(Singleton):
         #####
         # Add applicable handlers to the logger
         if not self.rotate and self.fileHandler:
-            self.logr.addHandler(fileHandler)
+            self.logr.addHandler(self.fileHandler)
             #self.logr.log(LogPriority.DEBUG,"Added FileHandler")
         elif self.rotate:
             self.logr.addHandler(rotHandler)

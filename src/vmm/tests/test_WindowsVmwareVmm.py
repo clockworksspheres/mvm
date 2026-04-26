@@ -1,3 +1,4 @@
+import sys
 import unittest
 from unittest.mock import patch, MagicMock
 
@@ -6,6 +7,7 @@ from vmm.WindowsVmwareVmm import WindowsVmwareVmm
 VM_PATH = "C:\\vm\\test.vmx"
 
 
+@unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
 class TestWindowsVmwareVmm(unittest.TestCase):
     pass
 
@@ -89,6 +91,7 @@ for name, call, expected in TEST_CASES:
 
 # --- Additional tests for full coverage ---
 
+@unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
 class TestWindowsVmwareVmmExtras(unittest.TestCase):
 
     @patch("vmm.WindowsVmwareVmm.RunWith")
