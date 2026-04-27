@@ -20,7 +20,7 @@ from pathlib import Path
 parent_dir = str(Path(__file__).parent.parent)
 
 # --- Non-native python libraries in this source tree
-from vmm.lib.environment import Environment
+from lib.environment import Environment
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority
 from vmm.lib.run_commands import RunWith

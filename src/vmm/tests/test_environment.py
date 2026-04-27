@@ -12,7 +12,7 @@ import traceback
 import tracemalloc
 
 # --- Non-native python libraries in this source tree
-import vmm.lib.environment as environment
+import lib.environment as environment
 from vmm.lib import config
 
 if sys.platform.startswith('win32'):

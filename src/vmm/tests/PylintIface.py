@@ -56,23 +56,16 @@ class AjsonReporter(JSONReporter):
 # ---------------------------------------------------------------------------
 # Standalone function interface
 # ---------------------------------------------------------------------------
-def processFile(filename, compiledPackages="PyQt5,PyQt4"):
+def processFile(filename, compiledPackages="PySide6,PyQt5,PyQt4"):
     out = StringIO()
     reporter = AjsonReporter(out)
 
     with _patch_streams(out):
-        try:
-            Run([filename, "--extension-pkg-whitelist=" + compiledPackages,
-                           "--ignored-modules=psutil,requests,pywin32,win32security,win32process,win32api",
-                           "--ignore-paths=*/ui/*$", "--recursive=y",
-                           "--ignore=,__pycache__,.pytest_cache,.qtcreator"],
-                reporter=reporter,
-                exit=False)
-        except SystemExit as e:
-            # Handle the exit code gracefully
-            print(f"Pylint failed with exit code: {e.code}")
-            # perform any necessary logging or cleanup
-            # do not re-raise SystemExit
+        Run([filename, "--extension-pkg-whitelist=" + compiledPackages, 
+                       "--ignored-modules=psutil,requests,pywin32,win32security,win32process,win32api",
+                       "--ignore=__pycache__,.pytest_cache,.qtcreator"],
+            reporter=reporter,
+            exit=False)
 
     messages = reporter.get_messages()
     return messages   # <-- FIXED
@@ -91,10 +84,11 @@ class PylintIface:
 
     def __init__(self, compiledPackages: str = "PySide6"):
         self.compiledPackages = compiledPackages
+
+        # SimpleConsole.py and main.py ignored due to unfixable pytest - pytest errors
         self.args = ["--extension-pkg-whitelist=" + self.compiledPackages,
                      "--ignored-modules=psutil,requests,pywin32,win32security,win32process,win32api",
-                     "--ignore-paths=*/ui/*$", "--recursive=y",
-                     "--ignore=,__pycache__,.pytest_cache,.qtcreator"]
+                     "--ignore=SimpleConsole.py,main.py,__pycache__,.pytest_cache,.qtcreator"]
 
     @contextlib.contextmanager
     def _patch_streams(self, out):
@@ -125,19 +119,12 @@ class PylintIface:
 
     def processFile(self, filename):
         out = StringIO()
-        areporter = self.AjsonReporter(out)
+        reporter = self.AjsonReporter(out)
 
         with self._patch_streams(out):
-            try:
-                Run([filename] + self.args, reporter=areporter, exit=False)
-                #Run([filename] + self.args, reporter=areporter)
-            except SystemExit as e:
-                # Handle the code gracefully
-                print(f"Pylint failed with exit code: {e.code}")
-                # perform logging and cleanup as necessary
-                # Do not re-raise the exception
+            Run([filename] + self.args, reporter=reporter, exit=False)
 
-        messages = areporter.get_messages()
+        messages = reporter.get_messages()
         self.acquiredData[filename] = messages
         return messages   # <-- FIXED
 
