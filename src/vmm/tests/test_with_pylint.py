@@ -85,6 +85,8 @@ def genTestData(fileList=[], excludeFiles=[], excludeFromLines=[]):
                             #print("Found: " + str(item[4]) + " (" + str(item[10]) + ") : " + str(item[2]))
                             #print(json.dumps(jsonData, indent=4))
                             message = re.sub("'", "", item["message"])
+                            message = re.sub('/', '_', message)
+                            message = re.sub('::', '_', message)
                             #####
                             # Don't include json data that has a string from the
                             # excludeLinesWith exclude list.
@@ -115,7 +117,7 @@ def pylint_test_template(*args):
 
 class test_with_pylint(unittest.TestCase):
     def assert_pylint_error(self, myfile, lineNum, text):
-        self.assertTrue(False, myfile + ": (" + str(lineNum) + ") " + text)
+        self.assertTrue(False, myfile + f"_{lineNum}_" + text)
 
 
 class MultipleOptions(Option):
@@ -287,7 +289,7 @@ if __name__=="__main__":
 else:
     #####
     # Run unittest per current source tree
-    test_case_data = genTestData(getRecursiveTree(".."))
+    test_case_data = genTestData(getRecursiveTree(parent_dir))
 
     for specificError in test_case_data:
         #print str(specificError)

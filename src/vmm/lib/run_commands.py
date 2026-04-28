@@ -1,8 +1,5 @@
 """
 Library for running executables from the command line in different ways
-
-Inspiration for some of the below found on the internet.
-
 """
 
 # TODO: BUG - Class needs to return either byte streams or strings.  Check return, error and retcode values to see if they are strings, byte streams or int and treat accordingly
@@ -18,15 +15,9 @@ import subprocess
 import threading
 import traceback
 # import tracemalloc
-#from subprocess import Popen, PIPE, DETACHED_PROCESS, CREATE_NEW_PROCESS_GROUP
 from subprocess import Popen, PIPE
 from subprocess import SubprocessError as SubprocessError
 from pathlib import Path
-
-# Get the parent directory of the current file's parent directory
-#  and add it to sys.path
-parent_dir = Path(__file__).parent.parent
-sys.path.append(str(parent_dir))
 
 from vmm.lib.loggers import CyLogger
 from vmm.lib.loggers import LogPriority as lp
@@ -652,7 +643,6 @@ class RunWith(object):
         if sys.platform.lower().startswith("win"):
             return "Cannot perform this in Windows", "Cannot perform this in Windows", 127
 
-        
         if 'pty' not in sys.modules:
             import pty
         else:
@@ -829,7 +819,6 @@ class RunWith(object):
 
         Required parameters: password
         '''
-        cmd = ""
         self.stdout = ""
         self.stderr = ""
         self.retcode = 255
@@ -854,6 +843,8 @@ class RunWith(object):
             elif isinstance(self.command, str):
                 # cmd = " ".join(sudocmd) + " " + self.command
                 cmd = sudocmd + self.command.split()
+            else:
+                cmd = ""
 
             # Create a subprocess
             process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -955,7 +946,6 @@ class RunWith(object):
 
         Required parameters: password
         """
-        cmd = ""
         self.stdout = ""
         self.stderr = ""
         self.retcode = 255
@@ -983,6 +973,8 @@ class RunWith(object):
             elif isinstance(self.command, str):
                 #cmd = " ".join(sudocmd) + " " + self.command
                 cmd = sudocmd + self.command.split()
+            else:
+                cmd = ""
 
             # Create a subprocess
             process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
