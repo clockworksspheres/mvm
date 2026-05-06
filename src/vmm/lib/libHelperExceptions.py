@@ -11,6 +11,17 @@ class MemoryNotAvailableError(Exception):
         Exception.__init__(self, *args, **kwargs)
 
 
+class HypervisorNotAvailableError(Exception):
+    """
+    Meant for being thrown when an action/class being run/instanciated is not
+    applicable for the running operating system.
+
+    
+    """
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
+
 class UnsupportedOSError(Exception):
     """
     Meant for being thrown when an action/class being run/instanciated is not

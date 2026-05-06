@@ -130,7 +130,6 @@ class MacosVmwareVmm(VirtualMachineManageTemplate):
         get the IP address of a virtual machine
         """
         vmpath = find_vm_by_display_name(str(vm))
-        raise Exception(f"vmpath: {vmpath}")
         cmd = [self.vmrun, "getGuestIPAddress", str(vmpath), "-wait"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()

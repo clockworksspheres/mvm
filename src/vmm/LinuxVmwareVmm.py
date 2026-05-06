@@ -54,8 +54,9 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
         """
         List available VMs 
         """
+        home = Path.home()
         # print("Got into macosVmwareVmm list method...")
-        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+        vmx_files = find_all_vmx_files(f"{home}/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()

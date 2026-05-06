@@ -5,7 +5,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from VirtualMachineManage import VirtualMachineManage
-from lib.libHelperExceptions import HypervisorNotApplicable
+from lib.libHelperExceptions import HypervisorNotApplicable, HypervisorNotAvailableError
 
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
 
@@ -39,7 +39,7 @@ def vmm_run(args):
     if not matched:
         message = f"Hypervisor {hypervisorApp} not running, start {hypervisorApp} first"
         print(message)
-        raise HypervisorNotValid(message)
+        raise HypervisorNotAvailableError(message)
 
     try:
         vmm = VirtualMachineManage(hyper)

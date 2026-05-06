@@ -9,7 +9,7 @@ if sys.platform.lower().startswith("darwin"):
 elif sys.platform.lower().startswith("linux"):
     vboxmanage = "/usr/bin/VBoxManage"
 elif sys.platform.lower().startswith("win"):
-    vboxmanage = "C:\\Program Files\\Oracle\\VirtualBoxi\\VBoxManage.exe"
+    vboxmanage = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 else:
     vboxmanage = ""
 
