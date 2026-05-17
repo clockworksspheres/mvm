@@ -8,14 +8,14 @@ from pathlib import Path
 #  and add it to sys.path
 parent_dir = Path(__file__).parent.parent
 
-from vmm.MacosUtmVmm import MacosUtmVmm
+from mvm.MacosUtmMvm import MacosUtmMvm
 
 
 @unittest.skipUnless(
     sys.platform.lower().startswith("darwin"),
-    "MacosUtmVmm tests only run on macOS (darwin)"
+    "MacosUtmMvm tests only run on macOS (darwin)"
 )
-class TestMacosUtmVmm(unittest.TestCase):
+class TestMacosUtmMvm(unittest.TestCase):
 
     class FakeRunWith:
         """Fake runner to capture calls instead of executing real commands."""
@@ -40,7 +40,7 @@ class TestMacosUtmVmm(unittest.TestCase):
 
     def setUp(self):
         self.logger = self.DummyLogger()
-        self.vmm = MacosUtmVmm(self.logger)
+        self.vmm = MacosUtmMvm(self.logger)
 
         # Replace the real runner with our fake
         self.vmm.run = self.FakeRunWith(self.logger)

@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 import subprocess
 
 # Import your module under test
-import vmm.lib.mac_utm_list_status as utm   # <-- rename to your actual filename
+import mvm.lib.mac_utm_list_status as utm   # <-- rename to your actual filename
 
 
 class TestUTMFunctions(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestUTMFunctions(unittest.TestCase):
     # ---------------------------------------------------------
     # run_cmd()
     # ---------------------------------------------------------
-    @patch("vmm.lib.mac_utm_list_status.subprocess.run")
+    @patch("mvm.lib.mac_utm_list_status.subprocess.run")
     def test_run_cmd_success(self, mock_run):
         mock_run.return_value = MagicMock(
             returncode=0,
@@ -23,8 +23,8 @@ class TestUTMFunctions(unittest.TestCase):
         self.assertEqual(out, "VM list output\n")
         mock_run.assert_called_once()
 
-    @patch("vmm.lib.mac_utm_list_status.subprocess.run")
-    @patch("vmm.lib.mac_utm_list_status.print")
+    @patch("mvm.lib.mac_utm_list_status.subprocess.run")
+    @patch("mvm.lib.mac_utm_list_status.print")
     def test_run_cmd_failure(self, mock_print, mock_run):
         mock_run.return_value = MagicMock(
             returncode=1,
@@ -39,7 +39,7 @@ class TestUTMFunctions(unittest.TestCase):
     # ---------------------------------------------------------
     # utm_list()
     # ---------------------------------------------------------
-    @patch("vmm.lib.mac_utm_list_status.run_cmd")
+    @patch("mvm.lib.mac_utm_list_status.run_cmd")
     def test_utm_list_parsing(self, mock_run):
         mock_run.return_value = (
             "UUID STATE NAME\n"
@@ -55,7 +55,7 @@ class TestUTMFunctions(unittest.TestCase):
             {"uuid": "5678", "state": "stopped", "name": "Windows 11 Pro"},
         ])
 
-    @patch("vmm.lib.mac_utm_list_status.run_cmd")
+    @patch("mvm.lib.mac_utm_list_status.run_cmd")
     def test_utm_list_empty(self, mock_run):
         mock_run.return_value = "UUID STATE NAME\n"
         vms = utm.utm_list()
@@ -64,7 +64,7 @@ class TestUTMFunctions(unittest.TestCase):
     # ---------------------------------------------------------
     # utm_status()
     # ---------------------------------------------------------
-    @patch("vmm.lib.mac_utm_list_status.run_cmd")
+    @patch("mvm.lib.mac_utm_list_status.run_cmd")
     def test_utm_status_extracts_state_and_ip(self, mock_run):
         mock_run.return_value = (
             "State: running\n"
@@ -75,7 +75,7 @@ class TestUTMFunctions(unittest.TestCase):
         self.assertEqual(state, "running")
         self.assertEqual(ip, "192.168.64.3")
 
-    @patch("vmm.lib.mac_utm_list_status.run_cmd")
+    @patch("mvm.lib.mac_utm_list_status.run_cmd")
     def test_utm_status_no_ip(self, mock_run):
         mock_run.return_value = (
             "State: stopped\n"
@@ -86,7 +86,7 @@ class TestUTMFunctions(unittest.TestCase):
         self.assertEqual(state, "stopped")
         self.assertIsNone(ip)
 
-    @patch("vmm.lib.mac_utm_list_status.run_cmd")
+    @patch("mvm.lib.mac_utm_list_status.run_cmd")
     def test_utm_status_no_state(self, mock_run):
         mock_run.return_value = (
             "Something else\n"

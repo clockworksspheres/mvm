@@ -21,10 +21,10 @@ import logging.handlers
 # sys.path.append(appendDir)
 # sys.path.append("/".join(os.path.abspath(os.path.dirname(__file__)).split('/')[:-2]))
 #sys.path.append("../..")
-# from vmm.lib.singleton import Singleton
-# from vmm.config import DEFAULT_LOG_LEVEL
-from vmm.lib.config import DEFAULT_LOG_LEVEL
-from vmm.lib.singleton import Singleton
+# from mvm.lib.singleton import Singleton
+# from mvm.config import DEFAULT_LOG_LEVEL
+from mvm.lib.config import DEFAULT_LOG_LEVEL
+from mvm.lib.singleton import Singleton
 
 #from logging.handlers import RotatingFileHandler
 ###############################################################################

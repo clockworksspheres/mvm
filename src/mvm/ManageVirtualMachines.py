@@ -8,12 +8,12 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.libHelperExceptions import HypervisorNotApplicable
-from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.libHelperExceptions import HypervisorNotApplicable
+from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 
-class VirtualMachineManage(VirtualMachineManageTemplate):
+class ManageVirtualMachines(ManageVirtualMachinesTemplate):
 
     def __init__(self, framework, **kwargs):
         """

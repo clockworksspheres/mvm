@@ -12,12 +12,12 @@ import traceback
 import tracemalloc
 
 # --- Non-native python libraries in this source tree
-import lib.environment as environment
-from vmm.lib import config
+import mvm.lib.environment as environment
+from mvm.lib import config
 
 if sys.platform.startswith('win32'):
     import win32api
-    from vmm.lib.windows_utilities import is_windows_process_elevated
+    from mvm.lib.windows_utilities import is_windows_process_elevated
 
 else:
     import pwd

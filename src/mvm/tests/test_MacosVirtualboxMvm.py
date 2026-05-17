@@ -8,16 +8,16 @@ from pathlib import Path
 #  and add it to sys.path
 parent_dir = Path(__file__).parent.parent
 
-from vmm.MacosVirtualboxVmm import MacosVirtualboxVmm
+from mvm.MacosVirtualboxMvm import MacosVirtualboxMvm
 
 
 vboxmanage = "/usr/local/bin/VBoxManage"
 
 @unittest.skipUnless(
     sys.platform.lower().startswith("darwin"),
-    "MacosVirtualboxVmm tests only run on macOS (darwin)"
+    "MacosVirtualboxMvm tests only run on macOS (darwin)"
 )
-class TestMacosVirtualboxVmm(unittest.TestCase):
+class TestMacosVirtualboxMvm(unittest.TestCase):
 
     class FakeRunWith:
         """Fake runner to capture calls rather than executing commands."""
@@ -43,7 +43,7 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
 
     def setUp(self):
         self.logger = self.DummyLogger()
-        self.vmm = MacosVirtualboxVmm(self.logger)
+        self.vmm = MacosVirtualboxMvm(self.logger)
 
         # Replace the internal runner with our fake runner
         self.vmm.run = self.FakeRunWith(self.logger)

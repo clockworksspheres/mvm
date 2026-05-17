@@ -1,6 +1,6 @@
-# Virtual Machine Manage (vmm)
+# Manage Virtual Machines (mvm)
 
-## What is Virtual Machine Manage
+## What is Manage Virtual Machines
 
 An OO factory that pumps out concrete classes
 to manage virtual machines based on the hypervisor
@@ -32,7 +32,7 @@ Linux support on the roadmap for:
 ├── docs     # Support documentation
 ├── packenv  # python environment created a build run, created with a build run
 ├── vmm      # root of the source code
-└── vmmBoard # eisenban kanban board directory
+└── mvmBoard # eisenban kanban board directory
 ```
 
 ## Types of hypervisors

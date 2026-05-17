@@ -19,9 +19,9 @@ from subprocess import Popen, PIPE
 from subprocess import SubprocessError as SubprocessError
 from pathlib import Path
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.loggers import MockLogger
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.loggers import MockLogger
 
 
 class OSNotValidForRunWith(BaseException):

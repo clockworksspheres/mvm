@@ -1,4 +1,4 @@
-# Virtual Machine Manage
+# Manage Virtual Machines
 
 Basic virtual machine management, meant for developers to
 manage UTM, HyperV, Vmware Fusion and Workstation and

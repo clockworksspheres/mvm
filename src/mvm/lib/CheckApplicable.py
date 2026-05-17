@@ -13,7 +13,7 @@ parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 '''
 #--- non-native python libraries in this source tree
-from vmm.lib.loggers import LogPriority
+from mvm.lib.loggers import LogPriority
 
 
 class CheckApplicable(object):

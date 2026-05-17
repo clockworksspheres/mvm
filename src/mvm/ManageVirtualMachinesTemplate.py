@@ -1,6 +1,6 @@
 import inspect
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
 
 
 class MethodNotImplementedError(Exception):
@@ -12,7 +12,7 @@ class MethodNotImplementedError(Exception):
         super(MethodNotImplementedError, self).__init__(self, *args, **kwargs)
 
 
-class VirtualMachineManageTemplate:
+class ManageVirtualMachinesTemplate:
 
     def __init__(self, **kwargs):
         """

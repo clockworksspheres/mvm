@@ -23,7 +23,7 @@ class TestCheckApplicable(unittest.TestCase):
         self.mock_env.geteuid.return_value = 1000
 
         # Import class under test
-        from vmm.lib.CheckApplicable import CheckApplicable
+        from mvm.lib.CheckApplicable import CheckApplicable
         self.CheckApplicable = CheckApplicable
 
         # Instance under test

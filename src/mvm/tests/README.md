@@ -3,7 +3,7 @@ README for testing
 CI/CD
 
 Currently running Jenkins, and testing per OS family at a time.
- Wrote the [vmm](https://github.com/clockworksspheres/vmm.git) 
+ Wrote the [mvm](https://github.com/clockworksspheres/mvm.git) 
 program and [jenkinsTools](https://github.com/clockworksspheres/jenkinsTools.git)
 tools to assist in automation of CI/CT.  Currently building
 app/executables with PyInstaller.
@@ -20,10 +20,10 @@ should be pretty simple once I can get on a linux box... May set up
 hyperv in a way I can do nested virtualization to do this type of
 testing as I don't have direct access to a linux box.
 
-# Unit testing vmm tools
+# Unit testing mvm tools
 
 Tests written to exercise the support libraries - the main tools are 
-primarily command line interfaces to the libraries in the vmm
+primarily command line interfaces to the libraries in the mvm
 directory.
 
 ## Pylint related
