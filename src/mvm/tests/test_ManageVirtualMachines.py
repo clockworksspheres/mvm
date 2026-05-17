@@ -9,39 +9,39 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 
-from vmm.VirtualMachineManage import VirtualMachineManage
+from mvm.ManageVirtualMachines import ManageVirtualMachines
 
 
 hyper_v_enabled = None
 if sys.platform.lower().startswith("win"):
-    from vmm.lib.windows_utilities import hyper_v_enabled
+    from mvm.lib.windows_utilities import hyper_v_enabled
 
-from vmm.lib.libHelperExceptions import HypervisorNotApplicable
+from mvm.lib.libHelperExceptions import HypervisorNotApplicable
 
 
 @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-class TestVirtualMachineManage(unittest.TestCase):
+class TestManageVirtualMachines(unittest.TestCase):
 
     if sys.platform.lower().startswith("win"):
-        from vmm.lib.windows_utilities import hyper_v_enabled
+        from mvm.lib.windows_utilities import hyper_v_enabled
 
     # ----------------------------------------------------------------------
     # VMware on macOS
     # ----------------------------------------------------------------------
-    @patch("MacosVmwareVmm.MacosVmwareVmm")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("MacosVmwareMvm.MacosVmwareMvm")
+    @patch("ManageVirtualMachines.CyLogger")
     def test_vmware_macos(self, mock_logger, mock_vmware):
         with patch.object(sys, "platform", "darwin"):
-            vmm = VirtualMachineManage("vmware")
+            mvm = ManageVirtualMachines("vmware")
 
         mock_vmware.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_vmware.return_value)
+        self.assertIs(mvm.mvm, mock_vmware.return_value)
 
     # ----------------------------------------------------------------------
     # VMware on Windows
     # ---------------------------------------------------------------------
-    @patch("WindowsVmwareVmm.WindowsVmwareVmm")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("WindowsVmwareMvm.WindowsVmwareMvm")
+    @patch("ManageVirtualMachines.CyLogger")
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
     def test_vmware_windows(self, mock_logger, mock_vmware):
 
@@ -49,110 +49,110 @@ class TestVirtualMachineManage(unittest.TestCase):
             unittest.SkipTest
         else:
             with patch.object(sys, "platform", "win32"):
-                vmm = VirtualMachineManage("vmware")
+                mvm = ManageVirtualMachines("vmware")
 
             mock_vmware.assert_called_once_with(mock_logger.return_value)
-            self.assertIs(vmm.vmm, mock_vmware.return_value)
+            self.assertIs(mvm.mvm, mock_vmware.return_value)
 
     # ----------------------------------------------------------------------
     # VirtualBox on macOS
     # ----------------------------------------------------------------------
-    @patch("MacosVirtualboxVmm.MacosVirtualboxVmm")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("MacosVirtualboxMvm.MacosVirtualboxMvm")
+    @patch("ManageVirtualMachines.CyLogger")
     def test_virtualbox_macos(self, mock_logger, mock_vbox):
         with patch.object(sys, "platform", "darwin"):
-            vmm = VirtualMachineManage("virtualbox")
+            mvm = ManageVirtualMachines("virtualbox")
 
         mock_vbox.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_vbox.return_value)
+        self.assertIs(mvm.mvm, mock_vbox.return_value)
 
     # ----------------------------------------------------------------------
     # VirtualBox on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("WindowsVirtualboxVmm.WindowsVirtualboxVmm")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("WindowsVirtualboxMvm.WindowsVirtualboxMvm")
+    @patch("ManageVirtualMachines.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_vbox):
         if hyper_v_enabled():
             unittest.SkipTest
         else:
             with patch.object(sys, "platform", "win32"):
-                vmm = VirtualMachineManage("virtualbox")
+                mvm = ManageVirtualMachines("virtualbox")
 
             mock_vbox.assert_called_once_with(mock_logger.return_value)
-            self.assertIs(vmm.vmm, mock_vbox.return_value)
+            self.assertIs(mvm.mvm, mock_vbox.return_value)
 
     # ----------------------------------------------------------------------
     # UTM on macOS
     # ----------------------------------------------------------------------
-    @patch("MacosUtmVmm.MacosUtmVmm")
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("MacosUtmMvm.MacosUtmMvm")
+    @patch("ManageVirtualMachines.CyLogger")
     def test_utm_macos(self, mock_logger, mock_utm):
         with patch.object(sys, "platform", "darwin"):
-            vmm = VirtualMachineManage("utm")
+            mvm = ManageVirtualMachines("utm")
 
         mock_utm.assert_called_once_with(mock_logger.return_value)
-        self.assertIs(vmm.vmm, mock_utm.return_value)
+        self.assertIs(mvm.mvm, mock_utm.return_value)
 
     # ----------------------------------------------------------------------
     # Hyper-V on Windows
     # ----------------------------------------------------------------------
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
-    @patch("vmm.WindowsHypervVmm.WindowsHypervVmm")
-    @patch("vmm.VirtualMachineManage.CyLogger")
+    @patch("mvm.WindowsHypervMvm.WindowsHypervMvm")
+    @patch("mvm.ManageVirtualMachines.CyLogger")
     def test_hyperv_windows(self, mock_logger, mock_hyperv):
         if not hyper_v_enabled():
             unittest.SkipTest
         else:
             with patch.object(sys, "platform", "win32"):
-                vmm = VirtualMachineManage("hyperv")
+                mvm = ManageVirtualMachines("hyperv")
 
             mock_hyperv.assert_called_once_with(mock_logger.return_value)
-            self.assertIs(vmm.vmm, mock_hyperv.return_value)
+            self.assertIs(mvm.mvm, mock_hyperv.return_value)
 
     # ----------------------------------------------------------------------
     # Unsupported framework logs error
     # ----------------------------------------------------------------------
-    @patch("VirtualMachineManage.CyLogger")
+    @patch("ManageVirtualMachines.CyLogger")
     def test_unsupported_framework(self, mock_logger):
         logger_instance = mock_logger.return_value
 
         with patch.object(sys, "platform", "darwin"):
-            VirtualMachineManage("unknown")
+            ManageVirtualMachines("unknown")
 
         logger_instance.log.assert_called_once()
 
     # ----------------------------------------------------------------------
     # Wrapper methods forward correctly
     # ----------------------------------------------------------------------
-    @patch("vmm.VirtualMachineManage.CyLogger")
+    @patch("mvm.ManageVirtualMachines.CyLogger")
     def test_wrapper_methods(self, mock_logger):
-        fake_vmm = MagicMock()
+        fake_mvm = MagicMock()
 
         with patch.object(sys, "platform", "darwin"):
-            vmm = VirtualMachineManage("utm")
-            vmm.vmm = fake_vmm  # override actual implementation
+            mvm = ManageVirtualMachines("utm")
+            mvm.mvm = fake_mvm  # override actual implementation
 
-        vmm.list_vms()
-        fake_vmm.list_vms.assert_called_once()
+        mvm.list_vms()
+        fake_mvm.list_vms.assert_called_once()
 
-        vmm.start_vm("VM1")
-        fake_vmm.start_vm.assert_called_once_with("VM1")
+        mvm.start_vm("VM1")
+        fake_mvm.start_vm.assert_called_once_with("VM1")
 
-        vmm.stop_vm("VM1")
+        mvm.stop_vm("VM1")
         fake_vmm.stop_vm.assert_called_once_with("VM1")
 
-        vmm.pause_vm("VM1")
-        fake_vmm.pause_vm.assert_called_once_with("VM1")
+        mvm.pause_vm("VM1")
+        fake_mvm.pause_vm.assert_called_once_with("VM1")
 
-        vmm.unpause_vm("VM1")
-        fake_vmm.unpause_vm.assert_called_once_with("VM1")
+        mvm.unpause_vm("VM1")
+        fake_mvm.unpause_vm.assert_called_once_with("VM1")
 
-        vmm.reset_vm("VM1", hard=True)
-        fake_vmm.reset_vm.assert_called_once_with("VM1", True)
+        mvm.reset_vm("VM1", hard=True)
+        fake_mvm.reset_vm.assert_called_once_with("VM1", True)
 
-        vmm.get_ip("VM1")
-        fake_vmm.get_ip.assert_called_once_with("VM1")
+        mvm.get_ip("VM1")
+        fake_mvm.get_ip.assert_called_once_with("VM1")
 
 
 if __name__ == "__main__":

@@ -4,28 +4,24 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.vmx import find_vm_by_display_name
-from vmm.lib.run_commands import RunWith
-from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
-from vmm.lib.vmware_list_status import (find_all_vmx_files,
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.vmx import find_vm_by_display_name
+from mvm.lib.run_commands import RunWith
+from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
+from mvm.lib.vmware_list_status import (find_all_vmx_files,
                                         detect_vm_status,
                                         get_vm_ip,
                                         print_status4all_vms,
                                         list_running_vms)
 
 
-class LinuxVmwareVmm(VirtualMachineManageTemplate):
+class MacosVmwareMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
         """
         """
-        #hw_platform = tell_hw_platform()
-        #if hw_platform == "arm64" or not hw_platform:
-        #    raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
-
-        if isinstance(logger, CyLogger):
+        if isinstance(logger, type(CyLogger)):
             self.logger = CyLogger()
         else:
             self.logger = CyLogger()
@@ -35,7 +31,7 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vmrun = "???"
+        self.vmrun = "/Applications/VMware Fusion.app/Contents/Library/vmrun"
 
     def find_vm_by_display_name(self, vmname=""):
         """
@@ -43,20 +39,20 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
         """
         vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
+        print(str(vmpaths))
         for vmpath in vmpaths:
             print("Found:", vmpath)
             # return the first found in the search
             break
-
+        print(str(vmpath))
         return vmpath[0]
 
     def list_vms(self, **kwargs):
         """
         List available VMs 
         """
-        home = Path.home()
         # print("Got into macosVmwareVmm list method...")
-        vmx_files = find_all_vmx_files(f"{home}/Virtual Machines.localized")
+        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
@@ -125,16 +121,15 @@ class LinuxVmwareVmm(VirtualMachineManageTemplate):
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
-            #status = detect_vm_status(str(vmx))
             ip = get_vm_ip(str(vmx)) if status == "running" else None
 
             print(f"{name:30} {status:12} {ip or 'N/A'}")
 
     def get_ip(self, vm: str = ""):
         """
-        get the IP address of a virtual machine 
+        get the IP address of a virtual machine
         """
-        vmpath = find_vm_by_display_name(f"{vm}")[0]
+        vmpath = find_vm_by_display_name(str(vm))
         cmd = [self.vmrun, "getGuestIPAddress", str(vmpath), "-wait"]
         self.run.setCommand(cmd)
         out, err, retval = self.run.communicate()

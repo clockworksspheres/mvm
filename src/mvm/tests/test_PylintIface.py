@@ -5,7 +5,7 @@ import io
 import sys
 import contextlib
 
-from  vmm.tests.PylintIface import processFile, PylintIface, AjsonReporter
+from  mvm.tests.PylintIface import processFile, PylintIface, AjsonReporter
 
 
 class TestPylintInterface(unittest.TestCase):

@@ -4,18 +4,18 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.run_commands import RunWith
-from vmm.lib.hardware import tell_hw_platform
-from vmm.lib.libHelperExceptions import HardwareNotApplicable
-from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
-from vmm.lib.virtualbox_list_status import (list_vms,
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.run_commands import RunWith
+from mvm.lib.hardware import tell_hw_platform
+from mvm.lib.libHelperExceptions import HardwareNotApplicable
+from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
+from mvm.lib.virtualbox_list_status import (list_vms,
                                             list_running_vms,
                                             get_vm_state,
                                             get_vm_ip)
 
-class LinuxVirtualboxVmm(VirtualMachineManageTemplate):
+class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
         """

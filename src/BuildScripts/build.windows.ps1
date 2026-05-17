@@ -36,9 +36,9 @@ if (!(Test-Path -Path ".\packenv" -PathType Container)) {
 # proper license can be found
 # cp .\resources\icons\Barkerbaggies-Bag-O-Tiles-E.ico .\resources\icons\E.ico
 
-cp BuildScripts/build.windows11.spec vmm
+cp BuildScripts/build.windows11.spec mvm
 
-pushd vmm
+pushd mvm
 
 pyinstaller --clean -y build.windows11.spec
 pyinstaller -y build.windows11.spec

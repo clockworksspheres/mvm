@@ -19,9 +19,9 @@ else
    source packenv/bin/activate
 fi
 
-cp BuildScripts/build.linux.spec vmm
+cp BuildScripts/build.linux.spec mvm
 
-pushd vmm
+pushd mvm
 
 pyinstaller --clean -y build.linux.spec
 pyinstaller -y build.linux.spec

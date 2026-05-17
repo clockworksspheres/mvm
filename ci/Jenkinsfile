@@ -57,7 +57,7 @@ pipeline {
                     stages {
                         stage('macOS Test') { 
                             steps {
-                                dir('src/vmm/tests') {
+                                dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l
@@ -80,7 +80,7 @@ pipeline {
                     stages {
                         stage('Rocky10 Test') { 
                             steps {
-                                dir('src/vmm/tests') {
+                                dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l
@@ -103,7 +103,7 @@ pipeline {
                     stages {
                         stage('Debian Test') { 
                             steps {
-                                dir('src/vmm/tests') {
+                                dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
                                     sh """ 
                                         ls -l

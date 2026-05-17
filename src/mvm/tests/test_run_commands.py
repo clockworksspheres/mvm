@@ -14,9 +14,9 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent
 
 #--- non-native python libraries in this source tree
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.run_commands import RunWith, SetCommandTypeError
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.run_commands import RunWith, SetCommandTypeError
 
 
 class test_run_commands(unittest.TestCase):

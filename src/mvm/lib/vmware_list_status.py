@@ -3,7 +3,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-from vmm.lib.run_commands import RunWith
+from mvm.lib.run_commands import RunWith
 
 vmrun = "/Applications/VMware Fusion.app/Contents/Public/vmrun"
 

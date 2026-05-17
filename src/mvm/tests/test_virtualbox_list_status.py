@@ -3,7 +3,7 @@ from unittest.mock import patch
 import subprocess
 
 # Import your module (adjust name if needed)
-from vmm.lib import virtualbox_list_status as vboxinfo
+from mvm.lib import virtualbox_list_status as vboxinfo
 
 
 class TestVBoxInfo(unittest.TestCase):

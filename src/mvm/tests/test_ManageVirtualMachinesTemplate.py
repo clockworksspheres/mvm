@@ -1,11 +1,11 @@
 import unittest
-from vmm.VirtualMachineManageTemplate import (
-    VirtualMachineManageTemplate,
+from mvm.ManageVirtualMachinesTemplate import (
+    ManageVirtualMachinesTemplate,
     MethodNotImplementedError,
 )
 
 
-class DummyTemplate(VirtualMachineManageTemplate):
+class DummyTemplate(ManageVirtualMachinesTemplate):
     """
     A concrete subclass that does not override the abstract methods.
 
@@ -14,7 +14,7 @@ class DummyTemplate(VirtualMachineManageTemplate):
     pass
 
 
-class TestVirtualMachineManageTemplate(unittest.TestCase):
+class TestManageVirtualMachinesTemplate(unittest.TestCase):
 
     def setUp(self):
         # Use a dummy subclass so __init__ still runs

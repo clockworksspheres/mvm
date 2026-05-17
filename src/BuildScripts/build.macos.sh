@@ -24,9 +24,9 @@ else
    source packenv/bin/activate
 fi
 
-cp BuildScripts/build.macos.spec vmm
+cp BuildScripts/build.macos.spec mvm
 
-pushd vmm
+pushd mvm
 
 pyinstaller --clean -y build.macos.spec
 pyinstaller -y build.macos.spec
