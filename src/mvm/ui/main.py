@@ -20,7 +20,7 @@ from PySide6.QtGui import QAction, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
 
 from ui.mainwindow_ui import Ui_MainWindow
-from vmm_run import vmm_run
+from mvm_run import mvm_run
 
 from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
@@ -213,7 +213,7 @@ class VmCtlUi(QMainWindow):
                     hard = True,
                 )
                 self.ui.textBrowser.append("=========================")
-                vmm_run(args)
+                mvm_run(args)
 
         if not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")

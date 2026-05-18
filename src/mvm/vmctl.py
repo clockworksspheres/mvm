@@ -5,9 +5,9 @@ from pathlib import Path
 
 #sys.path.append(str(Path(__file__).parent.parent))
 
-from VirtualMachineManage import VirtualMachineManage
+#from ManageVirtualMachines import ManageVirtualMachines
 from ui.main import VmCtlUi
-from vmm_run import vmm_run
+from mvm_run import mvm_run
 
 
 HYPERVISORS = {"vmware", "virtualbox", "utm", "hyperv"}
@@ -176,7 +176,7 @@ Examples:
         # print("raising_ window")
         sys.exit(app.exec())
     else:
-        vmm_run(args)
+        mvm_run(args)
         sys.exit()
 
 

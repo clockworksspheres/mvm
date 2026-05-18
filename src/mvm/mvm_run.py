@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from VirtualMachineManage import VirtualMachineManage
+from ManageVirtualMachines import ManageVirtualMachines
 from lib.libHelperExceptions import HypervisorNotApplicable, HypervisorNotAvailableError
 
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
@@ -22,7 +22,7 @@ class HypervisorNotValid(BaseException):
         BaseException.__init__(self, *args, **kwargs)
 
 
-def vmm_run(args):
+def mvm_run(args):
     hyper = args.hypervisor
     vm = args.vm
 
@@ -42,7 +42,7 @@ def vmm_run(args):
         raise HypervisorNotAvailableError(message)
 
     try:
-        vmm = VirtualMachineManage(hyper)
+        mvm = VirtualMachineManage(hyper)
     except HypervisorNotApplicable:
         print("Cannot run this hypervisor on this OS setup")
         sys.exit()
@@ -51,32 +51,32 @@ def vmm_run(args):
 
     if args.command == "list":
         # print("Got a list action")
-        vmm.list_vms()
+        mvm.list_vms()
 
     elif cmd == "start":
-        vmm.start_vm(vm, headless=args.headless)
+        mvm.start_vm(vm, headless=args.headless)
         print(f"Started {hyper} → {vm}")
 
     elif cmd == "stop":
-        vmm.stop_vm(vm)
+        mvm.stop_vm(vm)
         print(f"Stopped {hyper} → {vm}")
 
     elif cmd == "pause":
-        vmm.pause_vm(vm)
+        mvm.pause_vm(vm)
         print(f"Suspended {hyper} → {vm}")
 
     elif cmd == "unpause":
-        vmm.unpause_vm(vm)
+        mvm.unpause_vm(vm)
         print(f"Suspended {hyper} → {vm}")
 
     elif cmd == "reset":
-        vmm.reset_vm(vm, hard=args.hard)
+        mvm.reset_vm(vm, hard=args.hard)
         print(f"Reset {hyper} → {vm}")
 
     elif cmd == "status":
-        vmm.list_vms()
+        mvm.list_vms()
 
     elif cmd == "ip":
-        vmm.get_ip(vm)
+        mvm.get_ip(vm)
 
 
