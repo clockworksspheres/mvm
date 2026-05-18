@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock, mock_open
 import os
 
 # Import your module under test
-import vmm.lib.vmx as vm   # <-- rename to your actual filename
+import mvm.lib.vmx as vm   # <-- rename to your actual filename
 
 
 class TestVMPathFunctions(unittest.TestCase):
@@ -11,8 +11,8 @@ class TestVMPathFunctions(unittest.TestCase):
     # ---------------------------------------------------------
     # get_default_vm_paths()
     # ---------------------------------------------------------
-    @patch("vmm.lib.vmx.sys.platform", "darwin")
-    @patch("vmm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "/Users/test"))
+    @patch("mvm.lib.vmx.sys.platform", "darwin")
+    @patch("mvm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "/Users/test"))
     def test_get_default_vm_paths_mac(self, mock_expand):
         paths = vm.get_default_vm_paths()
         self.assertEqual(paths, [
@@ -22,8 +22,8 @@ class TestVMPathFunctions(unittest.TestCase):
             "/Users/test/Documents/Virtual Machines",
         ])
 
-    @patch("vmm.lib.vmx.sys.platform", "win32")
-    @patch("vmm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "C:/Users/test"))
+    @patch("mvm.lib.vmx.sys.platform", "win32")
+    @patch("mvm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "C:/Users/test"))
     def test_get_default_vm_paths_windows(self, mock_expand):
         paths = vm.get_default_vm_paths()
         self.assertEqual(paths, [
@@ -31,8 +31,8 @@ class TestVMPathFunctions(unittest.TestCase):
             "C:/Users/test/Virtual Machines",
         ])
 
-    @patch("vmm.lib.vmx.sys.platform", "linux")
-    @patch("vmm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "/home/test"))
+    @patch("mvm.lib.vmx.sys.platform", "linux")
+    @patch("mvm.lib.vmx.os.path.expanduser", side_effect=lambda p: p.replace("~", "/home/test"))
     def test_get_default_vm_paths_linux(self, mock_expand):
         paths = vm.get_default_vm_paths()
         self.assertEqual(paths, [
@@ -41,7 +41,7 @@ class TestVMPathFunctions(unittest.TestCase):
             "/var/lib/vmware",
         ])
 
-    @patch("vmm.lib.vmx.sys.platform", "unknownos")
+    @patch("mvm.lib.vmx.sys.platform", "unknownos")
     def test_get_default_vm_paths_other(self):
         paths = vm.get_default_vm_paths()
         self.assertEqual(paths, [""])
@@ -49,10 +49,10 @@ class TestVMPathFunctions(unittest.TestCase):
     # ---------------------------------------------------------
     # find_vm_by_display_name()
     # ---------------------------------------------------------
-    @patch("vmm.lib.vmx.get_default_vm_paths", return_value=["/vms"])
-    @patch("vmm.lib.vmx.os.path.exists", return_value=True)
-    @patch("vmm.lib.vmx.glob.glob")
-    @patch("vmm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Ubuntu"\n')
+    @patch("mvm.lib.vmx.get_default_vm_paths", return_value=["/vms"])
+    @patch("mvm.lib.vmx.os.path.exists", return_value=True)
+    @patch("mvm.lib.vmx.glob.glob")
+    @patch("mvm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Ubuntu"\n')
     def test_find_vm_by_display_name_match(self, mock_file, mock_glob, mock_exists, mock_paths):
         mock_glob.return_value = ["/vms/ubuntu/Ubuntu.vmx"]
 
@@ -61,10 +61,10 @@ class TestVMPathFunctions(unittest.TestCase):
         self.assertEqual(matches, ["/vms/ubuntu/Ubuntu.vmx"])
         mock_file.assert_called_once()
 
-    @patch("vmm.lib.vmx.get_default_vm_paths", return_value=["/vms"])
-    @patch("vmm.lib.vmx.os.path.exists", return_value=True)
-    @patch("vmm.lib.vmx.glob.glob")
-    @patch("vmm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Windows 11"\n')
+    @patch("mvm.lib.vmx.get_default_vm_paths", return_value=["/vms"])
+    @patch("mvm.lib.vmx.os.path.exists", return_value=True)
+    @patch("mvm.lib.vmx.glob.glob")
+    @patch("mvm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Windows 11"\n')
     def test_find_vm_by_display_name_case_insensitive(
         self, mock_file, mock_glob, mock_exists, mock_paths
     ):
@@ -75,9 +75,9 @@ class TestVMPathFunctions(unittest.TestCase):
         self.assertEqual(matches, ["/vms/win11/Win11.vmx"])
         mock_file.assert_called_once()
 
-    @patch("vmm.lib.vmx.os.path.exists")
-    @patch("vmm.lib.vmx.glob.glob")
-    @patch("vmm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Fedora"\n')
+    @patch("mvm.lib.vmx.os.path.exists")
+    @patch("mvm.lib.vmx.glob.glob")
+    @patch("mvm.lib.vmx.open", new_callable=mock_open, read_data='displayName = "Fedora"\n')
     def test_find_vm_by_display_name_no_match(self, mock_file, mock_glob, mock_exists):
         mock_exists.return_value = True
         mock_glob.return_value = ["/vms/fedora/Fedora.vmx"]
@@ -86,14 +86,14 @@ class TestVMPathFunctions(unittest.TestCase):
 
         self.assertEqual(matches, [])
 
-    @patch("vmm.lib.vmx.os.path.exists", return_value=False)
+    @patch("mvm.lib.vmx.os.path.exists", return_value=False)
     def test_find_vm_by_display_name_no_paths_exist(self, mock_exists):
         matches = vm.find_vm_by_display_name("Ubuntu")
         self.assertEqual(matches, [])
 
-    @patch("vmm.lib.vmx.os.path.exists", return_value=True)
-    @patch("vmm.lib.vmx.glob.glob", return_value=["/vms/bad/bad.vmx"])
-    @patch("vmm.lib.vmx.open", side_effect=Exception("read error"))
+    @patch("mvm.lib.vmx.os.path.exists", return_value=True)
+    @patch("mvm.lib.vmx.glob.glob", return_value=["/vms/bad/bad.vmx"])
+    @patch("mvm.lib.vmx.open", side_effect=Exception("read error"))
     def test_find_vm_by_display_name_file_error(self, mock_file, mock_glob, mock_exists):
         matches = vm.find_vm_by_display_name("Ubuntu")
         self.assertEqual(matches, [])  # errors are swallowed
