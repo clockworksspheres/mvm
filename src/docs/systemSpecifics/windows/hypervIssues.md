@@ -12,7 +12,7 @@ Run the following and it will be fixed for all VM's:
 Set-VMHost -EnableEnhancedSessionMode $false   
 ```
 
-## Hyper-V vm is running in headless mode - how do I change that so vmm runs in gui mode?
+## Hyper-V vm is running in headless mode - how do I change that so mvm runs in gui mode?
 
 ``` bash
 Start-VM -Name "YourVMName" -Passthru | % { vmconnect.exe $_.ComputerName $_.VMName }   

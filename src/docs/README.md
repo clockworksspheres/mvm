@@ -1,4 +1,4 @@
-# README for vmm
+# README for mvm
 
 The script/executable that runs this project is vmctl.py / vmctl / vmctl.exe
 
@@ -9,7 +9,7 @@ The src/BuildScripts directory has scripts that build executables out of the pyt
 For automating running current Jenkins pipeline(s)
 http://github.com/clockworksspheres/jenkinsTools
 
-A project that is tested with vmm outside vmm and jenkinsTools:
+A project that is tested with mvm outside mvm and jenkinsTools:
 https://github.com/clockworksspheres/ramdisk
 
 # References

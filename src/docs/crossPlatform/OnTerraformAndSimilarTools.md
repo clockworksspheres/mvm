@@ -316,7 +316,7 @@ If you tell me your exact environment (Proxmox, VMware, AWS, Hyper-V, etc.), I c
 ---
 ---
 
-# For the vmm project, Draft a clean provider interface in Rust/Go/Python:
+# For the mvm project, Draft a clean provider interface in Rust/Go/Python:
 
 Below are **clean, production-grade provider interfaces** in **Rust, Go, and Python**, designed around the principles we discussed:
 
@@ -803,7 +803,7 @@ Below are **drop-in CLI skeletons** wired to the provider interface we designedâ
 ### Project layout
 
 ```text
-vmm/
+mvm/
   cli.py
   core/
     types.py
@@ -847,7 +847,7 @@ def print_out(obj, as_json: bool):
         print(obj)
 
 def main():
-    parser = argparse.ArgumentParser(prog="vmm")
+    parser = argparse.ArgumentParser(prog="mvm")
     parser.add_argument("--provider", required=True)
     parser.add_argument("--json", action="store_true")
 
@@ -915,7 +915,7 @@ if __name__ == "__main__":
 ### Init
 
 ```bash
-go mod init vmm
+go mod init mvm
 go get github.com/spf13/cobra
 ```
 
@@ -935,7 +935,7 @@ var providerName string
 var jsonOut bool
 
 var rootCmd = &cobra.Command{
-	Use: "vmm",
+	Use: "mvm",
 }
 
 func Execute() {
@@ -963,7 +963,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"vmm/providers"
+	"mvm/providers"
 
 	"github.com/spf13/cobra"
 )
@@ -1000,7 +1000,7 @@ func init() {
 package cmd
 
 import (
-	"vmm/providers"
+	"mvm/providers"
 
 	"github.com/spf13/cobra"
 )
@@ -1040,7 +1040,7 @@ func init() {
 ```go
 package providers
 
-import "vmm/core"
+import "mvm/core"
 
 var registry = map[string]core.Provider{}
 
@@ -1075,7 +1075,7 @@ use clap::{Parser, Subcommand};
 use serde::Serialize;
 
 #[derive(Parser)]
-#[command(name = "vmm")]
+#[command(name = "mvm")]
 struct Cli {
     #[arg(long)]
     provider: String,
@@ -1142,9 +1142,9 @@ fn main() {
 All CLIs follow:
 
 ```bash
-vmm --provider virtualbox list
-vmm --provider libvirt start vm1
-vmm --provider vmware status vm1 --json
+vmctl --provider virtualbox list
+vmctl --provider libvirt start vm1
+vmctl --provider vmware status vm1 --json
 ```
 
 ---
@@ -1154,19 +1154,19 @@ vmm --provider vmware status vm1 --json
 #### 1. Provider auto-detect
 
 ```bash
-vmm list   # auto picks provider
+vmctl list   # auto picks provider
 ```
 
 #### 2. Bulk ops
 
 ```bash
-vmm start vm1 vm2 vm3
+vmctl start vm1 vm2 vm3
 ```
 
 #### 3. Filters
 
 ```bash
-vmm list --state running
+vmctl list --state running
 ```
 
 #### 4. Better output formatting
