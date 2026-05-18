@@ -1,13 +1,13 @@
 import inspect
 import subprocess
 import sys
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-#from vmm.lib.run_commands import RunWith
-from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+#from mvm.lib.run_commands import RunWith
+from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 
 
-class WindowsHypervVmm(VirtualMachineManageTemplate):
+class WindowsHypervMvm(ManageVirtualMachinesTemplate):
 
     PS_PREFIX = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
 

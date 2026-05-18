@@ -1,11 +1,11 @@
 import inspect
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.run_commands import RunWith
-from vmm.VirtualMachineManageTemplate import VirtualMachineManageTemplate
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.run_commands import RunWith
+from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 
 
-class WindowsVirtualboxVmm(VirtualMachineManageTemplate):
+class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
         """
