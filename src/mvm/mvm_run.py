@@ -42,7 +42,7 @@ def mvm_run(args):
         raise HypervisorNotAvailableError(message)
 
     try:
-        mvm = VirtualMachineManage(hyper)
+        mvm = ManageVirtualMachines(hyper)
     except HypervisorNotApplicable:
         print("Cannot run this hypervisor on this OS setup")
         sys.exit()
