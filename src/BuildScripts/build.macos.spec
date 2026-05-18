@@ -44,5 +44,5 @@ app = BUNDLE(
     exe,
     name='vmctl.app',
     icon=None,
-    bundle_identifier="org.clockworksspheres.vmm.vmctl",
+    bundle_identifier="org.clockworksspheres.mvm.vmctl",
 )

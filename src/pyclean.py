@@ -12,3 +12,8 @@ for p in pathlib.Path('.').rglob('*.pyc'):  # Replace '*.pyc' with your file pat
 for p in pathlib.Path('.').rglob('__pycache__'):
     print(f"Deleting: {p}")
     p.rmdir()
+
+# clean directories
+for p in pathlib.Path('.').rglob('.pytest_cache'):
+    print(f"Deleting: {p}")
+    p.rmdir()

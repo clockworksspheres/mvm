@@ -1,6 +1,6 @@
 """
 Factory Class to spawn concrete Virtual Machine Managers
-(vmm), based on the passed in "framework"
+(mvm), based on the passed in "framework"
 """
 import inspect
 import sys
@@ -27,39 +27,39 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
 
         if self.framework == "vmware":
             if sys.platform.lower().startswith("darwin"):
-                from MacosVmwareVmm import MacosVmwareVmm
-                self.vmm = MacosVmwareVmm(self.logger)
+                from MacosVmwareMvm import MacosVmwareMvm
+                self.mvm = MacosVmwareMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    from WindowsVmwareVmm import WindowsVmwareVmm
-                    self.vmm = WindowsVmwareVmm(self.logger)
+                    from WindowsVmwareMvm import WindowsVmwareMvm
+                    self.mvm = WindowsVmwareMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
         elif self.framework == "virtualbox":
             if sys.platform.lower().startswith("darwin"):
-                from MacosVirtualboxVmm import MacosVirtualboxVmm
-                self.vmm = MacosVirtualboxVmm(self.logger)
+                from MacosVirtualboxMvm import MacosVirtualboxMvm
+                self.mvm = MacosVirtualboxMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
-                    from WindowsVirtualboxVmm import WindowsVirtualboxVmm
-                    self.vmm = WindowsVirtualboxVmm(self.logger)
+                    from WindowsVirtualboxMvm import WindowsVirtualboxMvm
+                    self.mvm = WindowsVirtualboxMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
             elif sys.platform.lower().startswith("linux"):
-                from LinuxVirtualboxVmm import LinuxVirtualboxVmm
-                self.vmm = LinuxVirtualboxVmm(self.logger)
+                from LinuxVirtualboxMvm import LinuxVirtualboxMvm
+                self.mvm = LinuxVirtualboxMvm(self.logger)
         elif self.framework == "utm" and sys.platform.lower().startswith("darwin"):
-            from MacosUtmVmm import MacosUtmVmm
-            self.vmm = MacosUtmVmm(self.logger)
+            from MacosUtmMvm import MacosUtmMvm
+            self.mvm = MacosUtmMvm(self.logger)
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
             from lib.windows_utilities import hyper_v_enabled
             if not hyper_v_enabled():
                 raise HypervisorNotApplicable("Hyperv isn't applicable...")
             else:
-                from WindowsHypervVmm import WindowsHypervVmm
-                self.vmm = WindowsHypervVmm(self.logger)
+                from WindowsHypervMvm import WindowsHypervMvm
+                self.mvm = WindowsHypervMvm(self.logger)
         else:
             self.logger.log(lp.ERROR, f"{self.framework} hasn't been implemented")
 
@@ -67,48 +67,48 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
         """
         List available VMs      
         """
-        self.vmm.list_vms(**kwargs)
+        self.mvm.list_vms(**kwargs)
 
     def start_vm(self, vm: str = "", headless: bool = False, **kwargs):
         """
          Start a virtual machine
         """
-        self.vmm.start_vm(vm, **kwargs)
+        self.mvm.start_vm(vm, **kwargs)
 
     def stop_vm(self, vm: str = "", hard: bool = True, **kwargs):
         """
          Stop a virtual machine
         """
-        self.vmm.stop_vm(vm, **kwargs)
+        self.mvm.stop_vm(vm, **kwargs)
 
     def pause_vm(self, vm: str = "", **kwargs):
         """
         Suspend a VM
         """
-        self.vmm.pause_vm(vm, **kwargs)
+        self.mvm.pause_vm(vm, **kwargs)
 
     def unpause_vm(self, vm: str = "", **kwargs):
         """
         Suspend a VM
         """
-        self.vmm.unpause_vm(vm, **kwargs)
+        self.mvm.unpause_vm(vm, **kwargs)
 
     def reset_vm(self, vm: str = "", hard: bool = True, **kwargs):
         """
         Reset a VM
         """
-        self.vmm.reset_vm(vm, hard, **kwargs)
+        self.mvm.reset_vm(vm, hard, **kwargs)
 
     def get_vm_status(self, vm: str):
         """
         Get the status of a VM
         """
-        self.vmm.get_vm_status(vm)
+        self.mvm.get_vm_status(vm)
 
     def get_ip(self, vm: str = "", **kwargs):
         """
         Get the IP of a VM 
         """
-        ip =  self.vmm.get_ip(vm, **kwargs)
+        ip =  self.mvm.get_ip(vm, **kwargs)
         #print(f"{ip}")
         return ip

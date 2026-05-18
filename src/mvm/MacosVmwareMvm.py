@@ -51,7 +51,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         """
         List available VMs 
         """
-        # print("Got into macosVmwareVmm list method...")
+        # print("Got into macosVmwareMvm list method...")
         vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
@@ -109,7 +109,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         """
         Get the status of a virtual machine 
         """
-        # print("Got into macosVmwareVmm list method...")
+        # print("Got into macosVmwareMvm list method...")
         vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
         # print(f"{vmx_files}")
 

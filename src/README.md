@@ -31,7 +31,7 @@ Linux support on the roadmap for:
 ├── BuildScripts # pyinstaller build scripts
 ├── docs     # Support documentation
 ├── packenv  # python environment created a build run, created with a build run
-├── vmm      # root of the source code
+├── mvm      # root of the source code
 └── mvmBoard # eisenban kanban board directory
 ```
 
