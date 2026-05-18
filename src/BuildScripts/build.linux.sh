@@ -10,6 +10,7 @@ if [ ! -d "$directory" ]  || [ ! -f "$actfile" ] ; then
    source packenv/bin/activate
 
    pip install --upgrade pip
+   pip install android
    pip install PyInstaller
    pip install pyside6
    pip install psutil

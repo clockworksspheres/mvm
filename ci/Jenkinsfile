@@ -53,19 +53,19 @@ pipeline {
                     environment {
                         VENV = "../../packenv"
                         QT_QPA_PLATFORM = "offscreen"
-                    }   
+                    }
                     stages {
                         stage('macOS Test') { 
                             steps {
                                 dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
-                                    sh """ 
+                                    sh """
                                         ls -l
                                         . ${VENV}/bin/activate
                                         ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
-                                    """ 
+                                    """
                                     echo '----------=====### Finished Tests ###=====----------'
-                                    junit 'test-reports/results.xml' 
+                                    junit 'test-reports/results.xml'
                                 }
                             }
                         }
@@ -76,19 +76,20 @@ pipeline {
                     environment {
                         VENV = "../../packenv"
                         QT_QPA_PLATFORM = "offscreen"
-                    }   
+                    }
                     stages {
                         stage('Rocky10 Test') { 
                             steps {
                                 dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
-                                    sh """ 
+                                    sh """
                                         ls -l
                                         . ${VENV}/bin/activate
-                                        ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
-                                    """ 
+                                        sudo ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
+                                        sudo chgrp -R wheel test-reports
+                                    """
                                     echo '----------=====### Finished Tests ###=====----------'
-                                    junit 'test-reports/results.xml' 
+                                    junit 'test-reports/results.xml'
                                 }
                             }
                         }
@@ -99,19 +100,20 @@ pipeline {
                     environment {
                         VENV = "../../packenv"
                         QT_QPA_PLATFORM = "offscreen"
-                    }   
+                    }
                     stages {
                         stage('Debian Test') { 
                             steps {
                                 dir('src/mvm/tests') {
                                     echo '----------=====### Starting Tests ###=====----------'
-                                    sh """ 
+                                    sh """
                                         ls -l
                                         . ${VENV}/bin/activate
-                                        ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
-                                    """ 
+                                        sudo ${VENV}/bin/python -m pytest -v --junit-xml test-reports/results.xml
+                                        sudo chgrp -R sudo test-reports
+                                    """
                                     echo '----------=====### Finished Tests ###=====----------'
-                                    junit 'test-reports/results.xml' 
+                                    junit 'test-reports/results.xml'
                                 }
                             }
                         }
