@@ -12,11 +12,11 @@ VBM = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 
 @unittest.skipUnless(
     sys.platform.lower().startswith("win32"),
-    "WindowsVirtualboxVmm tests only run on Windows (win32)"
+    "WindowsVirtualboxMvm tests only run on Windows (win32)"
 )
-class TestWindowsVirtualboxVmm(unittest.TestCase):
+class TestWindowsVirtualboxMvm(unittest.TestCase):
 
-    from vmm.WindowsVirtualboxVmm import WindowsVirtualboxVmm
+    from mvm.WindowsVirtualboxMvm import WindowsVirtualboxMvm
 
     class FakeRunWith:
         """Fake runner capturing commands instead of executing them."""
@@ -40,57 +40,57 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
 
     def setUp(self):
         self.logger = self.DummyLogger()
-        self.vmm = self.WindowsVirtualboxVmm(self.logger)
-        self.vmm.run = self.FakeRunWith(self.logger)
+        self.mvm = self.WindowsVirtualboxMvm(self.logger)
+        self.mvm.run = self.FakeRunWith(self.logger)
 
     def test_list_vms_sets_correct_command(self):
-        self.vmm.list_vms()
+        self.mvm.list_vms()
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "list", "vms"]
         )
 
     def test_start_vm_sets_correct_command(self):
-        self.vmm.start_vm("TestVM")
+        self.mvm.start_vm("TestVM")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "startvm", "TestVM"]
         )
 
     def test_stop_vm_sets_correct_command(self):
-        self.vmm.stop_vm("vmStop", hard=True)
+        self.mvm.stop_vm("vmStop", hard=True)
         # On Windows, closing VM might use "controlvm <name> poweroff"
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "controlvm", "vmStop", "poweroff"]
         )
 
     def test_pause_vm_sets_correct_command(self):
-        self.vmm.pause_vm("vmP")
+        self.mvm.pause_vm("vmP")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "controlvm", "vmP", "savestate"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
-        self.vmm.unpause_vm("vmU")
+        self.mvm.unpause_vm("vmU")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "controlvm", "vmU", "resume"]
         )
 
     def test_reset_vm_sets_correct_command(self):
-        self.vmm.reset_vm("vmR", hard=True)
+        self.mvm.reset_vm("vmR", hard=True)
         # VirtualBox reset usually maps to controlvm reset (hard)
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [VBM, "controlvm", "vmR", "reset"]
         )
 
     def test_get_vm_status_returns_stripped_output(self):
         key = (VBM, "showvminfo", "vmS")
-        self.vmm.run.responses[key] = (" running \n", "", 0)
-        status = self.vmm.get_vm_status("vmS")
+        self.mvm.run.responses[key] = (" running \n", "", 0)
+        status = self.mvm.get_vm_status("vmS")
         self.assertEqual(status, "running")
 
     def test_get_ip_returns_stripped_output(self):
@@ -98,8 +98,8 @@ class TestWindowsVirtualboxVmm(unittest.TestCase):
             VBM, "guestproperty", "get", "vmIP",
             "/VirtualBox/GuestInfo/Net/0/IP"
         )
-        self.vmm.run.responses[key] = (" 10.0.2.15 \n", "", 0)
-        ip = self.vmm.get_ip("vmIP")
+        self.mvm.run.responses[key] = (" 10.0.2.15 \n", "", 0)
+        ip = self.mvm.get_ip("vmIP")
         self.assertEqual(ip, "10.0.2.15")
 
 

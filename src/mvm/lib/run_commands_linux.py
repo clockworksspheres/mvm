@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-from vmm.lib.libHelperExceptions import NotValidForThisOS
+from mvm.lib.libHelperExceptions import NotValidForThisOS
 
 #if not sys.platform.lower().startswith("linux"):
 #    raise NotValidForThisOS("Not Valid For This OS...")
@@ -25,9 +25,9 @@ import traceback
 from subprocess import Popen, PIPE
 from subprocess import SubprocessError as SubprocessError
 
-from vmm.lib.loggers import CyLogger
-from vmm.lib.loggers import LogPriority as lp
-from vmm.lib.loggers import MockLogger
+from mvm.lib.loggers import CyLogger
+from mvm.lib.loggers import LogPriority as lp
+from mvm.lib.loggers import MockLogger
 
 
 class OSNotValidForRunWith(BaseException):

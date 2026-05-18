@@ -8,43 +8,43 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent
 
 # Adjust import path to match your project structure
-from vmm.MacosVirtualboxVmm import MacosVirtualboxVmm
+from mvm.MacosVirtualboxMvm import MacosVirtualboxMvm
 
 
 # Needs Major Modification to work...
 @unittest.skip("Needs major modifications to work...")
-class TestMacosVirtualboxVmm(unittest.TestCase):
+class TestMacosVirtualboxMvm(unittest.TestCase):
 
     #
     # ────────────────────────────────────────────────────────────────
     #   Helper: create instance with mocked RunWith
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
-    def create_vmm(self, mock_runwith):
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
+    def create_mvm(self, mock_runwith):
         mock_run = MagicMock()
         mock_runwith.return_value = mock_run
-        vmm = MacosVirtualboxVmm(logger=MagicMock())
-        return vmm, mock_run
+        mvm = MacosVirtualboxMvm(logger=MagicMock())
+        return mvm, mock_run
 
     #
     # ────────────────────────────────────────────────────────────────
     #   Test list_vms()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.get_vm_ip")
-    @patch("vmm.MacosVirtualboxVmm.get_vm_state")
-    @patch("vmm.MacosVirtualboxVmm.list_running_vms")
-    @patch("vmm.MacosVirtualboxVmm.list_vms")
+    @patch("mvm.MacosVirtualboxMvm.get_vm_ip")
+    @patch("mvm.MacosVirtualboxMvm.get_vm_state")
+    @patch("mvm.MacosVirtualboxMvm.list_running_vms")
+    @patch("mvm.MacosVirtualboxMvm.list_vms")
     def test_list_vms(self, mock_list_vms, mock_list_running, mock_state, mock_ip):
         mock_list_vms.return_value = {"TestVM": "UUID123"}
         mock_list_running.return_value = ["UUID123"]
         mock_state.return_value = "running"
         mock_ip.return_value = "192.168.56.10"
 
-        vmm, _ = self.create_vmm()
+        mvm, _ = self.create_mvm()
 
-        vmm.list_vms()
+        mvm.list_vms()
 
         mock_list_vms.assert_called_once()
         mock_state.assert_called_with("UUID123")
@@ -55,11 +55,11 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test start_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
     def test_start_vm(self, mock_runwith):
-        vmm, mock_run = self.start_vmm()
+        mvm, mock_run = self.start_mvm()
 
-        vmm.start_vm("TestVM")
+        mvm.start_vm("TestVM")
 
         mock_run.setCommand.assert_called_with(
             ["/usr/local/bin/VBoxManage", "startvm", "TestVM"]
@@ -71,11 +71,11 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test stop_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
     def test_stop_vm(self, mock_runwith):
-        vmm, mock_run = self.stop_vmm()
+        mvm, mock_run = self.stop_mvm()
 
-        vmm.stop_vm("TestVM")
+        mvm.stop_vm("TestVM")
 
         mock_run.setCommand.assert_called_with(
             ["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "poweroff"]
@@ -87,11 +87,11 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test pause_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
     def test_pause_vm(self, mock_runwith):
-        vmm, mock_run = self.pause_vmm()
+        mvm, mock_run = self.pause_mvm()
 
-        vmm.pause_vm("TestVM")
+        mvm.pause_vm("TestVM")
 
         mock_run.setCommand.assert_called_with(
             ["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "savestate"]
@@ -103,11 +103,11 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test unpause_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
     def test_unpause_vm(self, mock_runwith):
-        vmm, mock_run = self.unpause_vmm()
+        mvm, mock_run = self.unpause_mvm()
 
-        vmm.unpause_vm("TestVM")
+        mvm.unpause_vm("TestVM")
 
         mock_run.setCommand.assert_called_with(
             ["/usr/local/bin/VBoxManage", "startvm", "TestVM"]
@@ -119,11 +119,11 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test reset_vm()
     # ────────────────────────────────────────────────────────────────
     #
-    @patch("vmm.MacosVirtualboxVmm.RunWith")
+    @patch("mvm.MacosVirtualboxMvm.RunWith")
     def test_reset_vm(self, mock_runwith):
-        vmm, mock_run = self.reset_vmm()
+        mvm, mock_run = self.reset_mvm()
 
-        vmm.reset_vm("TestVM")
+        mvm.reset_vm("TestVM")
 
         expected_calls = [
             (["/usr/local/bin/VBoxManage", "controlvm", "TestVM", "reset"],)
@@ -139,15 +139,15 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test get_ip()
     # ────────────────────────────────────────────────────────────────
     #
-    #@patch("vmm.MacosVirtualboxVmm.RunWith")
+    #@patch("mvm.MacosVirtualboxMvm.RunWith")
     # Test needs correction to work right
     @unittest.SkipTest
     def test_get_ip(self, mock_runwith):
-        vmm, mock_run = self.create_vmm()
+        mvm, mock_run = self.create_mvm()
 
         mock_run.communicate.return_value = ("192.168.56.10\n", "", 0)
 
-        ip = vmm.get_ip("TestVM")
+        ip = mvm.get_ip("TestVM")
 
         mock_run.setCommand.assert_called_with(
             ["/usr/local/bin/VBoxManage", "guestproperty", "get",
@@ -160,14 +160,14 @@ class TestMacosVirtualboxVmm(unittest.TestCase):
     #   Test get_vm_status()
     # ────────────────────────────────────────────────────────────────
     # incorrect implementation of test
-    #@patch("vmm.MacosVirtualboxVmm.MacosVirtualboxVmm.list_vms")
+    #@patch("mvm.MacosVirtualboxMvm.MacosVirtualboxMvm.list_vms")
     @unittest.SkipTest
     def test_get_vm_status(self, mock_list_vms):
         mock_list_vms.return_value = ("TestVM", "running", "192.168.56.10")
 
-        vmm, _ = self.create_vmm()
+        mvm, _ = self.create_mvm()
 
-        name, state, ip = vmm.get_vm_status("TestVM")
+        name, state, ip = mvm.get_vm_status("TestVM")
 
         self.assertEqual(name, "TestVM")
         self.assertEqual(state, "running")

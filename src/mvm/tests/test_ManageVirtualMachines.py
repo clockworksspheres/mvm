@@ -140,7 +140,7 @@ class TestManageVirtualMachines(unittest.TestCase):
         fake_mvm.start_vm.assert_called_once_with("VM1")
 
         mvm.stop_vm("VM1")
-        fake_vmm.stop_vm.assert_called_once_with("VM1")
+        fake_mvm.stop_vm.assert_called_once_with("VM1")
 
         mvm.pause_vm("VM1")
         fake_mvm.pause_vm.assert_called_once_with("VM1")

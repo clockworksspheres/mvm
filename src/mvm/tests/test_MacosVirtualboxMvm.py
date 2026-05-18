@@ -43,64 +43,64 @@ class TestMacosVirtualboxMvm(unittest.TestCase):
 
     def setUp(self):
         self.logger = self.DummyLogger()
-        self.vmm = MacosVirtualboxMvm(self.logger)
+        self.mvm = MacosVirtualboxMvm(self.logger)
 
         # Replace the internal runner with our fake runner
-        self.vmm.run = self.FakeRunWith(self.logger)
+        self.mvm.run = self.FakeRunWith(self.logger)
 
     def test_list_vms_sets_correct_command(self):
-        self.vmm.list_vms()
+        self.mvm.list_vms()
         self.assertRaises(AssertionError)
 
     def test_start_vm_sets_correct_command(self):
-        self.vmm.start_vm("TestVM")
+        self.mvm.start_vm("TestVM")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [vboxmanage, "startvm", "TestVM"]
         )
 
     def test_stop_vm_sets_correct_command(self):
-        self.vmm.stop_vm("vmStop", hard=True)
+        self.mvm.stop_vm("vmStop", hard=True)
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [vboxmanage, "controlvm", "vmStop", "poweroff"]
         )
 
     def test_pause_vm_sets_correct_command(self):
-        self.vmm.pause_vm("vmP")
+        self.mvm.pause_vm("vmP")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [vboxmanage, "controlvm", "vmP", "savestate"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
-        self.vmm.unpause_vm("vmU")
+        self.mvm.unpause_vm("vmU")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [vboxmanage, "startvm", "vmU"]
         )
 
     def test_reset_vm_issues_reset_then_start(self):
-        self.vmm.reset_vm("vmR", hard=True)
+        self.mvm.reset_vm("vmR", hard=True)
         # The final call should be the start command
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             [vboxmanage, "controlvm", "vmR", "reset"]
         )
 
     @unittest.SkipTest
     def test_get_vm_status_returns_stripped_output(self):
         key = (vboxmanage, "showvminfo", "vmS")
-        self.vmm.run.responses[key] = (" VMSTATE=running \n", "", 0)
-        self.vmm.get_vm_status("vmS")
+        self.mvm.run.responses[key] = (" VMSTATE=running \n", "", 0)
+        self.mvm.get_vm_status("vmS")
         self.assertRaises(AssertionError)
     
     @unittest.SkipTest
     def test_get_ip_returns_stripped_output(self):
         key = (vboxmanage, "guestproperty", "get", "vmIP",
                "/VirtuallBox/GuestInfo/Net/0/IP")
-        self.vmm.run.responses[key] = (" 192.168.0.99 \n", "", 0)
-        ip = str(self.vmm.get_ip("vmIP")).strip()
+        self.mvm.run.responses[key] = (" 192.168.0.99 \n", "", 0)
+        ip = str(self.mvm.get_ip("vmIP")).strip()
         self.assertEqual(ip, "192.168.0.99")
 
 

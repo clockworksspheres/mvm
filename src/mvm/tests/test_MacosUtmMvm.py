@@ -40,47 +40,47 @@ class TestMacosUtmMvm(unittest.TestCase):
 
     def setUp(self):
         self.logger = self.DummyLogger()
-        self.vmm = MacosUtmMvm(self.logger)
+        self.mvm = MacosUtmMvm(self.logger)
 
         # Replace the real runner with our fake
-        self.vmm.run = self.FakeRunWith(self.logger)
+        self.mvm.run = self.FakeRunWith(self.logger)
 
     def test_list_vms_sets_correct_command(self):
-        self.vmm.list_vms()
+        self.mvm.list_vms()
         self.assertRaises(AssertionError)
 
     def test_start_vm_sets_correct_command(self):
-        self.vmm.start_vm("myvm")
+        self.mvm.start_vm("myvm")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             ["utmctl", "start", "myvm"]
         )
 
     def test_stop_vm_sets_correct_command(self):
-        self.vmm.stop_vm("testvm", hard=True)
+        self.mvm.stop_vm("testvm", hard=True)
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             ["utmctl", "stop", "testvm"]
         )
 
     def test_pause_vm_sets_correct_command(self):
-        self.vmm.pause_vm("vm1")
+        self.mvm.pause_vm("vm1")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             ["utmctl", "pause", "vm1"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
-        self.vmm.unpause_vm("vmX")
+        self.mvm.unpause_vm("vmX")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             ["utmctl", "start", "vmX"]
         )
 
     def test_reset_vm_runs_stop_then_start(self):
-        self.vmm.reset_vm("vmR")
+        self.mvm.reset_vm("vmR")
         self.assertEqual(
-            self.vmm.run.last_command,
+            self.mvm.run.last_command,
             ["utmctl", "start", "vmR"]
         )
 
@@ -88,20 +88,20 @@ class TestMacosUtmMvm(unittest.TestCase):
     # tests do not test as intended
     @unittest.SkipTest
     def test_get_vm_status_returns_stripped_output(self):
-        self.vmm.run.responses[
+        self.mvm.run.responses[
             ("utmctl", "status", "v1")
         ] = (" running\n", "", 0)
 
-        status = self.vmm.get_vm_status("v1")
+        status = self.mvm.get_vm_status("v1")
         self.assertRaises(AssertionError)
 
     def test_get_ip_returns_stripped_ip(self):
-        self.vmm.run.responses[
+        self.mvm.run.responses[
             ("utmctl", "ip-address", "vmIP")
         ] = ("192.168.1.50\n", "", 0)
         
 
-        ip = self.vmm.get_ip("vmIP")
+        ip = self.mvm.get_ip("vmIP")
         self.assertRaises(AssertionError)
     '''
 
