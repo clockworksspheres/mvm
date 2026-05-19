@@ -1,3 +1,4 @@
+import sys
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 
@@ -5,6 +6,10 @@ from unittest.mock import patch, MagicMock, Mock
 from mvm.MacosVmwareMvm import MacosVmwareMvm
 
 
+@unittest.skipUnless(
+    sys.platform.lower().startswith("darwin"),
+    "MacosVmwareMvm Can only run on macOS (dwarin)"
+)
 class TestMacosVmwareMvm(unittest.TestCase):
 
     @patch("mvm.MacosVmwareMvm.CyLogger")
