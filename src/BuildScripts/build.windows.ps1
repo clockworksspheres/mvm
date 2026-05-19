@@ -25,6 +25,7 @@ if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    pip install psutil
    pip install packaging
    pip install requests
+   pip install pylint
    pip install pytest
    pip install pywin32
    pip install pyside6

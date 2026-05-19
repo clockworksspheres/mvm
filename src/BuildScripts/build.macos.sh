@@ -20,6 +20,7 @@ if [ ! -d "$directory" ]  || [ ! -f "$actfile" ] ; then
    pip install pyside6
    pip install psutil
    pip install packaging
+   pip install pylint
    pip install pytest
 else
    source packenv/bin/activate
