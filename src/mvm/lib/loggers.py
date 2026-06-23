@@ -178,10 +178,7 @@ class CyLogger(Singleton):
         """
         Input validation for the logging level
 
-        
-
-        @param level:  (Default value = 30)
- 
+        @param level:  (Default value = 30) 
         """
         
         success = False
@@ -199,10 +196,7 @@ class CyLogger(Singleton):
         If there is a RotatingFileHandler attached to the active logger,
         rotate the log.
         
-        
-
         @param rothandler: 
-
         """
         if self.rotate:
             try:
@@ -290,6 +284,9 @@ class CyLogger(Singleton):
         # Initialize the root logger
         self.logr = logging.getLogger("")
 
+        fileHandler = False
+        rotHandler = False
+
         #####
         # Set logging level for the root logger
         if not self.rotate:
@@ -349,8 +346,6 @@ class CyLogger(Singleton):
 
         @param *args: 
         @param **kwargs: 
-
-        
         """
         pass
 
@@ -361,8 +356,6 @@ class CyLogger(Singleton):
         Template/interface for setting up a logger
 
         One may add several handlers to one logger.
-
-        
         """
         pass
 
@@ -372,9 +365,7 @@ class CyLogger(Singleton):
         """
 
         @param priority:  (Default value = 0)
-        @param msg:  (Default value = "")
-
-        
+        @param msg:  (Default value = "")        
         """
         pri = str(priority)
         if re.match(r"^\d\d$", pri) and self.validateLevel():
@@ -395,7 +386,7 @@ class CyLogger(Singleton):
         # using local time so the time stamp can be correlated with 
         # system logs...
         datestamp = datetime.datetime.now()
-        timestamp = datestamp.strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datestamp.strftime("%Y-%m-%d_%H-%M-%S")
 
         #####
         # Get the name of the program using this library
@@ -452,7 +443,7 @@ class CyLogger(Singleton):
         if isinstance(msg, list):
             msg_list = msg
         elif isinstance(msg, str):
-            first_msg_list = msg.split("\n")
+            first_msg_list = msg.splitlines()
             for mymsg in first_msg_list:
                 msg_list.append(mymsg + "\n")
         elif isinstance(msg, dict):
