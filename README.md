@@ -6,8 +6,8 @@ Virtualbox VM's.  The purpose is to abstract a consistent
 _core_ start, stop, reset, pause, unpause and status 
 functionality.
 
-Creating Linux based support for type
-two hypervisors is in the works.
+Creating Linux based support for type two hypervisors is in
+the planning stages - need hardware.
 
 Script can be used to automate local developer VM's for
 CI/CD piplines with Jenkins or other ci/cd processes, 

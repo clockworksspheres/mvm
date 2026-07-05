@@ -1,3 +1,5 @@
+# Created for the mvm project: https://github.com/clockworksspheres/mvm
+
 import sys
 import re
 import argparse
@@ -92,6 +94,29 @@ class SimpleConsole(QTextBrowser):
 
 
 # ---------------------------------------------------------
+# Popup Widget
+# ---------------------------------------------------------
+class PopupWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Debug log Window")
+        self.setGeometry(100, 100, 300, 200)
+        
+        layout = QVBoxLayout()
+
+        self.console = SimpleConsole()
+        layout.addWidget(self.console)
+        close_btn = QPushButton("Close")
+        layout.addWidget(close_btn)
+
+        self.setLayout(layout)
+
+        close_btn.clicked.connect(self.close_popup)
+    
+    def close_popup(self):
+        self.reject()
+
+# ---------------------------------------------------------
 # Main Window (NO THREADS)
 # ---------------------------------------------------------
 class MainWindow(QMainWindow):
@@ -108,8 +133,12 @@ class MainWindow(QMainWindow):
         layout1 = QVBoxLayout(page1)
         btn_console = QPushButton("Open Console")
         btn_demo = QPushButton("Run Demo Output")
+        btn_popup = QPushButton("Open Console Popup")
         layout1.addWidget(btn_console)
         layout1.addWidget(btn_demo)
+        layout1.addWidget(btn_popup)
+
+        self.popup = None
 
         # Page 2 (console)
         page2 = QWidget()
@@ -125,6 +154,7 @@ class MainWindow(QMainWindow):
         btn_console.clicked.connect(lambda: self.stack.setCurrentIndex(1))
         btn_back.clicked.connect(lambda: self.stack.setCurrentIndex(0))
         btn_demo.clicked.connect(self.demo_output)
+        btn_popup.clicked.connect(self.show_popup)
 
         # Create stdout/stderr streams
         self.stdout_stream = ConsoleStream(logfile=args.logfile)
@@ -151,6 +181,15 @@ class MainWindow(QMainWindow):
         print("Clickable link: https://www.qt.io")
         print("Another link: https://www.python.org")
         print("Back to normal text.")
+
+    def show_popup(self):
+        # Create the popup only if it doesn't exist, or create a new one every time
+        if self.popup is None:
+            self.popup = PopupWidget()
+        
+        self.popup.show()
+        self.popup.raise_() # Bring to front
+        self.popup.activateWindow() # Give focus
 
 
 # ---------------------------------------------------------
