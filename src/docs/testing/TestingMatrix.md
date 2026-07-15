@@ -70,6 +70,7 @@ KVM | N/A | No | No | No | No | No
 Time has allowed for the following
 
 Virtualbox - Debian & Ubuntu
+
 HyperV - Ubuntu & Windows
 
 ## As a Guest on Linux
