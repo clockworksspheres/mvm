@@ -43,7 +43,7 @@ KVM | No | No | No
 
 Time has allowed for the following
 
- | macOS guest | Windows guest | Linux guest
+ []() | macOS guest | Windows guest | Linux guest
  ---|------------|-------------|---------------
 macOS | Yes | Not Supported | Not Supported
 Windows | Yes | Yes | No
@@ -56,7 +56,7 @@ Alma Linux | Yes | No | No
 
 Time has allowed for the following
 
- | macOS | Windows | Debian | Ubuntu | Rocky | Alma
+[]() | macOS | Windows | Debian | Ubuntu | Rocky | Alma
  ---| --- | --- | --- | --- | --- | ---
 UTM | Yes | Yes | Yes | No | No | No 
 HyperV | N/A | Yes | Yes | Yes | No | No
