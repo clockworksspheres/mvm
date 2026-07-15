@@ -43,7 +43,7 @@ KVM | No | No | No
 
 Time has allowed for the following
 
- []() | macOS guest | Windows guest | Linux guest
+[]() | macOS guest | Windows guest | Linux guest
  ---|------------|-------------|---------------
 macOS | Yes | Not Supported | Not Supported
 Windows | Yes | Yes | No
@@ -70,7 +70,7 @@ KVM | N/A | No | No | No | No | No
 Time has allowed for the following
 
 Virtualbox - Debian & Ubuntu
-HyperV - Ubuntu & Windows
+</br>HyperV - Ubuntu & Windows
 
 ## As a Guest on Linux
 
