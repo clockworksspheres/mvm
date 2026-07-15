@@ -1,6 +1,6 @@
 # Manage Virtual Machines
 
-Basic virtual machine management, meant for developers to
+Basic management of virtual machines, meant for developers to
 manage UTM, HyperV, Vmware Fusion and Workstation and
 Virtualbox VM's.  The purpose is to abstract a consistent 
 _core_ start, stop, reset, pause, unpause and status 
