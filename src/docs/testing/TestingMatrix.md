@@ -6,7 +6,7 @@ Some of the testing is provided by a Jenkins pipeline, but most of the testing i
 
 ### Runs on
 
- | macOS Host | Windows Host | Linux Host
+ []() | macOS Host | Windows Host | Linux Host
  ---|------------|-------------|---------------
  UTM | Available | N/A | N/A
  HyperV | N/A | Available | N/A
@@ -17,7 +17,7 @@ Some of the testing is provided by a Jenkins pipeline, but most of the testing i
 
 ### Capabilities
 
-  | Hypervisor Type | Provides Emulation | provides HW Virtualization | Nested Virtualization 
+ []() | Hypervisor Type | Provides Emulation | provides HW Virtualization | Nested Virtualization 
  --- | --- | --- | --- | ---
  UTM | 2 | Yes | Yes | in some cases
  HyperV | 1 | ?? | Yes | Yes, only for Windows guests
@@ -30,7 +30,7 @@ Some of the testing is provided by a Jenkins pipeline, but most of the testing i
 
 Time has allowed for the following
 
- | macOS Host | Windows Host | Linux Host
+[]() | macOS Host | Windows Host | Linux Host
  ---|------------|-------------|---------------
 UTM | Yes | N/A | N/A
 HyperV | N/A | Yes | N/A
