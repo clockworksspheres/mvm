@@ -75,6 +75,7 @@ def mvm_run(args):
 
     elif cmd == "status":
         mvm.list_vms()
+        #mvm.get_vm_status(vm)
 
     elif cmd == "ip":
         mvm.get_ip(vm)

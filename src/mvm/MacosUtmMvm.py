@@ -1,4 +1,5 @@
 import inspect
+import re
 
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
@@ -39,6 +40,8 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         print("-" * 60) 
         #print(f"{vms}\n")
 
+        list_vms_state_dict = {}
+
         for vm in vms:
             uuid = vm["uuid"]
             name = vm["name"]
@@ -50,8 +53,11 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             state = state or vm["state"]
             ip = ip or "no-ip"
 
+            list_vms_state_dict[name] = { "state": state, "ip": ip }
+
             print(f"{name:25} {state:15} {ip or 'N/A'}")
             # print(f"{name} | {state} | {ip}")
+        return list_vms_state_dict
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
@@ -104,27 +110,28 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         vms = utm_list()
 
         if not vms:
-            print("No VMs found or utmctl produced no output.")
-            return
+           print("No VMs found or utmctl produced no output.")
+           return
 
-        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
-        print("-" * 60) 
+        # print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        # print("-" * 60) 
         # print(f"{vms}\n")
 
-        for vm in vms:
-            uuid = vm["uuid"]
-            name = vm["name"]
+        for machine in vms:
+            uuid = machine["uuid"]
+            name = machine["name"]
 
             # Get detailed status + IP
             state, ip = utm_status(uuid)
 
             # Fallback to list state if status didn't return one
-            state = state or vm["state"]
+            state = state or machine["state"]
             ip = ip or "no-ip"
 
-            print(f"{name:25} {state:15} {ip or 'N/A'}")
+            if re.match(name, vm.strip()):
+                print(f"{name:25} {state:15} {ip or 'N/A'}")
             # print(f"{name} | {state} | {ip}")
-
+        
     def get_ip(self, vm: str = ""):
         """
         get the IP address of a virtual machine 
