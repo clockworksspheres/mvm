@@ -3,11 +3,11 @@
 pushd ..
 
 #if doesn't the packenv directory doesn't exist...
-directory="./packenv"
-actfile="./packenv/bin/activate"
+directory="./projEnv"
+actfile="./projEnv/bin/activate"
 if [ ! -d "$directory" ]  || [ ! -f "$actfile" ] ; then
-   python -m venv packenv
-   source packenv/bin/activate
+   python -m venv $directory
+   source $actfile
 
    pip install --upgrade pip
    pip install astroid
@@ -18,7 +18,7 @@ if [ ! -d "$directory" ]  || [ ! -f "$actfile" ] ; then
    pip install pylint
    pip install pytest
 else
-   source packenv/bin/activate
+   source $actfile
 fi
 
 cp BuildScripts/build.linux.spec mvm

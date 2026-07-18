@@ -12,12 +12,15 @@ pushd ..
 #if doesn't exist...
 # cd to the eisenban source root
 
-#$FolderPath = ".\packenv"
-#if (!(Test-Path -Path $FolderPath -PathType Container)) {
-if (!(Test-Path -Path ".\packenv" -PathType Container)) {
+$directory = ".\projEnv"
+$actfile = $directory\bin\Activate.ps1
+if (!(Test-Path -Path $FolderPath -PathType Container)) {
+   #if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    
-   python -m venv packenv
-   .\packenv\Scripts\Activate.ps1
+   #python -m venv projEnv
+   #.\projEnv\Scripts\Activate.ps1
+   python -m venv $directory
+   $actfile
 
    #pip install --upgrade pip
    pip install astroid
@@ -30,7 +33,7 @@ if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    pip install pywin32
    pip install pyside6
 } else {
-    .\packenv\Scripts\Activate.ps1
+   $actfile
 }
 
 #####
