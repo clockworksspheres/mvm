@@ -13,27 +13,19 @@ pushd ..
 # cd to the eisenban source root
 
 $directory = ".\projEnv"
-$actfile = $directory\bin\Activate.ps1
-if (!(Test-Path -Path $FolderPath -PathType Container)) {
+$actfile = ".\projEnv\Scripts\Activate.ps1"
+if (!(Test-Path -Path $directory -PathType Container)) {
    #if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    
    #python -m venv projEnv
    #.\projEnv\Scripts\Activate.ps1
    python -m venv $directory
-   $actfile
+   powershell -File $actfile
 
    #pip install --upgrade pip
-   pip install astroid
-   pip install PyInstaller
-   pip install psutil
-   pip install packaging
-   pip install requests
-   pip install pylint
-   pip install pytest
-   pip install pywin32
-   pip install pyside6
+   pip install -r requirements.txt
 } else {
-   $actfile
+   powershell -File $actfile
 }
 
 #####
