@@ -1,0 +1,9 @@
+astroid
+PyInstaller
+pyside6
+psutil
+packaging
+pylint
+pytest
+pywin32; sys_platform == 'win32'
+
