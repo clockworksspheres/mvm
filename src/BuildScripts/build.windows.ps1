@@ -5,20 +5,15 @@
 
 # before script is run:
 # Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-# powershell -File ".\eisenban.windows.ps1"
+# powershell -File ".\build.windows.ps1"
 
 pushd ..
-
-#if doesn't exist...
-# cd to the eisenban source root
 
 $directory = ".\projEnv"
 $actfile = ".\projEnv\Scripts\Activate.ps1"
 if (!(Test-Path -Path $directory -PathType Container)) {
    #if (!(Test-Path -Path ".\packenv" -PathType Container)) {
    
-   #python -m venv projEnv
-   #.\projEnv\Scripts\Activate.ps1
    python -m venv $directory
    powershell -File $actfile
 
