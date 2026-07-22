@@ -61,6 +61,51 @@ def utm_status(uuid):
     return state, ip
 
 
+def utm_ips(machine):
+    """
+    Find the IP address of a UTM virtual machine
+    
+    Parameters
+    ----------
+    machine: str
+        Can be either the virtual machine name or the uuid
+
+    Returns
+    -------
+    ips: string
+        a string with comma separated ipv4 IP addresses
+
+    Raises
+    ------
+    ValueError
+        If the input data is not a string
+
+    Examples:
+    >>> vm = "deb13"
+    >>> ips = utm_ip(vm)
+    >>> print(ips)
+    192.168.2.1, 172.16.2.3
+
+    """
+    output = run_cmd([utmctl, "ip-address", machine])
+    count = 0 
+    ips = ""
+
+    for line in output.splitlines():
+        # Pattern matches 0-255 in each of the 4 octets
+        ipv4_pattern = r'^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+
+        if re.fullmatch(ipv4_pattern, line.strip()):
+            if count == 0:
+                ips = line.strip() + ", "
+                count += 1
+            else:
+                ips = ips + ", " + line.strip
+
+    return ips 
+
+
+
 # ---------------------------------------------------------
 # Main (argparse)
 # ---------------------------------------------------------
@@ -89,14 +134,15 @@ def main():
         name = vm["name"]
 
         # Get detailed status + IP
+        ips = utm_ips(uuid)
         state, ip = utm_status(uuid)
 
         # Fallback to list state if status didn't return one
         state = state or vm["state"]
-        ip = ip or "no-ip"
+        ips = ips or "no-ip"
 
-        print(f"{name:25} {state:15} {ip or 'N/A'}")
-        # print(f"{name} | {state} | {ip}")
+        print(f"{name:25} {state:15} {ips or 'N/A'}")
+        # print(f"{name} | {state} | {ips}")
 
 
 if __name__ == "__main__":

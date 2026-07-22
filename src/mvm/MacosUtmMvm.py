@@ -6,8 +6,9 @@ from mvm.lib.loggers import LogPriority as lp
 from mvm.lib.run_commands import RunWith
 from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 from mvm.lib.mac_utm_list_status import (utm_list,
-                                     utm_status,
-                                    )
+                                         utm_status,
+                                         utm_ips
+                                        )
 
 class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
@@ -116,22 +117,27 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         # print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         # print("-" * 60) 
         # print(f"{vms}\n")
-
+        found = False
         for machine in vms:
             uuid = machine["uuid"]
             name = machine["name"]
 
             # Get detailed status + IP
             state, ip = utm_status(uuid)
+            ips = utm_ips(uuid)
 
             # Fallback to list state if status didn't return one
             state = state or machine["state"]
-            ip = ip or "no-ip"
+            ips = ips or "no-ip"
 
-            if re.match(name, vm.strip()):
-                print(f"{name:25} {state:15} {ip or 'N/A'}")
-            # print(f"{name} | {state} | {ip}")
-        
+            if re.match(name, vm.strip(), flags=re.IGNORECASE):
+                print(f"{name:25} {state:15} {ips or 'N/A'}")
+                found = True
+                break
+            # print(f"{name} | {state} | {ips}")
+        if not found:
+            print("<< VM does not exist >>")
+ 
     def get_ip(self, vm: str = ""):
         """
         get the IP address of a virtual machine 
@@ -139,7 +145,25 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         Not supported for macOS vm's, so it's not
         supported for all UTM vms
         """
-        message = "Not supported for the UTM hypervisor"
-        print(message)
-        return message
+        ips = utm_ips(vm)
+        return ips
+        """
+        cmd = [self.utmctl, "ip-address", vm]
+        self.run.setCommand(cmd)
+        out, err, retval = self.run.communicate()
+        count = 0
+        for line in out.splitlines():
+            # Pattern matches 0-255 in each of the 4 octets
+            ipv4_pattern = r'^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 
+            if re.fullmatch(ipv4_pattern, line.strip()):
+                if count == 0:
+                    ips = line.strip() + ", "
+                    count += 1
+                else:
+                    ips = ips + ", " + line.strip
+
+        print("{vm} ipv4 IP: {ip}") 
+
+        return ips
+        """
