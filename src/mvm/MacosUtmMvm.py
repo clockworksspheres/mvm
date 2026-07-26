@@ -148,22 +148,3 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         ips = utm_ips(vm)
         return ips
         """
-        cmd = [self.utmctl, "ip-address", vm]
-        self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
-        count = 0
-        for line in out.splitlines():
-            # Pattern matches 0-255 in each of the 4 octets
-            ipv4_pattern = r'^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-
-            if re.fullmatch(ipv4_pattern, line.strip()):
-                if count == 0:
-                    ips = line.strip() + ", "
-                    count += 1
-                else:
-                    ips = ips + ", " + line.strip
-
-        print("{vm} ipv4 IP: {ip}") 
-
-        return ips
-        """
