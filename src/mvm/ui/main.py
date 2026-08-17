@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow)
 from PySide6.QtGui import QAction, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
 
-from ui.mainwindow_ui import Ui_MainWindow
+from ui.ui_mainwindow import Ui_MainWindow
 from mvm_run import mvm_run
 
 from lib.loggers import CyLogger
