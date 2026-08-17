@@ -147,4 +147,5 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         """
         ips = utm_ips(vm)
         return ips
-        """
+
+
