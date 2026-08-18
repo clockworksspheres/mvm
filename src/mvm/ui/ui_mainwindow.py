@@ -43,29 +43,19 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.hypervisorLabel, 0, 0, 1, 1)
 
-        self.runPushButton = QPushButton(self.centralwidget)
-        self.runPushButton.setObjectName(u"runPushButton")
-
-        self.gridLayout.addWidget(self.runPushButton, 7, 0, 1, 1)
-
         self.quitPushButton = QPushButton(self.centralwidget)
         self.quitPushButton.setObjectName(u"quitPushButton")
 
-        self.gridLayout.addWidget(self.quitPushButton, 8, 0, 1, 1)
-
-        self.vmNameLineEdit = QLineEdit(self.centralwidget)
-        self.vmNameLineEdit.setObjectName(u"vmNameLineEdit")
-
-        self.gridLayout.addWidget(self.vmNameLineEdit, 5, 0, 1, 1)
-
-        self.hypervisorComboBox = QComboBox(self.centralwidget)
-        self.hypervisorComboBox.setObjectName(u"hypervisorComboBox")
-
-        self.gridLayout.addWidget(self.hypervisorComboBox, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.quitPushButton, 9, 0, 1, 1)
 
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addItem(self.horizontalSpacer_3, 13, 4, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer_3, 14, 4, 1, 1)
+
+        self.vmNameLabel = QLabel(self.centralwidget)
+        self.vmNameLabel.setObjectName(u"vmNameLabel")
+
+        self.gridLayout.addWidget(self.vmNameLabel, 4, 0, 1, 1)
 
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
@@ -97,11 +87,16 @@ class Ui_MainWindow(object):
 
         self.stackedWidget.addWidget(self.page_3)
 
-        self.gridLayout.addWidget(self.stackedWidget, 1, 2, 11, 3)
+        self.gridLayout.addWidget(self.stackedWidget, 1, 2, 12, 3)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addItem(self.horizontalSpacer, 13, 2, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer_2, 14, 3, 1, 1)
+
+        self.runPushButton = QPushButton(self.centralwidget)
+        self.runPushButton.setObjectName(u"runPushButton")
+
+        self.gridLayout.addWidget(self.runPushButton, 7, 0, 1, 1)
 
         self.actionComboBox = QComboBox(self.centralwidget)
         self.actionComboBox.setObjectName(u"actionComboBox")
@@ -113,23 +108,33 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.actionLabel, 2, 0, 1, 1)
 
-        self.vmNameLabel = QLabel(self.centralwidget)
-        self.vmNameLabel.setObjectName(u"vmNameLabel")
+        self.vmNameLineEdit = QLineEdit(self.centralwidget)
+        self.vmNameLineEdit.setObjectName(u"vmNameLineEdit")
 
-        self.gridLayout.addWidget(self.vmNameLabel, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.vmNameLineEdit, 5, 0, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addItem(self.horizontalSpacer_2, 13, 3, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer, 14, 2, 1, 1)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.gridLayout.addItem(self.verticalSpacer, 9, 0, 1, 1)
+        self.gridLayout.addItem(self.verticalSpacer, 10, 0, 1, 1)
+
+        self.hypervisorComboBox = QComboBox(self.centralwidget)
+        self.hypervisorComboBox.setObjectName(u"hypervisorComboBox")
+
+        self.gridLayout.addWidget(self.hypervisorComboBox, 1, 0, 1, 1)
+
+        self.debugPushButton = QPushButton(self.centralwidget)
+        self.debugPushButton.setObjectName(u"debugPushButton")
+
+        self.gridLayout.addWidget(self.debugPushButton, 8, 0, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 652, 39))
+        self.menubar.setGeometry(QRect(0, 0, 652, 30))
         self.menuvmctl = QMenu(self.menubar)
         self.menuvmctl.setObjectName(u"menuvmctl")
         MainWindow.setMenuBar(self.menubar)
@@ -150,12 +155,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.hypervisorLabel.setText(QCoreApplication.translate("MainWindow", u"Hypervisor", None))
-        self.runPushButton.setText(QCoreApplication.translate("MainWindow", u"Run Action", None))
         self.quitPushButton.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
+        self.vmNameLabel.setText(QCoreApplication.translate("MainWindow", u"virtual machine name", None))
         self.headlessRadioButton.setText(QCoreApplication.translate("MainWindow", u"Headless", None))
         self.hardRadioButton.setText(QCoreApplication.translate("MainWindow", u"Hard", None))
+        self.runPushButton.setText(QCoreApplication.translate("MainWindow", u"Run Action", None))
         self.actionLabel.setText(QCoreApplication.translate("MainWindow", u"Action", None))
-        self.vmNameLabel.setText(QCoreApplication.translate("MainWindow", u"virtual machine name", None))
+        self.debugPushButton.setText(QCoreApplication.translate("MainWindow", u"Debug Messages", None))
         self.menuvmctl.setTitle(QCoreApplication.translate("MainWindow", u"vmctl", None))
     # retranslateUi
 

@@ -20,6 +20,8 @@ from PySide6.QtGui import QAction, QShortcut, QKeySequence
 from PySide6.QtCore import Qt
 
 from ui.ui_mainwindow import Ui_MainWindow
+from ui.consoleDialog import ConsoleStream, ConsoleDialog
+
 from mvm_run import mvm_run
 
 from lib.loggers import CyLogger
@@ -161,7 +163,18 @@ class VmCtlUi(QMainWindow):
             QShortcut(QKeySequence(Qt.CTRL | Qt.Key_0), self, activated=self.ui.textBrowser.reset_zoom)
             QShortcut(QKeySequence(Qt.CTRL | Qt.Key_L), self, activated=self.ui.textBrowser.clear_console)
 
+        #####
+        # Connect the debug button signal to slot
+        self.ui.debugPushButton.clicked.connect(self.onDebugPushButtonClicked)
 
+        self.console_dialogs = []
+
+        # Shared stream that all open dialogs listen to
+        self.stream = ConsoleStream()
+
+        # Redirect stdout & stderr to our stream
+        sys.stdout = self.stream
+        sys.stderr = self.stream
 
     def handle_combo_action(self, index):
         """
@@ -217,6 +230,27 @@ class VmCtlUi(QMainWindow):
 
         if not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")
+
+    def onDebugPushButtonClicked(self, checked):
+        dialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
+
+        # Connect this dialog to the shared stream
+        self.stream.text_emitted.connect(dialog.append_html)
+
+        # Disconnect when the dialog is closed (prevents errors later)
+        def on_finished():
+            try:
+                self.stream.text_emitted.disconnect(dialog.append_html)
+            except TypeError:
+                pass  # already disconnected
+            if dialog in self.console_dialogs:
+                self.console_dialogs.remove(dialog)
+
+        dialog.finished.connect(on_finished)
+
+        self.console_dialogs.append(dialog)
+        dialog.show()
+        self.raise_()
 
 
 if __name__=="__main__":
