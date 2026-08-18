@@ -176,6 +176,8 @@ class VmCtlUi(QMainWindow):
         sys.stdout = self.stream
         sys.stderr = self.stream
 
+        self.conDialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
+
     def handle_combo_action(self, index):
         """
         """
@@ -232,24 +234,27 @@ class VmCtlUi(QMainWindow):
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")
 
     def onDebugPushButtonClicked(self, checked):
-        dialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
+        #self.conDialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
+
+        self.ui.debugPushButton.hide()
 
         # Connect this dialog to the shared stream
-        self.stream.text_emitted.connect(dialog.append_html)
+        self.stream.text_emitted.connect(self.conDialog.append_html)
 
         # Disconnect when the dialog is closed (prevents errors later)
         def on_finished():
             try:
-                self.stream.text_emitted.disconnect(dialog.append_html)
+                self.stream.text_emitted.disconnect(self.conDialog.append_html)
+                self.ui.debugPushButton.show()
             except TypeError:
                 pass  # already disconnected
             if dialog in self.console_dialogs:
-                self.console_dialogs.remove(dialog)
+                self.console_dialogs.remove(self.conDialog)
 
-        dialog.finished.connect(on_finished)
+        self.conDialog.finished.connect(on_finished)
 
-        self.console_dialogs.append(dialog)
-        dialog.show()
+        self.console_dialogs.append(self.conDialog)
+        self.conDialog.show()
         self.raise_()
 
 
