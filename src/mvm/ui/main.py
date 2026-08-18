@@ -176,7 +176,13 @@ class VmCtlUi(QMainWindow):
         sys.stdout = self.stream
         sys.stderr = self.stream
 
-        self.conDialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
+        if sys.platform.lower().startswith("win32"):
+            # non-modal on Windows11 only works if None is passed in rather than self.
+            # problem is, all windows have to be closed separately...
+            # fixed - check out closeEvent method - QApplication.closeAllWindows()
+            self.conDialog = ConsoleDialog(None, title=f"Console #{len(self.console_dialogs) + 1}")
+        else:
+            self.conDialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
 
     def handle_combo_action(self, index):
         """
@@ -256,6 +262,12 @@ class VmCtlUi(QMainWindow):
         self.console_dialogs.append(self.conDialog)
         self.conDialog.show()
         self.raise_()
+
+    def closeEvent(self, event):
+        if sys.platform.lower().startswith("win32"):
+            # Required for the way the self.conDialog is instanciated on Windows
+            QApplication.closeAllWindows()
+        event.accept()  # Let the window close
 
 
 if __name__=="__main__":
