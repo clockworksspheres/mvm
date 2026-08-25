@@ -51,8 +51,8 @@ def mvm_run(args):
 
     if args.command == "list":
         # print("Got a list action")
-        mvm.list_vms()
-
+        table = mvm.list_vms()
+        return table
     elif cmd == "start":
         mvm.start_vm(vm, headless=args.headless)
         print(f"Started {hyper} → {vm}")

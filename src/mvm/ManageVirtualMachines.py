@@ -67,7 +67,8 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
         """
         List available VMs      
         """
-        self.mvm.list_vms(**kwargs)
+        table = self.mvm.list_vms(**kwargs)
+        return table
 
     def start_vm(self, vm: str = "", headless: bool = False, **kwargs):
         """

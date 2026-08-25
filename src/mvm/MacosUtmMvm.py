@@ -39,7 +39,8 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
         print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         print("-" * 60) 
-        #print(f"{vms}\n")
+        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
+        table = table + ("-" * 60) 
 
         list_vms_state_dict = {}
 
@@ -57,8 +58,9 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             list_vms_state_dict[name] = { "state": state, "ip": ip }
 
             print(f"{name:25} {state:15} {ip or 'N/A'}")
-            # print(f"{name} | {state} | {ip}")
-        return list_vms_state_dict
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
+        return table
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """

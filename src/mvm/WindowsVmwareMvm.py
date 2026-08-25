@@ -42,7 +42,9 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vmrun, "list"]
         self.run.setCommand(cmd)
-        self.run.communicate()
+        out, err, retval = self.run.communicate()
+        print(f"{out.strip()}")
+        return out.strip()
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """

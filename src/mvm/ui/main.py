@@ -70,7 +70,7 @@ class VmCtlUi(QMainWindow):
 
         self.ui.actionComboBox.addItems(["start", "stop", "reset",
                                          "pause", "unpause",
-                                         "status"])
+                                         "status", "list"])
  
         # set the stacked widget to the index 0 for "start" action 
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -82,8 +82,8 @@ class VmCtlUi(QMainWindow):
         self.ui.actionComboBox.currentIndexChanged.connect(self.handle_combo_action)
 
         # Connect run action button 
-        self.ui.runPushButton.clicked.connect(self.spawn_vm)
-        
+        self.ui.runPushButton.clicked.connect(self.spawn_action)
+
         # Connect quit action button 
         self.ui.quitPushButton.clicked.connect(QApplication.quit)
 
@@ -193,12 +193,19 @@ class VmCtlUi(QMainWindow):
             self.ui.stackedWidget.setCurrentIndex(1)
         elif index in (3, 4):
             self.ui.stackedWidget.setCurrentIndex(2)
-        elif index in (5, 6, 7):
+        elif index in (5, 6):
             self.ui.stackedWidget.setCurrentIndex(3)
         else:
             raise IndexError
+        if index == 6:
+            self.ui.vmNameLabel.hide()
+            self.ui.vmNameLineEdit.hide()
 
-    def spawn_vm(self):
+        else:
+            self.ui.vmNameLabel.show()
+            self.ui.vmNameLineEdit.show()
+
+    def spawn_action(self):
 
         current_hypervisor_index = self.ui.hypervisorComboBox.currentIndex()
         current_hypervisor_name = self.ui.hypervisorComboBox.currentText()
@@ -234,7 +241,11 @@ class VmCtlUi(QMainWindow):
                     hard = True,
                 )
                 self.ui.textBrowser.append("=========================")
-                mvm_run(args)
+                returned = mvm_run(args)
+
+                #if returned:
+                print(f"{returned}")
+                self.ui.textBrowser.append(f"{returned}")
 
         if not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")

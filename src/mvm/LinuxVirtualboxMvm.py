@@ -48,6 +48,8 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
 
         print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         print("-" * 60) 
+        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
+        table = table + ("-" * 60) 
 
         for name, uuid in vms.items():
             state = get_vm_state(uuid)
@@ -58,7 +60,9 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
                 ip = None
 
             print(f"{name:25} {state:15} {ip or 'N/A'}")
-        #return name, state, ip     
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
+        return table
 
 
     def start_vm(self, vm: str = "", headless: bool = False):
