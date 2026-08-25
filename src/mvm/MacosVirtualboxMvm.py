@@ -102,9 +102,21 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         Get the status of a virtual machine 
         """
-        self.list_vms()
-        #name, state, ip = self.list_vms()
-        #return name, state, ip
+        state = ""
+        vms = list_vms()
+        for name, uuid in vms.items():
+            if name == vm:
+                state = get_vm_state(uuid)
+                break
+            else:
+                continue
+            ''' in the future, may return IP as part of status.
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+            '''
+        return state
 
     def get_ip(self, vm: str = ""):
         """
