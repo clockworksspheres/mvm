@@ -64,20 +64,19 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
-        #print_status4all_vms(vmx_files)
 
         print(f"{'VM Name':30} {'State':15} {'IP Address'}")
-        print("-" * 60) 
+        print("-" * 60)
         table = f"{'VM Name':30} {'State':15} {'IP Address'}\n"
-        table = table + ("-" * 60) 
+        table = table + ("-" * 60)
 
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
             ip = get_vm_ip(str(vmx)) if status == "running" else None
-            
-            print(f"{name:30} {status:12} {ip or 'N/A'}")
-            table = table + f"\n{name:30} {status:12} {ip or 'N/A'}"
+
+            print(f"{str(name):30} {str(status):12} {ip or 'N/A'}")
+            table = table + f"\n{str(name):30} {str(status):12} {ip or 'N/A'}"
 
         return table
 
