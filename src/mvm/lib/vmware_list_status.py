@@ -44,10 +44,13 @@ def get_vm_ip(vmx_path):
     return output.strip()
 
 
-def detect_vm_status(vmx_path, running_set):
+def detect_vm_status(vmx_path, running_set=None):
     """Return running/suspended/off."""
     vmx_path = Path(vmx_path)
     vm_dir = vmx_path.parent
+
+    if not running_set:
+        running_set = list_running_vms()
 
     if str(vmx_path) in running_set:
         return "running"

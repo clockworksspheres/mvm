@@ -104,7 +104,8 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
         """
         Get the status of a VM, one of [ "running", "suspended", "off" ]
         """
-        self.mvm.get_vm_status(vm)
+        status = self.mvm.get_vm_status(vm)
+        return status
 
     def get_ip(self, vm: str = "", **kwargs):
         """

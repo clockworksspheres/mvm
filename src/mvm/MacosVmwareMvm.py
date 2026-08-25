@@ -47,13 +47,13 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         """
         vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
-        print(str(vmpaths))
-        for vmpath in vmpaths:
-            print("Found:", vmpath)
-            # return the first found in the search
-            break
-        print(str(vmpath))
-        return vmpath[0]
+        #print(str(vmpaths))
+        #for vmpath in vmpaths:
+        #    #print("Found:", vmpath)
+        #    # return the first found in the search
+        #    break
+        #print(str(vmpath))
+        return vmpaths[0]
 
     def list_vms(self, **kwargs):
         """
@@ -131,21 +131,40 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         """
         Get the status of a virtual machine 
         """
+        myvm = self.find_vm_by_display_name(vm)
+        status = detect_vm_status(str(myvm))
+        #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
+        #####
+        # vmState may include the IP in the future - {name, status, ip}
+        vmState = status
+        print(f"{str(vmState)}")
+        return vmState
+
         # print("Got into macosVmwareMvm list method...")
         vmx_files = find_all_vmx_files(self.userhome + "/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
 
-        print(f"{'VM Name':30} {'State':15} {'IP Address'}")
-        print("-" * 60) 
+        #print(f"{'VM Name':30} {'State':15} {'IP Address'}")
+        #print("-" * 60) 
+
+        vmStatus = {}
 
         for vmx in vmx_files:
             name = vmx.stem
-            status = detect_vm_status(str(vmx), running_set)
-            ip = get_vm_ip(str(vmx)) if status == "running" else None
+            print(f"{str(name)}")
+            if find_vm_by_display_name(vm):
+                status = detect_vm_status(str(vmx), running_set)
+                ip = get_vm_ip(str(vmx)) if status == "running" else None
 
-            print(f"{name:30} {status:12} {ip or 'N/A'}")
+                vmStatus = {"name": vm, "status": status, "ip": ip or 'N/A' }
+                print(f"{name:30} {status:12} {ip or 'N/A'}")
+                break
+            else:
+                continue
+
+        return vmStatus
 
     def get_ip(self, vm: str = ""):
         """

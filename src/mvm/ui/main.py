@@ -243,9 +243,9 @@ class VmCtlUi(QMainWindow):
                 self.ui.textBrowser.append("=========================")
                 returned = mvm_run(args)
 
-                #if returned:
-                print(f"{returned}")
-                self.ui.textBrowser.append(f"{returned}")
+                if returned:
+                    print(f"{returned}")
+                    self.ui.textBrowser.append(f"{returned}")
 
         if not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")

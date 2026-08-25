@@ -67,15 +67,15 @@ def mvm_run(args):
 
     elif cmd == "unpause":
         mvm.unpause_vm(vm)
-        print(f"Suspended {hyper} → {vm}")
+        print(f"Starting Suspended {hyper} → {vm}")
 
     elif cmd == "reset":
         mvm.reset_vm(vm, hard=args.hard)
         print(f"Reset {hyper} → {vm}")
 
     elif cmd == "status":
-        mvm.list_vms()
-        #mvm.get_vm_status(vm)
+        status = mvm.get_vm_status(vm)
+        return status
 
     elif cmd == "ip":
         mvm.get_ip(vm)
