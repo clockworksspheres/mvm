@@ -1,3 +1,4 @@
+import os
 import sys
 import inspect
 from pathlib import Path
@@ -33,6 +34,13 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
 
         self.vmrun = "/Applications/VMware Fusion.app/Contents/Library/vmrun"
 
+        self.userhome = ""
+
+        if sys.platform.lower().startswith("win"):
+            self.userhome = os.environ.get('USERPROFILE')
+        else:
+            self.userhome = os.environ.get('HOME') 
+
     def find_vm_by_display_name(self, vmname=""):
         """
         Find the first VM with vmname in the list of paths the searched.
@@ -52,7 +60,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         List available VMs 
         """
         # print("Got into macosVmwareMvm list method...")
-        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+        vmx_files = find_all_vmx_files(self.userhome + "/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
@@ -110,7 +118,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         Get the status of a virtual machine 
         """
         # print("Got into macosVmwareMvm list method...")
-        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+        vmx_files = find_all_vmx_files(self.userhome + "/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()

@@ -1,3 +1,4 @@
+import os
 import sys
 import inspect
 from pathlib import Path
@@ -36,6 +37,11 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
         self.run = RunWith(self.logger)
 
         self.vmrun = "???"
+
+        if sys.platform.lower().startswith("win"):
+            self.userhome = os.environ.get('USERPROFILE')
+        else:
+            self.userhome = os.environ.get('HOME')
 
     def find_vm_by_display_name(self, vmname=""):
         """
@@ -114,7 +120,7 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
         Get the status of a virtual machine 
         """
         # print("Got into macosVmwareMvm list method...")
-        vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+        vmx_files = find_all_vmx_files(self.userhome + "/Virtual Machines.localized")
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
