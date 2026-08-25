@@ -96,7 +96,7 @@ class ManageVirtualMachinesTemplate:
 
     def get_vm_status(self, vm: str):
         """
-         
+        Get the status of a VM, one of [ "running", "suspended", "off" ]
         """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")

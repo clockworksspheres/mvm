@@ -101,7 +101,7 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
 
     def get_vm_status(self, vm: str):
         """
-        Get the status of a VM
+        Get the status of a VM, one of [ "running", "suspended", "off" ]
         """
         self.mvm.get_vm_status(vm)
 
