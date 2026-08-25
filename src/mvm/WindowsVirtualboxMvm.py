@@ -29,7 +29,9 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
         cmd = [self.vboxmanage, "list", "vms"]
         self.run.setCommand(cmd)
         out, _, _ = self.run.communicate()
-        print(f"{out}")
+        table = f"{out}"
+        print(table)
+        return table
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
