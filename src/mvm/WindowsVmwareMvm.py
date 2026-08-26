@@ -21,7 +21,7 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vmrun = r"C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe"
+        self.vmrun = r"C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmrun.exe"
 
     def find_vm_by_display_name(self, vmname=""):
         """

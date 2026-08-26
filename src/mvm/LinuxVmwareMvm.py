@@ -36,7 +36,7 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
 
         self.run = RunWith(self.logger)
 
-        self.vmrun = "???"
+        self.vmrun = "/usr/bin/vmrun"
 
         if sys.platform.lower().startswith("win"):
             self.userhome = os.environ.get('USERPROFILE')

@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
+import sys
 import argparse
 import subprocess
 from pathlib import Path
 
 from mvm.lib.run_commands import RunWith
 
-vmrun = "/Applications/VMware Fusion.app/Contents/Public/vmrun"
 
+if sys.platform.lower().startswith("darwin"):
+    vmrun = "/Applications/VMware Fusion.app/Contents/Public/vmrun"
+elif sys.platform.lower().startswith("linux"):
+    vmrun = "/usr/bin/vmrun"
+elif sys.platform.lower().startswith("win"):
+    vmrun = "c:\\Program Files (X86)\\VMware\\VMware Workstation\\vmrun.exe"
+else:
+    raise ValueError(f"Cannot run on {sys.platform}")
 
 def run_vmrun(args):
     """Run vmrun and return output as text."""
