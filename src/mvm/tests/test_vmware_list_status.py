@@ -104,4 +104,4 @@ class TestVmFunctions(unittest.TestCase):
         vm.print_status4all_vms(None)
 
         self.assertTrue(mock_print.called)
-        mock_ip.assert_called_once_with("/vms/a.vmx")
+        mock_ip.assert_called_once_with("\\vms\\a.vmx")
