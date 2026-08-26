@@ -110,6 +110,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         """
         Get the status of a virtual machine 
         """
+        state = ""
         vms = utm_list()
 
         if not vms:
@@ -132,13 +133,15 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             state = state or machine["state"]
             ips = ips or "no-ip"
 
-            if re.match(name, vm.strip(), flags=re.IGNORECASE):
+            if re.fullmatch(name, vm.strip(), flags=re.IGNORECASE):
                 print(f"{name:25} {state:15} {ips or 'N/A'}")
                 found = True
                 break
             # print(f"{name} | {state} | {ips}")
         if not found:
+            state = "<< VM does not exist >>"
             print("<< VM does not exist >>")
+        return state
  
     def get_ip(self, vm: str = ""):
         """

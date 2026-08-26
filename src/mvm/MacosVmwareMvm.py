@@ -1,6 +1,7 @@
 import os
 import sys
 import inspect
+import traceback
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -45,15 +46,15 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         """
         Find the first VM with vmname in the list of paths the searched.
         """
-        vmpath = ""
+        vmpaths = None
         vmpaths = find_vm_by_display_name(vmname)
-        #print(str(vmpaths))
-        #for vmpath in vmpaths:
-        #    #print("Found:", vmpath)
-        #    # return the first found in the search
-        #    break
-        #print(str(vmpath))
-        return vmpaths[0]
+        try:
+            print(f"vmpath: {vmpaths[0]}")
+        except IndexError:
+            #print(traceback.format_exc())
+            return None
+        else:
+            return vmpaths[0]
 
     def list_vms(self, **kwargs):
         """
@@ -129,15 +130,19 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
 
     def get_vm_status(self, vm: str):
         """
-        Get the status of a virtual machine 
+        Get the status of a virtual machine
         """
+        vmState=""
         myvm = self.find_vm_by_display_name(vm)
-        status = detect_vm_status(str(myvm))
-        #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
-        #####
-        # vmState may include the IP in the future - {name, status, ip}
-        vmState = status
-        print(f"{str(vmState)}")
+        if myvm:
+            status = detect_vm_status(str(myvm))
+            #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
+            #####
+            # vmState may include the IP in the future - {name, status, ip}
+            vmState = status
+            print(f"{str(vmState)}")
+        else:
+            vmState = "<< VM does not exist >>"
         return vmState
 
         # print("Got into macosVmwareMvm list method...")

@@ -103,10 +103,12 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         Get the status of a virtual machine 
         """
         state = ""
+        found = False
         vms = list_vms()
         for name, uuid in vms.items():
             if name == vm:
                 state = get_vm_state(uuid)
+                found=True
                 break
             else:
                 continue
@@ -116,6 +118,9 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
             else:
                 ip = None
             '''
+        if not found:
+            state = "<< VM does not exist >>"
+            print("<< VM does not exist >>")
         return state
 
     def get_ip(self, vm: str = ""):

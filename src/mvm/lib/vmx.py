@@ -54,7 +54,7 @@ def find_vm_by_display_name(target_name, extra_paths=None):
                                 matches.append(vmx)
             except Exception:
                 pass
-
+    print(f"Matches: {matches}")
     return matches
 
 

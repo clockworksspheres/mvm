@@ -49,19 +49,34 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
         """
         vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
-        for vmpath in vmpaths:
-            print("Found:", vmpath)
-            # return the first found in the search
-            break
-
-        return vmpath[0]
+        try:
+            print(f"vmpath: {vmpaths[0]}")
+        except IndexError:
+            #print(traceback.format_exc())
+            return None
+        else:
+            return vmpaths[0]
 
     def list_vms(self, **kwargs):
         """
         List available VMs 
         """
-        home = Path.home()
         # print("Got into macosVmwareMvm list method...")
+        vmState=""
+        myvm = self.find_vm_by_display_name(vm)
+        if myvm:
+            status = detect_vm_status(str(myvm))
+            #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
+            #####
+            # vmState may include the IP in the future - {name, status, ip}
+            vmState = status
+            print(f"{str(vmState)}")
+        else:
+            vmState = "<< VM does not exist >>"
+        return vmState
+
+
+        home = Path.home()
         vmx_files = find_all_vmx_files(f"{home}/Virtual Machines.localized")
         # print(f"{vmx_files}")
 

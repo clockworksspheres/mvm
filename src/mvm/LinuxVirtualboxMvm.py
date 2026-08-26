@@ -36,8 +36,6 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
 
         self.vboxmanage = "/usr/bin/VBoxManage"
 
-
-
     def list_vms(self):
         """
         List available VMs 
@@ -110,12 +108,31 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
         self.run.setCommand(cmd2)
         self.run.communicate()
 
-    def get_vm_status(self):
+    def get_vm_status(self, vm):
         """
         Get the status of a virtual machine 
         """
-        self.list_vms()
-        #return name, state, ip
+        state = ""
+        found = False
+        vms = list_vms()
+        for name, uuid in vms.items():
+            if name == vm:
+                state = get_vm_state(uuid)
+                found=True
+                break
+            else:
+                continue
+            ''' in the future, may return IP as part of status.
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+            '''
+        if not found:
+            state = "<< VM does not exist >>"
+            print("<< VM does not exist >>")
+        return state
+
 
     def get_ip(self, vm: str = ""):
         """
