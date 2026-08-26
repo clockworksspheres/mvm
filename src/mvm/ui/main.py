@@ -240,7 +240,7 @@ class VmCtlUi(QMainWindow):
                     headless = False,
                     hard = True,
                 )
-                self.ui.textBrowser.append("=========================")
+                self.ui.textBrowser.append("==================================================")
                 returned = mvm_run(args)
 
                 if returned:
