@@ -28,6 +28,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     # ----------------------------------------------------------------------
     # VMware on macOS
     # ----------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("dwarwin"), "Needs to run on macOS")
     @patch("MacosVmwareMvm.MacosVmwareMvm")
     @patch("ManageVirtualMachines.CyLogger")
     def test_vmware_macos(self, mock_logger, mock_vmware):
@@ -40,6 +41,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     # ----------------------------------------------------------------------
     # VMware on Windows
     # ---------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Needs to run on Windows")
     @patch("WindowsVmwareMvm.WindowsVmwareMvm")
     @patch("ManageVirtualMachines.CyLogger")
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
@@ -57,6 +59,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     # ----------------------------------------------------------------------
     # VirtualBox on macOS
     # ----------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("dwarwin"), "Needs to run on macOS")
     @patch("MacosVirtualboxMvm.MacosVirtualboxMvm")
     @patch("ManageVirtualMachines.CyLogger")
     def test_virtualbox_macos(self, mock_logger, mock_vbox):
@@ -85,6 +88,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     # ----------------------------------------------------------------------
     # UTM on macOS
     # ----------------------------------------------------------------------
+    @unittest.skipUnless(sys.platform.lower().startswith("dwarwin"), "Needs to run on macOS")
     @patch("MacosUtmMvm.MacosUtmMvm")
     @patch("ManageVirtualMachines.CyLogger")
     def test_utm_macos(self, mock_logger, mock_utm):
