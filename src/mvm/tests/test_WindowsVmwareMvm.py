@@ -13,8 +13,8 @@ class TestWindowsVmwareMvm(unittest.TestCase):
 
 
 def make_vm_action_test(method_name, call_builder, expected_cmd):
-    @patch("mmvm.WindowsVmwareMvm.RunWith")
-    @patch("mmvm.WindowsVmwareMvm.find_vm_by_display_name")
+    @patch("mvm.WindowsVmwareMvm.RunWith")
+    @patch("mvm.WindowsVmwareMvm.find_vm_by_display_name")
     def test(self, mock_find_vm, mock_runwith):
         # Arrange
         mock_find_vm.return_value = [VM_PATH]
