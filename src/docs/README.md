@@ -12,6 +12,9 @@ http://github.com/clockworksspheres/jenkinsTools
 A project that is tested with mvm outside mvm and jenkinsTools:
 https://github.com/clockworksspheres/ramdisk
 
+For managing the kanban board:
+https://github.com/clockworksspheres/eisenban
+
 # References
 
 TBD
