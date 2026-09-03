@@ -89,7 +89,6 @@ class TestVmFunctions(unittest.TestCase):
         result = vm.find_all_vmx_files("/root")
         self.assertEqual(result, [Path("/a.vmx"), Path("/b.vmx")])
 
-    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Test only runs on Windows")
     @patch("mvm.lib.vmware_list_status.print")
     @patch("mvm.lib.vmware_list_status.get_vm_ip")
     @patch("mvm.lib.vmware_list_status.detect_vm_status")
@@ -98,12 +97,21 @@ class TestVmFunctions(unittest.TestCase):
     def test_print_status4all_vms(
         self, mock_running, mock_find, mock_status, mock_ip, mock_print
     ):
-        mock_running.return_value = {"/vms/a.vmx"}
-        mock_find.return_value = [Path("/vms/a.vmx"), Path("/vms/b.vmx")]
+        
+        if sys.platform.lower().startswith("win"):
+            mock_running.return_value = {"\\vms\\a.vmx"}
+            mock_find.return_value = [Path("\\vms\\a.vmx"), Path("\\vms\\b.vmx")]
+        elif sys.platform.lower().startswith("darwin") or sys.platform.lower().startswith("linux"):
+            mock_running.return_value = {"/vms/a.vmx"}
+            mock_find.return_value = [Path("/vms/a.vmx"), Path("/vms/b.vmx")]
         mock_status.side_effect = ["running", "off"]
         mock_ip.return_value = "10.0.0.5"
 
         vm.print_status4all_vms(None)
 
         self.assertTrue(mock_print.called)
-        mock_ip.assert_called_once_with("\\vms\\a.vmx")
+        if sys.platform.lower().startswith("win"):
+            mock_ip.assert_called_once_with("\\vms\\a.vmx")
+        elif sys.platform.lower().startswith("darwin") or sys.platform.lower().startswith("linux"):
+            mock_ip.assert_called_once_with("/vms/a.vmx")
+
