@@ -1,4 +1,5 @@
 import unittest
+import sys
 from unittest.mock import patch, MagicMock, mock_open
 from pathlib import Path
 
@@ -88,6 +89,7 @@ class TestVmFunctions(unittest.TestCase):
         result = vm.find_all_vmx_files("/root")
         self.assertEqual(result, [Path("/a.vmx"), Path("/b.vmx")])
 
+    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Test only runs on Windows")
     @patch("mvm.lib.vmware_list_status.print")
     @patch("mvm.lib.vmware_list_status.get_vm_ip")
     @patch("mvm.lib.vmware_list_status.detect_vm_status")
