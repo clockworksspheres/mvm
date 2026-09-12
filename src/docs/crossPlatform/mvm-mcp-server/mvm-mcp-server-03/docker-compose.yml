@@ -1,0 +1,57 @@
+# mvm MCP + REST server
+#
+# Usage:
+#   docker compose up --build          # REST API on :8000
+#   docker compose run --rm mvm-mcp \
+#     --mode mcp --transport http --host 0.0.0.0 --port 8000
+#
+# Managing *host* VMs from the container usually requires privileged mode
+# and mounting host hypervisor tools. Prefer running the server on the host
+# for full VM control; use Docker for API development / remote clients.
+
+services:
+  mvm-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MVM_REPO: https://github.com/clockworksspheres/mvm.git
+        MVM_REF: main
+    image: mvm-mcp-server:latest
+    container_name: mvm-mcp
+    ports:
+      - "8000:8000"
+    environment:
+      # Override if you mount a different mvm tree
+      PYTHONPATH: /opt/mvm/src:/app
+    volumes:
+      # Live-edit the server code without rebuild
+      - ./models.py:/app/models.py:ro
+      - ./core.py:/app/core.py:ro
+      - ./mcp_tools.py:/app/mcp_tools.py:ro
+      - ./rest_api.py:/app/rest_api.py:ro
+      - ./main.py:/app/main.py:ro
+      # Optional: use a local mvm checkout instead of the baked clone
+      # - ../mvm:/opt/mvm:ro
+    # Uncomment for host hypervisor access (Linux only, advanced):
+    # privileged: true
+    # pid: host
+    # volumes:
+    #   - /usr/bin/VBoxManage:/usr/bin/VBoxManage:ro
+    #   - /dev/vboxdrv:/dev/vboxdrv
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # Optional second service: MCP over HTTP on another port
+  # mvm-mcp-http:
+  #   image: mvm-mcp-server:latest
+  #   command: ["--mode", "mcp", "--transport", "http", "--host", "0.0.0.0", "--port", "8001"]
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     PYTHONPATH: /opt/mvm/src:/app
