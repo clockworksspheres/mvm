@@ -13,7 +13,8 @@ systems, to get the CD part going.  Jenkins server currently running
 in a container.
 
 Skipped tests are not necessarily bad, they just are not applicable to the
-operating system they are being run on.
+operating system they are being run on.  Also, hypervisors must be installed
+or tests will fail.
 
 Need to add linux tests for vmware workstation and oracle virtualbox -
 should be pretty simple once I can get on a linux box... May set up
@@ -25,6 +26,8 @@ testing as I don't have direct access to a linux box.
 Tests written to exercise the support libraries - the main tools are 
 primarily command line interfaces to the libraries in the mvm
 directory.
+
+Without hypervisors installed, tests will fail.
 
 ## Pylint related
 
