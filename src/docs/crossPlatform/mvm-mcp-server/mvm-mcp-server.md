@@ -273,3 +273,33 @@ docker compose run --rm -p 8000:8000 mvm-mcp \
 ```
 
 **Note:** The container is the control plane only. Hypervisors still run on the host. For full start/stop of real VMs, prefer a native install on the same machine; Docker is ideal for remote clients, CI, or API development.
+
+# Can you write some unit and integration tests for the MCP server and zip them up for me to download?
+
+**58 tests passed.** Zip is ready: (mvm-mcp-server_with-tests_001)
+
+****
+
+### Test layout
+
+| File | What it covers |
+|------|----------------|
+| `tests/conftest.py` | Fake hypervisor backend + shared fixtures |
+| `tests/test_models.py` | Pydantic validation (enums, empty VM, defaults) |
+| `tests/test_core.py` | `get_manager` errors + all `do_*` operations |
+| `tests/test_mcp_tools.py` | FastMCP tool functions |
+| `tests/test_rest_api.py` | REST endpoints, 422s, 500 mapping, OpenAPI |
+| `tests/test_main.py` | CLI modes (`mcp` / `rest`) |
+| `tests/test_integration_flow.py` | Multi-step lifecycle + MCP/REST consistency |
+
+No real VirtualBox/VMware/UTM is required — tests use an in-memory fake backend.
+
+### Run them
+
+```bash
+unzip mvm-mcp-server.zip
+cd mvm-mcp-server
+pip install -r requirements-dev.txt
+PYTHONPATH=. pytest -v
+```
+

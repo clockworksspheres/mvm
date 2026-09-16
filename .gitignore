@@ -9,6 +9,7 @@ __pycache__
 dist
 build
 packenv
+projEnv
 .obsidian/workspace.json
 *obsidian/workspace.json
 
