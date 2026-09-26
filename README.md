@@ -20,6 +20,11 @@ For managing local VM's to assist CI/CD processes
 on macOS as well as HyperV, VMware Workstation and
 Virtualbox VMs on Windows.  
 
+The project doesn't have access to hardware for a Linux host, however
+it **should** work on a Linux host with VMware Workstation and Virtualbox VMs.
+Have access to an ODroid H2+ with 32Gb of ram, may be able to set it up to
+develop and expand support for mvm on Linux.
+
 The mvm's vmctl tool is meant for developers, scientists, engineers
 and others to automate local CI/CT processes, that may
 feed into enterprise CI/CD process as well.
