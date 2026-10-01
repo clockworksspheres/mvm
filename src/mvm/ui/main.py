@@ -185,8 +185,6 @@ class VmCtlUi(QMainWindow):
             self.conDialog = ConsoleDialog(self, title=f"Console #{len(self.console_dialogs) + 1}")
 
     def handle_combo_action(self, index):
-        """
-        """
         if index == 0:
             self.ui.stackedWidget.setCurrentIndex(0)
         elif index in (1, 2):
@@ -265,8 +263,8 @@ class VmCtlUi(QMainWindow):
                 self.ui.debugPushButton.show()
             except TypeError:
                 pass  # already disconnected
-            if dialog in self.console_dialogs:
-                self.console_dialogs.remove(self.conDialog)
+            #if dialog in self.console_dialogs:
+            #    self.console_dialogs.remove(self.conDialog)
 
         self.conDialog.finished.connect(on_finished)
 

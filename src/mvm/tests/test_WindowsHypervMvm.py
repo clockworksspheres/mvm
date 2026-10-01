@@ -49,7 +49,7 @@ class TestWindowsHypervMvm(unittest.TestCase):
 
         expected_cmd = ["powershell", "-Command", "Get-VM"]
         mock_run.assert_called_once()
-        args, kwargs = mock_run.call_args
+        args, _ = mock_run.call_args
         self.assertEqual(args[0], expected_cmd)
 
     @patch('WindowsHypervMvm.WindowsHypervMvm.run')

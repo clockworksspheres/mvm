@@ -48,7 +48,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     def test_vmware_windows(self, mock_logger, mock_vmware):
 
         if hyper_v_enabled():
-            unittest.SkipTest
+            self.skipTest()
         else:
             with patch.object(sys, "platform", "win32"):
                 mvm = ManageVirtualMachines("vmware")
@@ -77,7 +77,7 @@ class TestManageVirtualMachines(unittest.TestCase):
     @patch("ManageVirtualMachines.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_vbox):
         if hyper_v_enabled():
-            unittest.SkipTest
+            self.skipTest()
         else:
             with patch.object(sys, "platform", "win32"):
                 mvm = ManageVirtualMachines("virtualbox")
