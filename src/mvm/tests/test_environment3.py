@@ -27,6 +27,8 @@ fake_pwd_module = types.SimpleNamespace(
 )
 sys.modules.setdefault("pwd", fake_pwd_module)
 
+# Ensure project root is on sys.path so lib.environment can be imported
+parent_dir = Path(__file__).parent.parent
 
 import mvm.lib.environment as env_module
 Environment = env_module.Environment
