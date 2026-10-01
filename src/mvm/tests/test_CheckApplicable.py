@@ -1,11 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-# Get the parent directory of the current file's parent directory
-#  and add it to sys.path
-#parent_dir = Path(__file__).parent.parent
-#sys.path.append(str(parent_dir))
-
 
 class TestCheckApplicable(unittest.TestCase):
 

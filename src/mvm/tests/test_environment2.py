@@ -47,6 +47,8 @@ def make_env():
         env.version = "1.2.3"
         env.euid = 1000
         env.homedir = "/home/testuser"
+        env.test_mode = False
+        env.script_path =  parent_dir
         env.log_path = "/var/log"
         env.installmode = False
         env.verbosemode = False

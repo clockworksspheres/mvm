@@ -12,12 +12,10 @@ import os
 import sys
 import socket
 import types
-import time
 import unittest
 from contextlib import ExitStack
 from unittest.mock import MagicMock, patch, mock_open
 from pathlib import Path
-parent_dir = str(Path(__file__).parent.parent)
 
 # ---------------------------------------------------------------------------
 # Ensure lib.environment imports cleanly on all platforms
