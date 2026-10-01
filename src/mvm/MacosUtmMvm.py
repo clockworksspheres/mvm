@@ -13,8 +13,6 @@ from mvm.lib.mac_utm_list_status import (utm_list,
 class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         if isinstance(logger, type(CyLogger)):
             self.logger = logger
         else:
@@ -126,7 +124,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             name = machine["name"]
 
             # Get detailed status + IP
-            state, ip = utm_status(uuid)
+            state, _ = utm_status(uuid)
             ips = utm_ips(uuid)
 
             # Fallback to list state if status didn't return one

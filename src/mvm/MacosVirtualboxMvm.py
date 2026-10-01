@@ -129,7 +129,7 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtuallBox/GuestInfo/Net/0/IP"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 

@@ -47,7 +47,6 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
         """
         Find the first VM with vmname in the list of paths the searched.
         """
-        vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
         try:
             print(f"vmpath: {vmpaths[0]}")

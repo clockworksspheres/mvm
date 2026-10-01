@@ -42,8 +42,7 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
 
         vms = list_vms()
-        running = list_running_vms()
-
+        
         print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         print("-" * 60) 
         table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
@@ -76,8 +75,12 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
          Stop a virtual machine
         """
-        # cmd = [self.vboxmanage, "controlvm", vm, "acpipowerbutton"]
-        cmd = [self.vboxmanage, "controlvm", vm, "poweroff"]
+        if hard:
+            cmd = [self.vboxmanage, "controlvm", vm, "acpipowerbutton"]
+        elif not hard:
+            cmd = [self.vboxmanage, "controlvm", vm, "poweroff"]
+        else:
+            raise ValueError("'hard' value needs to be a bool")
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -122,12 +125,6 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
                 break
             else:
                 continue
-            ''' in the future, may return IP as part of status.
-            if state == "running":
-                ip = get_vm_ip(uuid)
-            else:
-                ip = None
-            '''
         if not found:
             state = "<< VM does not exist >>"
             print("<< VM does not exist >>")
@@ -140,7 +137,6 @@ class LinuxVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtuallBox/GuestInfo/Net/0/IP"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
-
