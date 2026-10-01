@@ -30,7 +30,7 @@ else:
 
 try:
     from lib.localize import VERSION
-except ImportError or AssertionError:
+except (ImportError, AssertionError):
     VERSION = '0.0.1'
 
 
@@ -39,7 +39,7 @@ FISMACAT = globals().get("FISMACAT", "low")
 
 try:
     from lib.localize import FISMACAT
-except ImportError or AssertionError:
+except (ImportError, AssertionError):
     FISMACAT = 'low'
 
 euid = 90000000
@@ -61,10 +61,10 @@ else:
     DMI = False
 
 # third party libraries
-from lib.run_commands import RunWith as RunWith
+from lib.run_commands import RunWith
 
 
-class Environment(object):
+class Environment:
     """
     The Environment class collects commonly used information about the
     execution platform and makes it available to the rules.
@@ -139,17 +139,14 @@ class Environment(object):
                 cmdbase = cl
         if cmdbase:
             cmd = cmdbase + " -p1"
-        elif not cmdbase:
-            if  sys.platform.lower().startswith('win32'):
-                self.systemtype = 'windows'
-                if self.systemtype not in validtypes and DEFAULT_LOG_LEVEL >= LogPriority["VERBOSE"]:
-                    print(str(__name__) + ":This system is based on an unknown architecture")
-                elif DEFAULT_LOG_LEVEL >= LogPriority["VERBOSE"]:
-                    print(str(__name__) + ":Determined that this system is based on " + str(self.systemtype) + " architecture")
-                return
-
+        elif not cmdbase and sys.platform.lower().startswith('win32'):
+            self.systemtype = 'windows'
+            if self.systemtype not in validtypes and DEFAULT_LOG_LEVEL >= LogPriority["VERBOSE"]:
+                print(str(__name__) + ":This system is based on an unknown architecture")
+            elif DEFAULT_LOG_LEVEL >= LogPriority["VERBOSE"]:
+                print(str(__name__) + ":Determined that this system is based on " + str(self.systemtype) + " architecture")
+            return
         try:
-
             if cmd:
                 # run the command
                 self.rw.setCommand(cmd)
@@ -164,7 +161,6 @@ class Environment(object):
                         if re.search(vt, line, re.IGNORECASE):
                             self.systemtype = vt
                             # print("type: " + str(vt))
-
             else:
                 print(str(__name__) + ":Unable to determine systemtype. Required utility 'ps' does not exist on this system")
         except OSError:
@@ -488,7 +484,7 @@ class Environment(object):
                 self.osversion = self.release
                 self.build = platform_data[1]
                 opsys = str(description).strip() + ' ' + str(self.release) + ' ' + str(self.build) 
-            except Exception as err:
+            except AssertionError:
                 print(traceback.format_exc())
                 raise()
             self.osreportstring = opsys
@@ -815,7 +811,6 @@ class Environment(object):
                         systemserial = line[1]
                     except(IndexError, KeyError):
                         pass
-        systemserial = systemserial
         return systemserial
 
     def get_chassis_serial_number(self):
@@ -854,7 +849,7 @@ class Environment(object):
                         systemmfr = system[key]['data']['Manufacturer']
                     except(IndexError, KeyError):
                         continue
-                systemfr = systemfr.strip()
+                systemmfr = systemmfr.strip()
             except(IndexError, KeyError):
                 # got unexpected data back from dmidecode
                 pass
@@ -914,8 +909,8 @@ class Environment(object):
                                     stdout=subprocess.PIPE,
                                     close_fds=True, text=True)
             cmdoutput = cmd2.stdout.readlines()
-            line = line.strip()
             for line in cmdoutput:
+                line = line.strip()
                 if re.search('UUID:', line):
                     line = line.split()
                     try:
