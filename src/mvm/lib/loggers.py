@@ -9,12 +9,13 @@ import os
 import re
 import sys
 import time
-import socket
 import inspect
 import datetime
 import traceback
 import logging
 import logging.handlers
+from pathlib import Path
+
 #####
 # Include the parent project directory in the PYTHONPATH - next three lines no good on Windows..
 # appendDir = "/".join(os.path.abspath(os.path.dirname(__file__)).split('/')[:-2])
@@ -75,6 +76,7 @@ def singleton_decorator(cls):
 
 class SingletonCyLogger(type):
     """
+    Cylogger Singleton
     """
     _instances = {}
     def __call__(cls, *args, **kwargs):
@@ -123,8 +125,6 @@ class CyLogger(Singleton):
     """
     Class to set up logging, with easy string referencing loggers and their
     handlers.
-    
-    
     """
     
     instanciatedLoggers = {}
@@ -133,6 +133,7 @@ class CyLogger(Singleton):
 
     def __init__(self, environ=False, debug_mode=False, verbose_mode=False, level=DEFAULT_LOG_LEVEL, *args, **kwargs):
         """
+        Class initialization routine
         """
         if str(level):
             # print(".............Level: " + str(level))
@@ -201,8 +202,9 @@ class CyLogger(Singleton):
         if self.rotate:
             try:
                 self.logr.handlers.RotatingFileHandler.doRollover()
-            except Exception as err:
+            except (FileNotFoundError, IsADirectoryError, NotADirectoryError, OSError, ValueError, TypeError) as err:
                 self.logr.log(LogPriority.WARNING, "Exception: " + str(err))
+                self.logr.log(LogPriority.WARNING, traceback.format_exc())
 
     #############################################
 
@@ -245,7 +247,7 @@ class CyLogger(Singleton):
         # success = False
         self.syslog = syslog
         self.rotate = False
-        self.fileHandler = False
+        self.fileHandler = None
      
         if extension_type in ["none", "epoch", "time", "inc", "sys"]:
             if extension_type == "none":
@@ -259,10 +261,9 @@ class CyLogger(Singleton):
             if extension_type == "time":
                 ####
                 # Use a file extension using the datetime library
-                # Get the UTC time and format a time stamp string
+                # Get the time and format a time stamp string
                 # using format YYYYMMDD.HHMMSS.microseconds
-                # 2016/03/11 - Changing to use .now instead of .utcnow
-                # to the time stamp can be correlated with system logs...
+                # so the time stamp can be correlated with system logs...
                 datestamp = datetime.datetime.now()
                 stamp = datestamp.strftime("%Y%m%d.%H%M%S.%f")
                 self.filename = filename + "." + str(stamp) + ".log"
@@ -284,7 +285,7 @@ class CyLogger(Singleton):
         # Initialize the root logger
         self.logr = logging.getLogger("")
 
-        fileHandler = False
+        self.actOnFileHandler = False
         rotHandler = False
 
         #####
@@ -292,8 +293,8 @@ class CyLogger(Singleton):
         if not self.rotate:
             #####
             # Set up a regular root log handler
-            fileHandler = logging.FileHandler(self.filename)
-            self.fileHandler = True
+            self.fileHandler = logging.FileHandler(self.filename)
+            self.actOnFileHandler = True
         else:
             #####
             # Set up the RotatingFileHandler
@@ -307,28 +308,28 @@ class CyLogger(Singleton):
             # Set up the SysLogHandler
             try:
                 sysHandler = logging.handlers.SysLogHandler()
-            except socket.error:
+            except OSError:
                 print("Socket error, can't connect to syslog...")
                 self.syslog = False
 
         #####
         # Add applicable handlers to the logger
-        if not self.rotate and self.fileHandler:
+        if not self.rotate and self.actOnFileHandler:
             self.logr.addHandler(self.fileHandler)
-            #self.logr.log(LogPriority.DEBUG,"Added FileHandler")
+            self.logr.log(LogPriority.DEBUG,"Added FileHandler")
         elif self.rotate:
             self.logr.addHandler(rotHandler)
-            #self.logr.log(LogPriority.DEBUG,"Added RotatingFileHandler")
+            self.logr.log(LogPriority.DEBUG,"Added RotatingFileHandler")
             #self.doRollover(rotHandler)
 
         if myconsole:
             self.logr.addHandler(conHandler)
-            #self.logr.log(LogPriority.DEBUG,"Added StreamHandler")
+            self.logr.log(LogPriority.DEBUG,"Added StreamHandler")
         if self.syslog:
             try:
                 self.logr.addHandler(sysHandler)
-                #self.logr.log(LogPriority.DEBUG,"Added SyslogHanlder")
-            except socket.error:
+                self.logr.log(LogPriority.DEBUG,"Added SyslogHanlder")
+            except OSError:
                 self.log(40, "Syslog not accepting connections!")
 
         #####
@@ -398,7 +399,8 @@ class CyLogger(Singleton):
         # print "Members: " + str(members)
         # co_filename = members[1][3]
 
-        (frame, fullLengthFilename, line_number, function_name, lines, index) = inspect.getouterframes(inspect.currentframe())[1]
+        #  (frame, fullLengthFilename, line_number, function_name, lines, index) = inspect.getouterframes(inspect.currentframe())[1]
+        (_, fullLengthFilename, line_number, function_name, _, _) = inspect.getouterframes(inspect.currentframe())[1]
         filename = fullLengthFilename.split("/")[-1]
 
         shortPrefix = ""
@@ -409,35 +411,23 @@ class CyLogger(Singleton):
                 #####
                 # longPrefix message to be in the format: 
                 # <timestamp> <calling_script_name> : <filename_of_calling_function>, <name_of_calling_function> (<line number of calling function>)
-                longPrefix = '{} {} : {}, {} ({}) '.format(str(timestamp),
-                                                           str(prog), 
-                                                           str(filename), 
-                                                           str(function_name), 
-                                                           str(line_number))
+                longPrefix = f'{timestamp} {prog} : {filename}, {function_name} ({line_number}) '
             else:
                 #####
                 # shorterFormat message to be in the format: 
                 # <timestamp> <calling_script_name> : <name_of_calling_function> (<line number of calling function>)
-                shortPrefix = '{} {} : {} ({}) '.format(str(timestamp),
-                                                        str(prog),
-                                                        str(function_name),
-                                                        str(line_number))
+                shortPrefix = f'{timestamp} {prog} : {function_name} ({line_number}) '
         else:
             if format == "long":
                 #####
                 # longPrefix message to be in the format: 
                 # <calling_script_name> : <filename_of_calling_function>, <name_of_calling_function> (<line number of calling function>)
-                longPrefix = '{} : {}, {} ({}) '.format(str(prog), 
-                                                        str(filename), 
-                                                        str(function_name), 
-                                                        str(line_number))
+                longPrefix = f'{prog} : {filename}, {function_name} ({line_number}) '
             else:
                 #####
                 # shorterFormat message to be in the format: 
                 # <calling_script_name> : <name_of_calling_function> (<line number of calling function>)
-                shortPrefix = '{} : {} ({}) '.format(str(prog),
-                                                    str(function_name), 
-                                                    str(line_number))
+                shortPrefix = '{prog} : {function_name} ({line_number}) '
 
         msg_list = []
         if isinstance(msg, list):
@@ -482,7 +472,7 @@ class CyLogger(Singleton):
                 # Warning
                 try:
                     self.logr.log(validatedLvl, prefix + "WARNING: (" + str(pri) + ") " + str(line))
-                except Exception as err:
+                except OSError as err:
                     print(str(LogPriority.DEBUG) + " : "  + str(traceback.format_exc()))
                     print(str(LogPriority.DEBUG) + " : " + str(err))
             elif int(self.lvl) >= 40 and int(self.lvl) < 50:
@@ -499,14 +489,11 @@ class CyLogger(Singleton):
 ###############################################################################
 # Helper class
 
-class LogPriority(object):
-    """
-
-    """
-    DEBUG = int(10)
-    INFO = int(20)
-    VERBOSE = int(20)
-    WARNING = int(30)
-    ERROR = int(40)
-    CRITICAL = int(50)
+class LogPriority:
+    DEBUG = 10
+    INFO = 20
+    VERBOSE = 20
+    WARNING = 30
+    ERROR = 40
+    CRITICAL = 50
 
