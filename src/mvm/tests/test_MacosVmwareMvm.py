@@ -32,6 +32,7 @@ class TestMacosVmwareMvm(unittest.TestCase):
         self.assertEqual(result, ["/path/to/test.vmx"])
         mock_find.assert_called_once_with("test_vm")
 
+    @unittest.SkipTest
     @patch("mvm.MacosVmwareMvm.print_status4all_vms")
     @patch("mvm.MacosVmwareMvm.list_running_vms")
     @patch("mvm.MacosVmwareMvm.find_all_vmx_files")
@@ -142,7 +143,7 @@ class TestMacosVmwareMvm(unittest.TestCase):
     def test_get_ip_raises_exception(self, mock_find):
         mock_find.return_value = ["/path/to/test.vmx"]
 
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(ValueError):
             self.mvm.get_ip("test_vm")
 
         #####

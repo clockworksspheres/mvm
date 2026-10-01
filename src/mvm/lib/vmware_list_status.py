@@ -44,7 +44,7 @@ def get_vm_ip(vmx_path):
     cmd = [vmrun, "getGuestIPAddress", vmx_path, "-wait"]
 
     rw.setCommand(cmd)
-    status, output =  rw.runCommand2check("Encrypted virtual machine password:")
+    _, output =  rw.runCommand2check("Encrypted virtual machine password:")
 
     if "Error" in output or "Unable" in output:
         return None
@@ -110,7 +110,7 @@ def main():
 
     running_set = list_running_vms()
 
-    # print_status4all_vms(vms)
+    print_status4all_vms(running_set)
 
 
 if __name__ == "__main__":

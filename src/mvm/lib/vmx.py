@@ -1,6 +1,7 @@
 import os
 import glob
 import sys
+import traceback
 
 def get_default_vm_paths():
     system = sys.platform
@@ -52,8 +53,9 @@ def find_vm_by_display_name(target_name, extra_paths=None):
                             name = line.split("=", 1)[1].strip().strip('"')
                             if name.lower() == target_name.lower():
                                 matches.append(vmx)
-            except Exception:
-                pass
+            except OSError, AttributeError, ValueError:
+                print(traceback.format_exc())
+
     print(f"Matches: {matches}")
     return matches
 

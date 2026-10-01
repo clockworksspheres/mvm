@@ -7,7 +7,7 @@ utmctl = "/opt/homebrew/bin/utmctl"
 
 def run_cmd(cmd):
     """Run a command and return stdout, capturing stderr."""
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
     if result.returncode != 0:
         print(f"Error running {' '.join(cmd)}: {result.stderr.strip()}")
         return ""
@@ -135,7 +135,7 @@ def main():
 
         # Get detailed status + IP
         ips = utm_ips(uuid)
-        state, ip = utm_status(uuid)
+        state, _ = utm_status(uuid)
 
         # Fallback to list state if status didn't return one
         state = state or vm["state"]
