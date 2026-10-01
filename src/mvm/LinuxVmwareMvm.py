@@ -1,6 +1,5 @@
 import os
 import sys
-import inspect
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -20,8 +19,6 @@ from mvm.lib.vmware_list_status import (find_all_vmx_files,
 class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         #hw_platform = tell_hw_platform()
         #if hw_platform == "arm64" or not hw_platform:
         #    raise HardwareNotApplicable("Cannot run Virtualbox on Linux arm64")
@@ -69,7 +66,7 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
             #####
             # vmState may include the IP in the future - {name, status, ip}
             vmState = status
-            print(f"{str(vmState)}")
+            print(f"{vmState}")
         else:
             vmState = "<< VM does not exist >>"
         return vmState
@@ -172,7 +169,7 @@ class LinuxVmwareMvm(ManageVirtualMachinesTemplate):
         vmpath = find_vm_by_display_name(f"{vm}")[0]
         cmd = [self.vmrun, "getGuestIPAddress", str(vmpath), "-wait"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 

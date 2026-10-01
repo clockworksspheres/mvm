@@ -1,4 +1,3 @@
-import inspect
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
 from mvm.lib.run_commands import RunWith
@@ -8,8 +7,6 @@ from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
@@ -84,7 +81,7 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vboxmanage, "showvminfo", vm]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 
@@ -94,7 +91,7 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vboxmanage, "guestproperty", "get", vm, "/VirtualBox/GuestInfo/Net/0/IP"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 

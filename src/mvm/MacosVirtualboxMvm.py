@@ -1,5 +1,4 @@
 import sys
-import inspect
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -16,8 +15,6 @@ from mvm.lib.virtualbox_list_status import (list_vms,
 class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
@@ -36,7 +33,6 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
 
         vms = list_vms()
-        running = list_running_vms()
 
         print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         print("-" * 60) 

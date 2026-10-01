@@ -1,4 +1,5 @@
 import inspect
+import traceback
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
 
@@ -15,8 +16,6 @@ class MethodNotImplementedError(Exception):
 class ManageVirtualMachinesTemplate:
 
     def __init__(self, **kwargs):
-        """
-        """
         self.logger = CyLogger()
         self.logger.initializeLogs()
 
@@ -25,14 +24,14 @@ class ManageVirtualMachinesTemplate:
     def __calledBy(self):
         """
         Log the caller of the method that calls this method
-
         """
         try:
             filename = inspect.stack()[2][1]
             functionName = str(inspect.stack()[2][3])
             lineNumber = str(inspect.stack()[2][2])
-        except Exception as err:
-            raise err
+        except (TypeError, OSError, ValueError):
+            self.logger.log(lp.ERROR, traceback.format_exc())
+            raise
         else:
             self.logger.log(lp.DEBUG, "called by: " + \
                             filename + ": " + \
@@ -40,9 +39,6 @@ class ManageVirtualMachinesTemplate:
                             lineNumber + ")")
 
     def list_vms(self):
-        """
-           
-        """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
         self.__calledBy()
@@ -68,27 +64,18 @@ class ManageVirtualMachinesTemplate:
         raise MethodNotImplementedError
 
     def pause_vm(self, vm: str = ""):
-        """
-         
-        """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
         self.__calledBy()
         raise MethodNotImplementedError
 
     def unpause_vm(self, vm: str = ""):
-        """
-         
-        """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
         self.__calledBy()
         raise MethodNotImplementedError
 
     def reset_vm(self, vm: str = "", hard: bool = True):
-        """
-         
-        """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
         self.__calledBy()
@@ -104,12 +91,8 @@ class ManageVirtualMachinesTemplate:
         raise MethodNotImplementedError
 
     def get_ip(self, vm: str = ""):
-        """
-         
-        """
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
         self.__calledBy()
         raise MethodNotImplementedError
-
 

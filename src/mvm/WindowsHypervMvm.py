@@ -12,8 +12,6 @@ class WindowsHypervMvm(ManageVirtualMachinesTemplate):
     PS_PREFIX = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:

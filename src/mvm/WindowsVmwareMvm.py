@@ -9,8 +9,6 @@ from mvm.lib.vmx import find_vm_by_display_name
 class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
 
     def __init__(self, logger, **kwargs):
-        """
-        """
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
@@ -42,7 +40,7 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vmrun, "list"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 
@@ -103,7 +101,7 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vmrun, "list"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 
@@ -115,7 +113,7 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         print(vmpath)
         cmd = [self.vmrun, "getGuestIPAddress", vmpath, "-wait"]
         self.run.setCommand(cmd)
-        out, err, retval = self.run.communicate()
+        out, _, _ = self.run.communicate()
         print(f"{out.strip()}")
         return out.strip()
 

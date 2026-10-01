@@ -16,8 +16,6 @@ from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 class ManageVirtualMachines(ManageVirtualMachinesTemplate):
 
     def __init__(self, framework, **kwargs):
-        """
-        """
         self.logger = CyLogger()
         self.logger.initializeLogs()
 
