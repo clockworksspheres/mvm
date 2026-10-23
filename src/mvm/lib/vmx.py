@@ -53,7 +53,7 @@ def find_vm_by_display_name(target_name, extra_paths=None):
                             name = line.split("=", 1)[1].strip().strip('"')
                             if name.lower() == target_name.lower():
                                 matches.append(vmx)
-            except OSError, AttributeError, ValueError:
+            except(OSError, AttributeError, ValueError):
                 print(traceback.format_exc())
 
     print(f"Matches: {matches}")
