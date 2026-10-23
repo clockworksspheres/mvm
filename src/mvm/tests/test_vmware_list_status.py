@@ -62,6 +62,7 @@ class TestVmFunctions(unittest.TestCase):
         status = vm.detect_vm_status("/vms/test.vmx", running)
         self.assertEqual(status, "running")
 
+    @unittest.skipIf(sys.platform.lower().startswith("linux"), "Skipping tests on Linux")
     @patch("mvm.lib.vmware_list_status.Path")
     def test_detect_vm_status_suspended(self, mock_path_cls):
         mock_file = MagicMock()
@@ -74,6 +75,7 @@ class TestVmFunctions(unittest.TestCase):
         status = vm.detect_vm_status("/vms/test.vmx", set())
         self.assertEqual(status, "suspended")
 
+    @unittest.skipIf(sys.platform.lower().startswith("linux"), "Skipping test on Linux")
     @patch("mvm.lib.vmware_list_status.Path")
     def test_detect_vm_status_off(self, mock_path_cls):
         mock_path = MagicMock()
