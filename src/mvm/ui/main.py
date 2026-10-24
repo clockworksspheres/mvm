@@ -214,7 +214,7 @@ class VmCtlUi(QMainWindow):
             hyperMap = {0: "vmware", 1: "utm", 2: "virtualbox"}
 
         if sys.platform.lower().startswith("win"):
-            hypervisorMap = {"vmware": "VMware Workstation", "hyperv": "Hyper-V", "virtualbox": "VBoxSDS.exe"}
+            hypervisorMap = {"vmware": "vmware.exe", "hyperv": "vmms.exe", "virtualbox": "VBoxSDS.exe"}
             hyperMap = {0: "vmware", 1: "hyperv", 2: "virtualbox"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]

@@ -45,11 +45,6 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
                     self.mvm = WindowsVirtualboxMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
-                #from WindowsVirtualboxMvm import WindowsVirtualboxMvm
-                #self.mvm = WindowsVirtualboxMvm(self.logger)
-
-
-
             elif sys.platform.lower().startswith("linux"):
                 from LinuxVirtualboxMvm import LinuxVirtualboxMvm
                 self.mvm = LinuxVirtualboxMvm(self.logger)

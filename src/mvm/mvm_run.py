@@ -10,7 +10,7 @@ from lib.libHelperExceptions import HypervisorNotApplicable, HypervisorNotAvaila
 hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
 
 if sys.platform.lower().startswith("win"):
-    hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
+    hypervisorMap = {"vmware": "vmware.exe", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
 
 
 
