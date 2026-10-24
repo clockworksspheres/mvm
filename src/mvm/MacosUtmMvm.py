@@ -31,9 +31,9 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         """
         vms = utm_list()
 
-        if not vms:
-            print("No VMs found or utmctl produced no output.")
-            return
+        #if not vms:
+        #    print("No VMs found or utmctl produced no output.")
+        #    return
 
         print(f"{'VM Name':25} {'State':15} {'IP Address'}")
         print("-" * 60) 
