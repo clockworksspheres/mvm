@@ -10,7 +10,7 @@ parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
 
 from mvm.ManageVirtualMachines import ManageVirtualMachines
-
+from mvm.lib.libHelperExceptions import HypervisorNotApplicable 
 
 hyper_v_enabled = None
 if sys.platform.lower().startswith("win"):
@@ -44,17 +44,18 @@ class TestManageVirtualMachines(unittest.TestCase):
     @unittest.skipUnless(sys.platform.lower().startswith("win"), "Needs to run on Windows")
     @patch("WindowsVmwareMvm.WindowsVmwareMvm")
     @patch("ManageVirtualMachines.CyLogger")
-    @unittest.skipUnless(sys.platform.lower().startswith("win"), "Only test on Windows")
     def test_vmware_windows(self, mock_logger, mock_vmware):
-
-        if hyper_v_enabled():
-            self.skipTest()
+        from lib.windows_utilities import hyper_v_enabled
+        if not hyper_v_enabled():
+            self.skipTest("HyperV is not enabled, skipping VmwareVm on Windows test")
         else:
             with patch.object(sys, "platform", "win32"):
                 mvm = ManageVirtualMachines("vmware")
 
             mock_vmware.assert_called_once_with(mock_logger.return_value)
             self.assertIs(mvm.mvm, mock_vmware.return_value)
+
+
 
     # ----------------------------------------------------------------------
     # VirtualBox on macOS
@@ -76,8 +77,8 @@ class TestManageVirtualMachines(unittest.TestCase):
     @patch("WindowsVirtualboxMvm.WindowsVirtualboxMvm")
     @patch("ManageVirtualMachines.CyLogger")
     def test_virtualbox_windows(self, mock_logger, mock_vbox):
-        if hyper_v_enabled():
-            self.skipTest()
+        if not hyper_v_enabled():
+            self.skipTest("HyperV not enabled for Virtualbox on Windows test")
         else:
             with patch.object(sys, "platform", "win32"):
                 mvm = ManageVirtualMachines("virtualbox")
