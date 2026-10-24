@@ -1,4 +1,6 @@
 
+from pathlib import Path
+
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
 from mvm.lib.run_commands import RunWith
@@ -40,7 +42,10 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         """
         cmd = [self.vmrun, "list"]
         self.run.setCommand(cmd)
-        out, _, _ = self.run.communicate()
+        try:
+            out, _, _ = self.run.communicate()
+        except ValueError:
+            out = ""
         print(f"{out.strip()}")
         return out.strip()
 
