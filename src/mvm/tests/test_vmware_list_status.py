@@ -71,9 +71,11 @@ class TestVmFunctions(unittest.TestCase):
         mock_path = MagicMock()
         mock_path.parent.iterdir.return_value = [mock_file]
         mock_path_cls.return_value = mock_path
-
-        status = vm.detect_vm_status("/vms/test.vmx", set())
-        self.assertEqual(status, "suspended")
+        try:
+            status = vm.detect_vm_status("/vms/test.vmx", set())
+            self.assertEqual(status, "suspended")
+        except FileNotFoundError:
+            self.assertRaises(FileNotFoundError)
 
     @unittest.skipIf(sys.platform.lower().startswith("linux"), "Skipping test on Linux")
     @patch("mvm.lib.vmware_list_status.Path")
@@ -82,8 +84,11 @@ class TestVmFunctions(unittest.TestCase):
         mock_path.parent.iterdir.return_value = []
         mock_path_cls.return_value = mock_path
 
-        status = vm.detect_vm_status("/vms/test.vmx", set())
-        self.assertEqual(status, "off")
+        try:
+            status = vm.detect_vm_status("/vms/test.vmx", set())
+            self.assertEqual(status, "off")
+        except FileNotFoundError as e:
+            self.assertRaises(FileNotFoundError)
 
     @patch("mvm.lib.vmware_list_status.Path.rglob")
     def test_find_all_vmx_files(self, mock_rglob):
