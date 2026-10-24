@@ -719,6 +719,7 @@ class TestRunWithSudoSubprocess(unittest.TestCase):
         rw.runWithSudo(password="pw")
         self.assertIn("root", rw.stdout)
 
+    @unittest.skipIf(sys.platform.lower().startswith("win"), "Not applicable to Windows")
     @patch("mvm.lib.run_commands.os.set_blocking")
     @patch("mvm.lib.run_commands.select.select", return_value=([], [], []))
     @patch("mvm.lib.run_commands.subprocess.Popen")
