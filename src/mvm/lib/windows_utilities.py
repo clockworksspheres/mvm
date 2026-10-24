@@ -36,10 +36,17 @@ if sys.platform.lower().startswith("win"):
             return False
 
     def hyper_v_enabled():
+        enabled = False
         ps_command = "Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-ALL"
         try:
-            output = subprocess.check_output(["powershell", "-Command", ps_command], stderr=subprocess.STDOUT, text=True)
-            return "State : Enabled" in output
+            result = subprocess.run(
+                ["powershell", "-NoProfile", "-Command", 
+                "(Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online).State"],
+                capture_output=True, text=True
+            )
+            if result.stdout.strip() == "Enabled":
+                enabled = True
+            return enabled
         except subprocess.CalledProcessError as e:
             print(f"Error checking Hyper-V status: {e.output}")
             return False
