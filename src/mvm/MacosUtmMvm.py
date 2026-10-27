@@ -1,5 +1,6 @@
 import inspect
 import re
+import json
 
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
@@ -42,6 +43,8 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
         list_vms_state_dict = {}
 
+        json_table = {}
+        i = 0
         for vm in vms:
             uuid = vm["uuid"]
             name = vm["name"]
@@ -57,6 +60,15 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
             print(f"{name:25} {state:15} {ip or 'N/A'}")
             table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
+            json_table[i] = {}
+            json_table[i]["name"] = name
+            json_table[i]["status"] = status
+            json_table[i]["ip"] = ip or 'N/A'
+
+            i = i + 1
+
+        print(json.dumps(json_table, indent=2))
 
         return table
 

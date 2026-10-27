@@ -60,10 +60,12 @@ def find_vm_by_display_name(target_name, extra_paths=None):
     return matches
 
 
-"""
-# Example usage:
-results = find_vm_by_display_name("deb13")
+if __name__=='__main__':
 
+    # Example usage:
+    results = find_vm_by_display_name("deb13")
+
+"""
 for r in results:
     print("Found:", r)
 

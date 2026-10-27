@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import re
 import sys
 import argparse
 import subprocess
@@ -52,6 +54,35 @@ def get_vm_ip(vmx_path):
     return output.strip()
 
 
+def get_vm_display_name(vm_dir):
+    text = Path(vm_dir).read_text()
+    m = re.search(r'^displayName\s*=\s*"(.*)"$', text, re.MULTILINE)
+    return m.group(1) if m else Path(vm_dir).stem  # fallback: filename
+
+
+def list_vmware_vms(vm_dir: str = "~/Virtual Machines.localized") -> dict[str, str]:
+    """Returns {vmx_path: display_name} for all VMs in the library."""
+    if not vm_dir and sys.platform.lower().startswith("darwin"):
+        vm_dir = Path.home() / "Virtual Machines.localized"
+    elif not vm_dir and sys.platform.lower().startswith("linux"):
+        vm_dir = Path.home() / "Documents" / "Virtual Machines" 
+    elif not vm_dir and sys.platform.lower().startswith("win"):
+        vm_dir = Path.home() / "Virtual Machines"
+    elif vm_dir:
+        print(str(vm_dir))
+    else:
+        raise ValueError("no vm_dir defined")
+
+    base = Path(vm_dir).expanduser()
+    vms = {}
+    for vmx in base.rglob("*.vmx"):
+        text = vmx.read_text(errors="replace")
+        m = re.search(r'^displayName\s*=\s*"(.*)"$', text, re.MULTILINE)
+        vms[str(vmx)] = m.group(1) if m else vmx.stem
+    # print(str(vms))
+    return vms
+
+
 def detect_vm_status(vmx_path, running_set=None):
     """Return running/suspended/off."""
     vmx_path = Path(vmx_path)
@@ -77,16 +108,18 @@ def find_all_vmx_files(root):
 def print_status4all_vms(vms):
     running_set = list_running_vms()
 
-    print(f"{'VM Name':30} {'Status':12} {'IP Address'}")
+    print(f"{'Display Name':20} {'VM Name':30} {'Status':12} {'IP Address'}")
     print("-" * 60)
 
-    vmx_files = find_all_vmx_files("/Users/victor/Virtual Machines.localized")
+    home = os.environ['HOME']
+
+    vmx_files = find_all_vmx_files(home + "/Virtual Machines.localized")
     for vmx in vmx_files:
         name = vmx.stem
         status = detect_vm_status(str(vmx), running_set)
         ip = get_vm_ip(str(vmx)) if status == "running" else None
-
-        print(f"{name:30} {status:12} {ip or 'N/A'}")
+        display_name = get_vm_display_name(vmx)
+        print(f"{display_name:20} {name:30} {status:12} {ip or 'N/A'}")
 
 def main():
     parser = argparse.ArgumentParser(

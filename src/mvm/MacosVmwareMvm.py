@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import inspect
 import traceback
 from pathlib import Path
@@ -69,6 +70,8 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         table = f"{'VM Name':30} {'State':15} {'IP Address'}\n"
         table = table + ("-" * 60)
 
+        json_table = {}
+        i = 0
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
@@ -77,6 +80,14 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
             print(f"{name:30} {status:12} {ip or 'N/A'}")
             table = table + f"\n{name:30} {status:12} {ip or 'N/A'}"
 
+            json_table[i] = {}
+            json_table[i]["name"] = name
+            json_table[i]["status"] = status
+            json_table[i]["ip"] = ip or 'N/A'
+
+            i = i + 1
+
+        print(json.dumps(json_table, indent=2))
         return table
 
     def start_vm(self, vm: str = "", headless: bool = False):

@@ -25,7 +25,7 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
 
         if self.framework == "vmware":
             if sys.platform.lower().startswith("darwin"):
-                from MacosVmwareMvm import MacosVmwareMvm
+                from mvm.MacosVmwareMvm import MacosVmwareMvm
                 self.mvm = MacosVmwareMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
@@ -36,7 +36,7 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
                     raise HypervisorNotApplicable
         elif self.framework == "virtualbox":
             if sys.platform.lower().startswith("darwin"):
-                from MacosVirtualboxMvm import MacosVirtualboxMvm
+                from mvm.MacosVirtualboxMvm import MacosVirtualboxMvm
                 self.mvm = MacosVirtualboxMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
                 from lib.windows_utilities import hyper_v_enabled
@@ -49,7 +49,7 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
                 from LinuxVirtualboxMvm import LinuxVirtualboxMvm
                 self.mvm = LinuxVirtualboxMvm(self.logger)
         elif self.framework == "utm" and sys.platform.lower().startswith("darwin"):
-            from MacosUtmMvm import MacosUtmMvm
+            from mvm.MacosUtmMvm import MacosUtmMvm
             self.mvm = MacosUtmMvm(self.logger)
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
             from lib.windows_utilities import hyper_v_enabled
