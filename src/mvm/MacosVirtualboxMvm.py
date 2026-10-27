@@ -28,17 +28,12 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
 
         self.vboxmanage = "/usr/local/bin/VBoxManage"
 
-    def list_vms(self):
+    def list_vms_json(self):
         """
         List available VMs 
         """
 
         vms = list_vms()
-
-        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
-        print("-" * 60) 
-        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
-        table = table + ("-" * 60) 
 
         json_table = {}
         i = 0
@@ -50,19 +45,46 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
             else:
                 ip = None
 
-            print(f"{name:25} {state:15} {ip or 'N/A'}")
-
             table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
             json_table[i] = {}
             json_table[i]["name"] = name
-            json_table[i]["status"] = status
+            json_table[i]["status"] = state
             json_table[i]["ip"] = ip or 'N/A'
 
             i = i + 1
 
         print(json.dumps(json_table, indent=2))
 
+        return json_table
+
+    def list_vms_table(self):
+        """
+        List available VMs 
+        """
+
+        vms = list_vms()
+
+        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
+        table = table + ("-" * 60) 
+
+        for name, uuid in vms.items():
+            state = get_vm_state(uuid)
+
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+
+            print(f"{name:25} {state:15} {ip or 'N/A'}")
+
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
         return table
+
+    def list_vms(self):
+        return self.list_vms_table()
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """

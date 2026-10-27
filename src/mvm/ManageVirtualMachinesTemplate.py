@@ -38,6 +38,18 @@ class ManageVirtualMachinesTemplate:
                             functionName + " (" + \
                             lineNumber + ")")
 
+    def list_vms_json(self):
+        self.logger.log(lp.INFO,
+                        f"--{self.__class__.__name__} not yet in production.")
+        self.__calledBy()
+        raise MethodNotImplementedError
+
+    def list_vms_table(self):
+        self.logger.log(lp.INFO,
+                        f"--{self.__class__.__name__} not yet in production.")
+        self.__calledBy()
+        raise MethodNotImplementedError
+
     def list_vms(self):
         self.logger.log(lp.INFO,
                         f"--{self.__class__.__name__} not yet in production.")
