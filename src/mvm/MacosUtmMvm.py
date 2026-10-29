@@ -63,7 +63,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
             json_table[i] = {}
             json_table[i]["name"] = name
-            json_table[i]["status"] = status
+            json_table[i]["status"] = state
             json_table[i]["ip"] = ip or 'N/A'
 
             i = i + 1

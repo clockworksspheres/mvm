@@ -103,13 +103,13 @@ class TestVmFunctions(unittest.TestCase):
     @patch("mvm.lib.vmware_list_status.find_all_vmx_files")
     @patch("mvm.lib.vmware_list_status.list_running_vms")
     def test_print_status4all_vms(
+        self, mock_running, mock_find, mock_status, mock_ip, mock_print
+    ):
         """
 
         *** Fix test for new output ***
 
         """
-        self, mock_running, mock_find, mock_status, mock_ip, mock_print
-    ):
         
         if sys.platform.lower().startswith("win"):
             mock_running.return_value = {"\\vms\\a.vmx"}
