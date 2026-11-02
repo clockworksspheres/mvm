@@ -11,7 +11,8 @@ hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "
 
 if sys.platform.lower().startswith("win"):
     hypervisorMap = {"vmware": "vmware.exe", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
-
+elif sys.platform.lower().startswith("linux"):
+    hypervisorMap = {"vmware": "VMware Workstation", "virtualbox": "VirtualBox", "qemu": "Qemu"}
 
 
 class HypervisorNotValid(BaseException):

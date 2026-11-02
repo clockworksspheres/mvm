@@ -18,6 +18,9 @@ from pathlib import Path
 from typing import Optional, Dict, List
 
 from ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
+from lib.loggers import CyLogger
+from lib.loggers import LogPriority as lp
+
 
 # -----------------------------
 # 🧠 Hardware-Aware QEMU Binary Selection
@@ -104,9 +107,15 @@ class VMState:
 class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     """Concrete QEMU backend — architecture-aware, uses QMP for pause/unpause."""
 
-    def __init__(self):
+    def __init__(self, logger: CyLogger, **kwargs):
         super().__init__()
         self._qmp_socket_dir = self.VM_DIR / "qmp"
+
+        if isinstance(logger, CyLogger):
+            self.logger = CyLogger()
+        else:
+            self.logger = CyLogger()
+            self.logger.initializeLogs()
 
     def _vm_config_path(self, name: str) -> Path:
         return self.VM_DIR / f"{name}.json"
@@ -322,7 +331,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     cmd, name = sys.argv[1], sys.argv[2]
-    mvm = LinuxQemuMvm()
+
+    logger = CyLogger()
+    logger.initializeLogs()
+
+    mvm = LinuxQemuMvm(logger)
 
     if cmd == "start":
         ok = mvm.start_vm(name)

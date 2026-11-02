@@ -10,7 +10,7 @@ from ui.main import VmCtlUi
 from mvm_run import mvm_run
 
 
-HYPERVISORS = {"vmware", "virtualbox", "utm", "hyperv"}
+HYPERVISORS = {"vmware", "virtualbox", "qemu", "utm", "hyperv"}
 
 def main():
     # HYPERVISORS = {"vmware", "virtualbox", "utm"}
