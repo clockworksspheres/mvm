@@ -66,6 +66,7 @@ class VmCtlUi(QMainWindow):
                                                  "VirtualBox"])
         elif platform.lower().startswith("linux"):
             self.ui.hypervisorComboBox.addItems(["VMware Workstation",
+                                                 "Qemu",
                                                  "VirtualBox"])            
 
         self.ui.actionComboBox.addItems(["start", "stop", "reset",
@@ -216,6 +217,10 @@ class VmCtlUi(QMainWindow):
         if sys.platform.lower().startswith("win"):
             hypervisorMap = {"vmware": "vmware.exe", "hyperv": "vmms.exe", "virtualbox": "VBoxSDS.exe"}
             hyperMap = {0: "vmware", 1: "hyperv", 2: "virtualbox"}
+
+        if sys.platform.lower().startswith("linux"):
+            hypervisorMap = {"vmware": "VMware Fusion", "qemu": "Qemu", "virtualbox": "VirtualBox"}
+            hyperMap = {0: "vmware", 1: "qemu", 2: "virtualbox"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
 
