@@ -25,3 +25,6 @@ pytest
 # Windows only
 pywin32; sys_platform == 'win32'
 
+# Linux only
+libvirt-python; sys_platform == 'linux'
+

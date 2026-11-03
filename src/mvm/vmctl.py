@@ -6,8 +6,8 @@ from pathlib import Path
 #sys.path.append(str(Path(__file__).parent.parent))
 
 #from ManageVirtualMachines import ManageVirtualMachines
-from ui.main import VmCtlUi
-from mvm_run import mvm_run
+from mvm.ui.main import VmCtlUi
+from mvm.mvm_run import mvm_run
 
 
 HYPERVISORS = {"vmware", "virtualbox", "qemu", "utm", "hyperv"}

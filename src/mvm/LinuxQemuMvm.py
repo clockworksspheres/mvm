@@ -16,6 +16,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from typing import Optional, Dict, List
+import libvirt
 
 from ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 from lib.loggers import CyLogger
@@ -107,6 +108,8 @@ class VMState:
 class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     """Concrete QEMU backend — architecture-aware, uses QMP for pause/unpause."""
 
+    VM_DIR = Path.home() / "mvm_vms"
+
     def __init__(self, logger: CyLogger, **kwargs):
         super().__init__()
         self._qmp_socket_dir = self.VM_DIR / "qmp"
@@ -126,6 +129,30 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     def _ensure_qmp_dir(self):
         self._qmp_socket_dir.mkdir(parents=True, exist_ok=True)
 
+    def list_vms(self):
+        try:
+            conn = libvirt.open("qemu:///system")  # or qemu:///session
+        except Exception as e:
+            print(f"Failed to connect: {e}")
+            return
+
+        domains = conn.listAllDomains()
+        if not domains:
+            print("No VMs found.")
+            return
+
+        for dom in domains:
+            name = dom.name()          # ← correct: VM name
+            state = dom.state()[0]        # e.g., 1=running, 3=pause
+            state_name = {
+                libvirt.VIR_DOMAIN_RUNNING: "running",
+                libvirt.VIR_DOMAIN_PAUSED:  "paused",
+                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
+            }.get(state, f"unknown({state})")
+
+            print(f"{name:20} {state_name}")
+
+    """
     def list_vms(self) -> List[Dict]:
         vms = []
         for cfg_file in self.VM_DIR.glob("*.json"):
@@ -141,6 +168,7 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             vms.append(cfg)
 
         return sorted(vms, key=lambda x: x.get("name", ""))
+    """
 
     def start_vm(self, name: str) -> bool:
         """Start a QEMU VM — expects metadata (disk,cpu,mem) to exist."""

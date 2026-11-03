@@ -3,13 +3,23 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mvm"
-version = "0.0.34"
-description = "Manage Virtual Machines utilities"
+name = "vmctl"
+version = "0.0.35"
+description = "RAM disk utilities"
 readme = "README.md"
 requires-python = ">=3.10"
+dynamic = ["dependencies"]
+# dynamic = ["dependencies", "optional-dependencies"]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["mvm*"]
+
+[project.scripts]
+vmctl = "mvm.vmctl:main"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+# optional-dependencies = { dev = { file = ["requirements-dev.txt"] } }
+
 

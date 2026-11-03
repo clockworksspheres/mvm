@@ -52,12 +52,15 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
             from mvm.MacosUtmMvm import MacosUtmMvm
             self.mvm = MacosUtmMvm(self.logger)
         elif self.framework == "hyperv" and sys.platform.lower().startswith("win32"):
-            from lib.windows_utilities import hyper_v_enabled
+            from mvm.lib.windows_utilities import hyper_v_enabled
             if not hyper_v_enabled():
                 raise HypervisorNotApplicable("Hyperv isn't applicable...")
             else:
-                from WindowsHypervMvm import WindowsHypervMvm
+                from mvm.WindowsHypervMvm import WindowsHypervMvm
                 self.mvm = WindowsHypervMvm(self.logger)
+        elif self.framework == "qemu" and sys.platform.lower().startswith("linux"):
+            from mvm.LinuxQemuMvm import LinuxQemuMvm
+            self.mvm = LinuxQemuMvm(self.logger)
         else:
             self.logger.log(lp.ERROR, f"{self.framework} hasn't been implemented")
 
