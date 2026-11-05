@@ -11,6 +11,7 @@ Supports:
 """
 
 import os
+import sys
 import json
 import subprocess
 import shutil
@@ -21,6 +22,7 @@ import libvirt
 from ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
 from lib.loggers import CyLogger
 from lib.loggers import LogPriority as lp
+from lib.libHelperExceptions import NoVmsFound
 
 
 # -----------------------------
@@ -113,12 +115,51 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     def __init__(self, logger: CyLogger, **kwargs):
         super().__init__()
         self._qmp_socket_dir = self.VM_DIR / "qmp"
+        self.uri = "qemu:///system"
 
         if isinstance(logger, CyLogger):
             self.logger = CyLogger()
         else:
             self.logger = CyLogger()
             self.logger.initializeLogs()
+
+        try:
+            self.conn = libvirt.open("qemu:///system")  # or qemu:///session
+        except Exception as e:
+            print(f"Failed to connect: {e}")
+            return
+
+        self.domains = self.conn.listAllDomains()
+        if not self.domains:
+            print("No VMs found.")
+            raise NoVmsFound
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
+            self.conn = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        The standard Python way to handle resources going out 
+        of scope is using the with statement.  It guarantees 
+        cleanup the exact moment the block exits.
+        """
+        self.close()
+ 
+    def __del__(self):
+        """
+        Implementing safe destructor fallback for standard scoping
+        """
+        try:
+            if hasattr(self, 'conn') and self.conn is not None:
+                self.conn.close()
+        except Exception:
+            # Prevent exceptions during interpreter shutdown
+            pass
 
     def _vm_config_path(self, name: str) -> Path:
         return self.VM_DIR / f"{name}.json"
@@ -130,21 +171,11 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
         self._qmp_socket_dir.mkdir(parents=True, exist_ok=True)
 
     def list_vms_json(self):
-        try:
-            conn = libvirt.open("qemu:///system")  # or qemu:///session
-        except Exception as e:
-            print(f"Failed to connect: {e}")
-            return
 
-        domains = conn.listAllDomains()
-        if not domains:
-            print("No VMs found.")
-            return
-        
         ip = ""
         json_table = {}
         i = 0
-        for dom in domains:
+        for dom in self.domains:
             name = dom.name()          # ← correct: VM name
             state = dom.state()[0]        # e.g., 1=running, 3=pause
             state_name = {
@@ -164,23 +195,13 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
         return json_table
 
     def list_vms_table(self):
-        try:
-            conn = libvirt.open("qemu:///system")  # or qemu:///session
-        except Exception as e:
-            print(f"Failed to connect: {e}")
-            return
-
-        domains = conn.listAllDomains()
-        if not domains:
-            print("No VMs found.")
-            return
         
         print(f"{'VM Name':30} {'State':15} {'IP address'}")
         print("-" * 60)
         table = f"{'VM Name':30} {'State':15} {'IP address'}\n"
         table = table + ("-" * 60) + "\n"
         ip = ""
-        for dom in domains:
+        for dom in self.domains:
             name = dom.name()          # ← correct: VM name
             state = dom.state()[0]        # e.g., 1=running, 3=pause
             state_name = {
@@ -196,94 +217,50 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     def list_vms(self):
         return self.list_vms_table()
 
-    def old_list_vms(self):
+    def start_vm_headless(self, vm_name: str) -> bool:
+        started = False
         try:
-            conn = libvirt.open("qemu:///system")  # or qemu:///session
-        except Exception as e:
-            print(f"Failed to connect: {e}")
-            return
+            self.domain = self.conn.lookupByName(vm_name)
+            self.domain.create()
+            print(f"VM '{vm_name}' started successfully.")
+            started = True
+        except libvirt.libvirtError as e:
+            print(f"Failed to start VM: {e}", file=sys.stderr)
 
-        domains = conn.listAllDomains()
-        if not domains:
-            print("No VMs found.")
-            return
+        return started
 
-        for dom in domains:
-            name = dom.name()          # ← correct: VM name
-            state = dom.state()[0]        # e.g., 1=running, 3=pause
-            state_name = {
-                libvirt.VIR_DOMAIN_RUNNING: "running",
-                libvirt.VIR_DOMAIN_PAUSED:  "paused",
-                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
-            }.get(state, f"unknown({state})")
-
-            print(f"{name:20} {state_name}")
-
-    """
-    def list_vms(self) -> List[Dict]:
-        vms = []
-        for cfg_file in self.VM_DIR.glob("*.json"):
-            name = cfg_file.stem
-            try:
-                with open(cfg_file, "r") as f:
-                    cfg = json.load(f)
-                state = self.get_vm_state(name)
-            except Exception:
-                state = VMState.UNKNOWN
-
-            cfg.setdefault("state", state)
-            vms.append(cfg)
-
-        return sorted(vms, key=lambda x: x.get("name", ""))
-    """
-
-    def start_vm(self, name: str) -> bool:
-        """Start a QEMU VM — expects metadata (disk,cpu,mem) to exist."""
-        cfg_path = self._vm_config_path(name)
-        if not cfg_path.exists():
-            print(f"VM '{name}' config missing — cannot start.")
-            return False
-
-        with open(cfg_path, "r") as f:
-            cfg = json.load(f)
-
-        disk_path = cfg.get("disk_path")
-        cpu = cfg.get("cpu", 2)
-        mem_mb = cfg.get("mem_mb", 2048)
-
-        if not disk_path or not os.path.exists(disk_path):
-            print(f"VM '{name}' has missing disk: {disk_path}")
-            return False
-
-        self._ensure_qmp_dir()
-        qmp_sock = str(self._qmp_socket_path(name))
-
-        cmd = [
-            QEMU_BIN,  # ← Now architecture-correct!
-            "-name", name,
-            "-m", f"{mem_mb}M",
-            "-smp", str(cpu),
-            "-drive", f"file={disk_path},if=virtio,cache=unsafe",
-            "-nographic",
-            "-nodefaults",
-            "-monitor", f"unix:{qmp_sock},server,nowait",
-            "-serial", "stdio",
-        ]
-
+    def start_vm_with_gui(self, vm_name: str) -> bool:
+        started = False
         try:
-            proc = subprocess.Popen(cmd)
-            cfg["pid"] = proc.pid
-            cfg["qmp_socket"] = qmp_sock
+            domain = self.conn.lookupByName(vm_name)
+            
+            # 1. Start the VM headlessly in the background
+            domain.create()
+            print(f"VM '{vm_name}' started in background.")
 
-            with open(cfg_path, "w") as f:
-                json.dump(cfg, f, indent=2)
+            # 2. Fire up the desktop window client asynchronously
+            # --attach tells virt-viewer to close automatically if the VM shuts down
+            # --connect targets your specific hypervisor URI
+            subprocess.Popen([
+                "virt-viewer", 
+                "--connect", self.uri, 
+                "--attach", 
+                vm_name
+            ])
+            print(f"Opening GUI window for '{vm_name}'...")
+            started = True
+        except libvirt.libvirtError as e:
+            print(f"Failed to start VM: {e}", file=sys.stderr)
+        except FileNotFoundError:
+            print("Error: 'virt-viewer' is not installed on this host system.", file=sys.stderr)
 
-            print(f"✅ VM '{name}' started (PID {proc.pid}, using: {QEMU_BIN})")
-            return True
-
-        except Exception as e:
-            print(f"❌ Failed to start VM '{name}': {e}")
-            return False
+    def start_vm(self, vm_name: str, headless=False) -> bool:
+        started = False
+        if headless:
+            started = self.start_vm_headless(vm_name)
+        else:
+            started = self.start_vm_with_gui(vm_name)
+        return started
 
     def stop_vm(self, name: str) -> bool:
         cfg_path = self._vm_config_path(name)

@@ -74,3 +74,10 @@ class HardwareNotApplicable(Exception):
     def __init__(self, *args, **kwargs):
         Exception.__init__(self, *args, **kwargs)
 
+class NoVmsFound(Exception):
+    """
+    Custom Exception
+    """
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
