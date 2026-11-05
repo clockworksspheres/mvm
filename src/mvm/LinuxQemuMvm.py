@@ -292,47 +292,65 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
         except libvirt.libvirtError as e:
             print(f"Failed to stop VM '{vm_name}': {e}", file=sys.stderr)
 
-    def pause_vm(self, name: str) -> bool:
-        cfg = self._load_config(name)
-        qmp_sock = cfg.get("qmp_socket")
-        if not qmp_sock or not os.path.exists(qmp_sock):
-            print(f"QMP socket missing for '{name}' — cannot pause.")
-            return False
-
+    def reset_vm(self, vm_name: str, hard: bool = True):
+        """
+        Forcefully resets (reboots) a running virtual machine.
+        Equivalent to a hard reset button on a physical computer.
+        """
         try:
-            import socket
-            cmd = {"execute": "stop"}
-            msg = json.dumps(cmd) + "\n"
-            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-                sock.connect(qmp_sock)
-                sock.sendall(msg.encode())
-                resp = json.loads(sock.recv(4096).decode())
-            print(f"VM '{name}' paused via QMP.")
-            return True
-        except Exception as e:
-            print(f"QMP pause failed: {e}")
-            return False
+            domain = self.conn.lookupByName(vm_name)
+            state, *_ = domain.info()
+            
+            # 1 = libvirt.VIR_DOMAIN_RUNNING
+            # 3 = libvirt.VIR_DOMAIN_PAUSED
+            if state not in (1, 3):
+                print(f"VM '{vm_name}' cannot be reset because it is not active.")
+                return
 
-    def unpause_vm(self, name: str) -> bool:
-        cfg = self._load_config(name)
-        qmp_sock = cfg.get("qmp_socket")
-        if not qmp_sock or not os.path.exists(qmp_sock):
-            print(f"QMP socket missing for '{name}' — cannot unpause.")
-            return False
+            # Perform the hard reset
+            domain.reset(0) # 0 is standard flags parameter
+            print(f"VM '{vm_name}' has been hard reset.")
 
+        except libvirt.libvirtError as e:
+            print(f"Failed to reset VM '{vm_name}': {e}", file=sys.stderr)
+
+    def pause_vm(self, vm_name: str):
+        """
+        Suspends a running virtual machine, freezing its execution.
+        """
         try:
-            import socket
-            cmd = {"execute": "cont"}
-            msg = json.dumps(cmd) + "\n"
-            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-                sock.connect(qmp_sock)
-                sock.sendall(msg.encode())
-                resp = json.loads(sock.recv(4096).decode())
-            print(f"VM '{name}' resumed via QMP.")
-            return True
-        except Exception as e:
-            print(f"QMP unpause failed: {e}")
-            return False
+            domain = self.conn.lookupByName(vm_name)
+            state, *_ = domain.info()
+            
+            # 1 = libvirt.VIR_DOMAIN_RUNNING
+            if state != 1:
+                print(f"VM '{vm_name}' cannot be paused because it is not currently running.")
+                return
+
+            domain.suspend()
+            print(f"VM '{vm_name}' has been paused (suspended).")
+
+        except libvirt.libvirtError as e:
+            print(f"Failed to pause VM '{vm_name}': {e}", file=sys.stderr)
+
+    def unpause_vm(self, vm_name: str):
+        """
+        Resumes a paused/suspended virtual machine.
+        """
+        try:
+            domain = self.conn.lookupByName(vm_name)
+            state, *_ = domain.info()
+            
+            # 3 = libvirt.VIR_DOMAIN_PAUSED
+            if state != 3:
+                print(f"VM '{vm_name}' cannot be unpaused because it is not in a paused state.")
+                return
+
+            domain.resume()
+            print(f"VM '{vm_name}' has been successfully unpaused (resumed).")
+
+        except libvirt.libvirtError as e:
+            print(f"Failed to unpause VM '{vm_name}': {e}", file=sys.stderr)
 
     def _load_config(self, name: str) -> Dict:
         cfg_path = self._vm_config_path(name)
@@ -353,19 +371,38 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             pass
         return None
 
-    def get_vm_state(self, name: str) -> str:
-        pid = self._get_pid_from_name(name)
-        if not pid:
-            return VMState.STOPPED
+    def get_vm_status(self, vm_name: str) -> str:
+        """
+        Retrieves the current execution status of a virtual machine.
+
+        :param vm_name: The name of the VM.
+        :return: A string describing the state (e.g., 'Running', 'Paused', 'Shutoff').
+        """
+        # Mapping libvirt state integers to human-readable text
+        state_mapping = {
+            libvirt.VIR_DOMAIN_NOSTATE: "No State",
+            libvirt.VIR_DOMAIN_RUNNING: "Running",
+            libvirt.VIR_DOMAIN_BLOCKED: "Blocked",
+            libvirt.VIR_DOMAIN_PAUSED: "Paused",
+            libvirt.VIR_DOMAIN_SHUTDOWN: "Shutting Down",
+            libvirt.VIR_DOMAIN_SHUTOFF: "Shutoff (Stopped)",
+            libvirt.VIR_DOMAIN_CRASHED: "Crashed",
+            libvirt.VIR_DOMAIN_PMSUSPENDED: "S3 Suspended (PM)",
+        }
 
         try:
-            with open(f"/proc/{pid}/stat", "r") as f:
-                state_letter = f.read().split()[2]
-            if state_letter == "T":
-                return VMState.PAUSED
-            return VMState.RUNNING
-        except FileNotFoundError:
-            return VMState.STOPPED
+            domain = self.conn.lookupByName(vm_name)
+
+            # Using domain.state() is slightly more direct than domain.info()
+            # It returns a list: [state_integer, reason_code]
+            state, _ = domain.state()
+
+            return state_mapping.get(state, f"Unknown Code ({state})")
+
+        except libvirt.libvirtError as e:
+            # If the VM doesn't exist or connection fails
+            print(f"Error checking status for '{vm_name}': {e}", file=sys.stderr)
+            return "Unknown/Error"
 
 
 # -----------------------------
