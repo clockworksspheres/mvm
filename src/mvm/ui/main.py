@@ -204,6 +204,22 @@ class VmCtlUi(QMainWindow):
             self.ui.vmNameLabel.show()
             self.ui.vmNameLineEdit.show()
 
+    def is_proc_running(self, myprocess=""):
+        for proc in psutil.process_iter(['name', 'cmdline']):
+            try:
+                name = proc.info['name']
+                cmdline = proc.info['cmdline']
+
+                # print(f"{cmdline}")
+
+                if name and myprocess in name:
+                    return True
+                if cmdline and any(myprocess in arg for arg in cmdline):
+                    return True
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                pass
+        return False
+
     def spawn_action(self):
 
         current_hypervisor_index = self.ui.hypervisorComboBox.currentIndex()
@@ -219,38 +235,43 @@ class VmCtlUi(QMainWindow):
             hyperMap = {0: "vmware", 1: "hyperv", 2: "virtualbox"}
 
         if sys.platform.lower().startswith("linux"):
-            hypervisorMap = {"vmware": "VMware Fusion", "qemu": "Qemu", "virtualbox": "VirtualBox"}
+            hypervisorMap = {"vmware": "VMware Workstation", "qemu": "virt-manager", "virtualbox": "VirtualBox"}
             hyperMap = {0: "vmware", 1: "qemu", 2: "virtualbox"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
 
         print(f"Looking for: {hypervisorApp}")
 
-        matched = None
-        for proc in psutil.process_iter(['pid', 'name']):
-            if hypervisorApp == proc.info['name'].strip():
+        '''
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            
+            if hypervisorApp == proc.info['name'].strip() or \
+               any(hypervisorApp in arg for arg in proc.info['cmdline']):
                 print(f"{proc.info['name']}")
                 matched = proc.info['name']
+        '''
+        matched = self.is_proc_running(hypervisorApp)
+        # print("Matched: " + str(matched) )
+        if matched:
+            action = self.ui.actionComboBox.currentText().strip()
 
-                action = self.ui.actionComboBox.currentText().strip()
+            vmach = self.ui.vmNameLineEdit.text().strip()
 
-                vmach = self.ui.vmNameLineEdit.text().strip()
+            args = Namespace(
+                command = action,
+                vm = vmach,
+                hypervisor = hyperMap[current_hypervisor_index],
+                headless = False,
+                hard = True,
+            )
+            self.ui.textBrowser.append("==================================================")
+            returned = mvm_run(args)
 
-                args = Namespace(
-                    command = action,
-                    vm = vmach,
-                    hypervisor = hyperMap[current_hypervisor_index],
-                    headless = False,
-                    hard = True,
-                )
-                self.ui.textBrowser.append("==================================================")
-                returned = mvm_run(args)
+            if returned:
+                print(f"{returned}")
+                self.ui.textBrowser.append(f"{returned}")
 
-                if returned:
-                    print(f"{returned}")
-                    self.ui.textBrowser.append(f"{returned}")
-
-        if not matched:
+        elif not matched:
             print(f"Hypervisor {current_hypervisor_name} not running, start {current_hypervisor_name} first")
 
     def onDebugPushButtonClicked(self, checked):

@@ -12,7 +12,7 @@ hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "
 if sys.platform.lower().startswith("win"):
     hypervisorMap = {"vmware": "vmware.exe", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
 elif sys.platform.lower().startswith("linux"):
-    hypervisorMap = {"vmware": "VMware Workstation", "virtualbox": "VirtualBox", "qemu": "libvirtd"}
+    hypervisorMap = {"vmware": "VMware Workstation", "qemu": "virt-manager", "virtualbox": "VirtualBox"}
 
 
 class HypervisorNotValid(BaseException):
@@ -23,6 +23,23 @@ class HypervisorNotValid(BaseException):
         BaseException.__init__(self, *args, **kwargs)
 
 
+def is_proc_running(myprocess=""):
+    for proc in psutil.process_iter(['name', 'cmdline']):
+        try:
+            name = proc.info['name']
+            cmdline = proc.info['cmdline']
+
+            # print(f"{cmdline}")
+
+            if name and myprocess in name:
+                return True
+            if cmdline and any(myprocess in arg for arg in cmdline):
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False
+
+
 def mvm_run(args):
     hyper = args.hypervisor
     vm = args.vm
@@ -31,11 +48,7 @@ def mvm_run(args):
 
     hypervisorApp = hypervisorMap[args.hypervisor.strip()]
 
-    for proc in psutil.process_iter(['pid', 'name']):
-        #if re.match(re.escape(hypervisor), proc.info['name']):
-        if hypervisorApp == proc.info['name'].strip():
-            print(f"{proc.info['name']}")
-            matched = proc.info['name']
+    matched = is_proc_running(hypervisorApp)
 
     if not matched:
         message = f"Hypervisor {hypervisorApp} not running, start {hypervisorApp} first"

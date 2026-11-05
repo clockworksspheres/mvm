@@ -27,7 +27,7 @@ def main():
     # Common arguments for most commands
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("hypervisor", choices=HYPERVISORS,
-                        help="vmware | virtualbox | utm | hyperv")
+                        help="vmware | virtualbox | utm | hyperv | qemu")
 
     common.add_argument("vm", nargs="?", 
                         help="VM name or full path to .vmx / .vbox file")
