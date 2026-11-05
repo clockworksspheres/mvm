@@ -129,7 +129,74 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
     def _ensure_qmp_dir(self):
         self._qmp_socket_dir.mkdir(parents=True, exist_ok=True)
 
+    def list_vms_json(self):
+        try:
+            conn = libvirt.open("qemu:///system")  # or qemu:///session
+        except Exception as e:
+            print(f"Failed to connect: {e}")
+            return
+
+        domains = conn.listAllDomains()
+        if not domains:
+            print("No VMs found.")
+            return
+        
+        ip = ""
+        json_table = {}
+        i = 0
+        for dom in domains:
+            name = dom.name()          # ← correct: VM name
+            state = dom.state()[0]        # e.g., 1=running, 3=pause
+            state_name = {
+                libvirt.VIR_DOMAIN_RUNNING: "running",
+                libvirt.VIR_DOMAIN_PAUSED:  "paused",
+                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
+            }.get(state, f"unknown({state})")
+
+            json_table[i] = {}
+            json_table[i]["name"] = name
+            json_table[i]["status"] = state
+            json_table[i]["ip"] = ip or "N/A"
+
+            i = i + 1
+
+        print(json.dumps(json_table, indent=2))
+        return json_table
+
+    def list_vms_table(self):
+        try:
+            conn = libvirt.open("qemu:///system")  # or qemu:///session
+        except Exception as e:
+            print(f"Failed to connect: {e}")
+            return
+
+        domains = conn.listAllDomains()
+        if not domains:
+            print("No VMs found.")
+            return
+        
+        print(f"{'VM Name':30} {'State':15} {'IP address'}")
+        print("-" * 60)
+        table = f"{'VM Name':30} {'State':15} {'IP address'}\n"
+        table = table + ("-" * 60) + "\n"
+        ip = ""
+        for dom in domains:
+            name = dom.name()          # ← correct: VM name
+            state = dom.state()[0]        # e.g., 1=running, 3=pause
+            state_name = {
+                libvirt.VIR_DOMAIN_RUNNING: "running",
+                libvirt.VIR_DOMAIN_PAUSED:  "paused",
+                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
+            }.get(state, f"unknown({state})")
+
+            print(f"{name:30} {state_name:15} {ip or 'N/A'}")
+            table = table + f"{name:30} {state_name:15} {ip or 'N/A'}\n"
+        return table
+
     def list_vms(self):
+        return self.list_vms_table()
+
+    def old_list_vms(self):
         try:
             conn = libvirt.open("qemu:///system")  # or qemu:///session
         except Exception as e:
