@@ -262,45 +262,35 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             started = self.start_vm_with_gui(vm_name)
         return started
 
-    def stop_vm(self, name: str) -> bool:
-        cfg_path = self._vm_config_path(name)
-        if not cfg_path.exists():
-            print(f"VM '{name}' config missing.")
-            return False
-
-        with open(cfg_path, "r") as f:
-            cfg = json.load(f)
-
-        pid = cfg.get("pid")
-        if not pid:
-            print("No PID recorded — trying process search...")
-            return self._stop_by_name(name)
-
+    def stop_vm(self, vm_name: str, force: bool = True):
+        """
+        Stops a running virtual machine.
+        
+        :param vm_name: The name of the virtual machine to stop.
+        :param force: If True, forcefully kills the VM (ACPI power-off). 
+                      If False, sends a graceful shutdown request to the guest OS.
+        """
         try:
-            os.kill(pid, 15)  # SIGTERM
-            print(f"VM '{name}' stopped.")
-            return True
-        except ProcessLookupError:
-            print(f"VM '{name}' (PID {pid}) not running.")
-            return False
+            domain = self.conn.lookupByName(vm_name)
+            
+            # Check if the VM is actually running before trying to stop it
+            state, *_ = domain.info()
+            # 1 = libvirt.VIR_DOMAIN_RUNNING
+            if state != 1:
+                print(f"VM '{vm_name}' is not currently running.")
+                return
 
-    def _stop_by_name(self, name: str) -> bool:
-        try:
-            res = subprocess.run(
-                ["pgrep", "-f", f"qemu-system.*-name {name}"],
-                capture_output=True, text=True
-            )
-            if res.returncode != 0:
-                print(f"No running VM found for '{name}'.")
-                return False
-            pids = res.stdout.strip().split()
-            for pid_str in pids:
-                os.kill(int(pid_str), 15)
-            print(f"Stopped VM '{name}' (PID(s): {pids})")
-            return True
-        except Exception as e:
-            print(f"Error stopping '{name}': {e}")
-            return False
+            if force:
+                # Forceful shutdown (Equivalent to 'virsh destroy')
+                domain.destroy()
+                print(f"VM '{vm_name}' was forcefully stopped (destroyed).")
+            else:
+                # Graceful shutdown (Equivalent to 'virsh shutdown')
+                domain.shutdown()
+                print(f"Graceful shutdown signal sent to VM '{vm_name}'.")
+
+        except libvirt.libvirtError as e:
+            print(f"Failed to stop VM '{vm_name}': {e}", file=sys.stderr)
 
     def pause_vm(self, name: str) -> bool:
         cfg = self._load_config(name)
