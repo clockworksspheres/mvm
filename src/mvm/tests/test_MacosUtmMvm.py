@@ -67,7 +67,7 @@ class TestMacosUtmMvm(unittest.TestCase):
         self.mvm.pause_vm("vm1")
         self.assertEqual(
             self.mvm.run.last_command,
-            ["utmctl", "pause", "vm1"]
+            ["utmctl", "suspend", "vm1"]
         )
 
     def test_unpause_vm_sets_correct_command(self):
