@@ -26,22 +26,11 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
         self.utmctl = "utmctl"
 
-    def list_vms(self):
+    def list_vms_json(self):
         """
-        List available VMs 
+        Create a table in a string for the list of VMs.
         """
         vms = utm_list()
-
-        #if not vms:
-        #    print("No VMs found or utmctl produced no output.")
-        #    return
-
-        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
-        print("-" * 60) 
-        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
-        table = table + ("-" * 60) 
-
-        list_vms_state_dict = {}
 
         json_table = {}
         i = 0
@@ -56,11 +45,6 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             state = state or vm["state"]
             ip = ip or "no-ip"
 
-            list_vms_state_dict[name] = { "state": state, "ip": ip }
-
-            print(f"{name:25} {state:15} {ip or 'N/A'}")
-            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
-
             json_table[i] = {}
             json_table[i]["name"] = name
             json_table[i]["status"] = state
@@ -70,7 +54,44 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
         print(json.dumps(json_table, indent=2))
 
+        return json_table
+
+    def list_vms_table(self) -> str:
+        """
+        Create a json structure for the list of VMs
+        """
+        vms = utm_list()
+
+        #if not vms:
+        #    print("No VMs found or utmctl produced no output.")
+        #    return
+
+        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
+        table = table + ("-" * 60) 
+
+        for vm in vms:
+            uuid = vm["uuid"]
+            name = vm["name"]
+
+            # Get detailed status + IP
+            state, ip = utm_status(uuid)
+
+            # Fallback to list state if status didn't return one
+            state = state or vm["state"]
+            ip = ip or "no-ip"
+
+            print(f"{name:25} {state:15} {ip or 'N/A'}")
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
         return table
+
+    def list_vms(self):
+        """
+        List available VMs 
+        """
+        return self.list_vms_table()
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
@@ -93,7 +114,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.utmctl, "pause", vm]
+        cmd = [self.utmctl, "suspend", vm]
         self.run.setCommand(cmd)
         self.run.communicate()
 
