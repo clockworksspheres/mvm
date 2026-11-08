@@ -40,6 +40,9 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         for name, uuid in vms.items():
             state = get_vm_state(uuid)
 
+            if state == 'poweroff':
+                state = 'off'
+
             if state == "running":
                 ip = get_vm_ip(uuid)
             else:
@@ -71,6 +74,9 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
 
         for name, uuid in vms.items():
             state = get_vm_state(uuid)
+
+            if state == 'poweroff':
+                state = 'off'
 
             if state == "running":
                 ip = get_vm_ip(uuid)
@@ -128,7 +134,7 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         self.run.setCommand(cmd1)
         self.run.communicate()
 
-    def get_vm_status(self, vm: str):
+    def get_vm_status(self, vm: str, quiet=False):
         """
         Get the status of a virtual machine 
         """
@@ -138,6 +144,10 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
         for name, uuid in vms.items():
             if name == vm:
                 state = get_vm_state(uuid)
+
+                if state == 'poweroff':
+                    state = 'off'
+
                 found=True
                 break
             else:
@@ -150,8 +160,16 @@ class MacosVirtualboxMvm(ManageVirtualMachinesTemplate):
             '''
         if not found:
             state = "<< VM does not exist >>"
-            print("<< VM does not exist >>")
+            if not quiet:
+                print("<< VM does not exist >>")
         return state
+
+    def get_vm_status_json(self, vm: str=""):
+        """
+        Get the status of a virtual machine in JSON format
+        """
+        state = self.get_vm_status(vm, True)
+        return {'state': state}
 
     def get_ip(self, vm: str = ""):
         """

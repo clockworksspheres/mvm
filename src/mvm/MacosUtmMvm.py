@@ -41,6 +41,11 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             # Get detailed status + IP
             state, ip = utm_status(uuid)
 
+            if state == 'stopped':
+                state = "off"
+            elif state == 'started':
+                state = 'running'
+
             # Fallback to list state if status didn't return one
             state = state or vm["state"]
             ip = ip or "no-ip"
@@ -48,6 +53,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
             json_table[i] = {}
             json_table[i]["name"] = name
             json_table[i]["status"] = state
+
             json_table[i]["ip"] = ip or 'N/A'
 
             i = i + 1
@@ -80,6 +86,12 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
             # Fallback to list state if status didn't return one
             state = state or vm["state"]
+
+            if state == 'stopped':
+                state = "off"
+            elif state == 'started':
+                state = 'running'
+
             ip = ip or "no-ip"
 
             print(f"{name:25} {state:15} {ip or 'N/A'}")
@@ -137,7 +149,7 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
         self.run.setCommand(cmd2)
         self.run.communicate()
 
-    def get_vm_status(self, vm: str):
+    def get_vm_status(self, vm: str, quiet: bool=False):
         """
         Get the status of a virtual machine 
         """
@@ -162,18 +174,30 @@ class MacosUtmMvm(ManageVirtualMachinesTemplate):
 
             # Fallback to list state if status didn't return one
             state = state or machine["state"]
+
+            if state == 'stopped':
+                state = "off"
+            elif state == 'started':
+                state = 'running'
+
             ips = ips or "no-ip"
 
             if re.fullmatch(name, vm.strip(), flags=re.IGNORECASE):
-                print(f"{name:25} {state:15} {ips or 'N/A'}")
+                if not quiet:
+                    print(f"{name:25} {state:15} {ips or 'N/A'}")
                 found = True
                 break
             # print(f"{name} | {state} | {ips}")
         if not found:
             state = "<< VM does not exist >>"
-            print("<< VM does not exist >>")
+            if not quiet:
+                print("<< VM does not exist >>")
         return state
  
+    def get_vm_status_json(self, vm: str):
+        state = self.get_vm_status
+        return {'state': state}
+
     def get_ip(self, vm: str = ""):
         """
         get the IP address of a virtual machine 

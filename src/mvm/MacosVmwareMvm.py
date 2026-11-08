@@ -64,13 +64,17 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         # print(f"{vmx_files}")
 
         running_set = list_running_vms()
-
+        ip = ""
         json_table = {}
         i = 0
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
-            ip = get_vm_ip(str(vmx)) if status == "running" else None
+
+            if status == 'suspended':
+                status = 'paused'
+
+            ip = get_vm_ip(str(vmx)) if status == "running" else 'N/A'
 
             json_table[i] = {}
             json_table[i]["name"] = name
@@ -100,6 +104,10 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         for vmx in vmx_files:
             name = vmx.stem
             status = detect_vm_status(str(vmx), running_set)
+
+            if status == 'suspended':
+                status = 'paused'
+
             ip = get_vm_ip(str(vmx)) if status == "running" else None
 
             print(f"{name:30} {status:12} {ip or 'N/A'}")
@@ -156,7 +164,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         self.run.setCommand(cmd)
         self.run.communicate()
 
-    def get_vm_status(self, vm: str):
+    def get_vm_status(self, vm: str, quiet: bool=False):
         """
         Get the status of a virtual machine
         """
@@ -164,40 +172,22 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
         myvm = self.find_vm_by_display_name(vm)
         if myvm:
             status = detect_vm_status(str(myvm))
+            if status == 'suspended':
+                status = 'paused'
+
             #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
             #####
             # vmState may include the IP in the future - {name, status, ip}
             vmState = status
-            print(f"{vmState}")
+            if not quiet:
+                print(f"{vmState}")
         else:
             vmState = "<< VM does not exist >>"
         return vmState
 
-        # print("Got into macosVmwareMvm list method...")
-        vmx_files = find_all_vmx_files(self.userhome + "/Virtual Machines.localized")
-        # print(f"{vmx_files}")
-
-        running_set = list_running_vms()
-
-        #print(f"{'VM Name':30} {'State':15} {'IP Address'}")
-        #print("-" * 60) 
-
-        vmStatus = {}
-
-        for vmx in vmx_files:
-            name = vmx.stem
-            print(f"{name}")
-            if find_vm_by_display_name(vm):
-                status = detect_vm_status(str(vmx), running_set)
-                ip = get_vm_ip(str(vmx)) if status == "running" else None
-
-                vmStatus = {"name": vm, "status": status, "ip": ip or 'N/A' }
-                print(f"{name:30} {status:12} {ip or 'N/A'}")
-                break
-            else:
-                continue
-
-        return vmStatus
+    def get_vm_status_json(self, vm: str="")
+        state = self.get_vm_status_json(vm, True)
+        return {'state': state}
 
     def get_ip(self, vm: str = ""):
         """
