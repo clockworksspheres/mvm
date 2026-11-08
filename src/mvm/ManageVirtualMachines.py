@@ -28,23 +28,33 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
                 from mvm.MacosVmwareMvm import MacosVmwareMvm
                 self.mvm = MacosVmwareMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
+                from WindowsVmwareMvm import WindowsVmwareMvm
+                self.mvm = WindowsVmwareMvm(self.logger)
+                """
                 from lib.windows_utilities import hyper_v_enabled
                 if hyper_v_enabled():
                     from WindowsVmwareMvm import WindowsVmwareMvm
                     self.mvm = WindowsVmwareMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
+                """
         elif self.framework == "virtualbox":
             if sys.platform.lower().startswith("darwin"):
                 from mvm.MacosVirtualboxMvm import MacosVirtualboxMvm
                 self.mvm = MacosVirtualboxMvm(self.logger)
             elif sys.platform.lower().startswith("win32"):
+                from WindowsVirtualboxMvm import WindowsVirtualboxMvm
+                self.mvm = WindowsVirtualboxMvm(self.logger)
+
+                """
                 from lib.windows_utilities import hyper_v_enabled
+
                 if hyper_v_enabled():
                     from WindowsVirtualboxMvm import WindowsVirtualboxMvm
                     self.mvm = WindowsVirtualboxMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
+                """
             elif sys.platform.lower().startswith("linux"):
                 from LinuxVirtualboxMvm import LinuxVirtualboxMvm
                 self.mvm = LinuxVirtualboxMvm(self.logger)
