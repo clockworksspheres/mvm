@@ -179,9 +179,14 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             name = dom.name()          # ← correct: VM name
             state = dom.state()[0]        # e.g., 1=running, 3=pause
             state_name = {
+                libvirt.VIR_DOMAIN_NOSTATE: "no state",
                 libvirt.VIR_DOMAIN_RUNNING: "running",
-                libvirt.VIR_DOMAIN_PAUSED:  "paused",
-                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
+                libvirt.VIR_DOMAIN_BLOCKED: "blocked",
+                libvirt.VIR_DOMAIN_PAUSED: "paused",
+                libvirt.VIR_DOMAIN_SHUTDOWN: "shutting down",
+                libvirt.VIR_DOMAIN_SHUTOFF: "off",
+                libvirt.VIR_DOMAIN_CRASHED: "crashed",
+                libvirt.VIR_DOMAIN_PMSUSPENDED: "S3 Suspended (PM)",
             }.get(state, f"unknown({state})")
 
             json_table[i] = {}
@@ -205,9 +210,14 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             name = dom.name()          # ← correct: VM name
             state = dom.state()[0]        # e.g., 1=running, 3=pause
             state_name = {
+                libvirt.VIR_DOMAIN_NOSTATE: "no state",
                 libvirt.VIR_DOMAIN_RUNNING: "running",
-                libvirt.VIR_DOMAIN_PAUSED:  "paused",
-                libvirt.VIR_DOMAIN_SHUTDOWN: "shutoff",
+                libvirt.VIR_DOMAIN_BLOCKED: "blocked",
+                libvirt.VIR_DOMAIN_PAUSED: "paused",
+                libvirt.VIR_DOMAIN_SHUTDOWN: "shutting down",
+                libvirt.VIR_DOMAIN_SHUTOFF: "off",
+                libvirt.VIR_DOMAIN_CRASHED: "crashed",
+                libvirt.VIR_DOMAIN_PMSUSPENDED: "S3 Suspended (PM)",
             }.get(state, f"unknown({state})")
 
             print(f"{name:30} {state_name:15} {ip or 'N/A'}")
@@ -380,13 +390,13 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
         """
         # Mapping libvirt state integers to human-readable text
         state_mapping = {
-            libvirt.VIR_DOMAIN_NOSTATE: "No State",
-            libvirt.VIR_DOMAIN_RUNNING: "Running",
-            libvirt.VIR_DOMAIN_BLOCKED: "Blocked",
-            libvirt.VIR_DOMAIN_PAUSED: "Paused",
-            libvirt.VIR_DOMAIN_SHUTDOWN: "Shutting Down",
-            libvirt.VIR_DOMAIN_SHUTOFF: "Shutoff (Stopped)",
-            libvirt.VIR_DOMAIN_CRASHED: "Crashed",
+            libvirt.VIR_DOMAIN_NOSTATE: "no state",
+            libvirt.VIR_DOMAIN_RUNNING: "running",
+            libvirt.VIR_DOMAIN_BLOCKED: "blocked",
+            libvirt.VIR_DOMAIN_PAUSED: "paused",
+            libvirt.VIR_DOMAIN_SHUTDOWN: "shutting down",
+            libvirt.VIR_DOMAIN_SHUTOFF: "off",
+            libvirt.VIR_DOMAIN_CRASHED: "crashed",
             libvirt.VIR_DOMAIN_PMSUSPENDED: "S3 Suspended (PM)",
         }
 
@@ -404,6 +414,9 @@ class LinuxQemuMvm(ManageVirtualMachinesTemplate):
             print(f"Error checking status for '{vm_name}': {e}", file=sys.stderr)
             return "Unknown/Error"
 
+    def get_vm_state_json(self, vm: str):
+        state = self.get_vm_state(vm, True)
+        return {'state': state}
 
 # -----------------------------
 # 📊 Diagnostic / Debugging (optional)
