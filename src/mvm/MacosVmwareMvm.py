@@ -185,7 +185,7 @@ class MacosVmwareMvm(ManageVirtualMachinesTemplate):
             vmState = "<< VM does not exist >>"
         return vmState
 
-    def get_vm_status_json(self, vm: str="")
+    def get_vm_status_json(self, vm: str=""):
         state = self.get_vm_status_json(vm, True)
         return {'state': state}
 
