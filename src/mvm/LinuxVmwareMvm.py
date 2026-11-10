@@ -1,3 +1,9 @@
+"""
+NOT YET VIABLE - no hardware to test on.
+
+This is the Linux implementation of the VMware MVM class.
+"""
+
 import os
 import sys
 from pathlib import Path

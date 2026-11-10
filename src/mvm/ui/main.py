@@ -65,10 +65,14 @@ class VmCtlUi(QMainWindow):
                                                  "HyperV",
                                                  "VirtualBox"])
         elif platform.lower().startswith("linux"):
+            """
+            removing Virtualbox and VMware support from Linux until
+            I have hardware to test on
             self.ui.hypervisorComboBox.addItems(["VMware Workstation",
                                                  "Qemu",
                                                  "VirtualBox"])            
-
+            """
+            self.ui.hypervisorComboBox.addItems(["Qemu"])            
         self.ui.actionComboBox.addItems(["start", "stop", "reset",
                                          "pause", "unpause",
                                          "status", "list"])
@@ -235,8 +239,13 @@ class VmCtlUi(QMainWindow):
             hyperMap = {0: "vmware", 1: "hyperv", 2: "virtualbox"}
 
         if sys.platform.lower().startswith("linux"):
+            """
+            Removing Virtualbox and Vmware until I have hardware to test on
             hypervisorMap = {"vmware": "VMware Workstation", "qemu": "virt-manager", "virtualbox": "VirtualBox"}
             hyperMap = {0: "vmware", 1: "qemu", 2: "virtualbox"}
+            """
+            hypervisorMap = {"qemu": "virt-manager"}
+            hyperMap = {0: "qemu"}
 
         hypervisorApp = hypervisorMap[hyperMap[current_hypervisor_index]]
 

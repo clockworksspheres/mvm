@@ -54,10 +54,10 @@ class ManageVirtualMachines(ManageVirtualMachinesTemplate):
                     self.mvm = WindowsVirtualboxMvm(self.logger)
                 else:
                     raise HypervisorNotApplicable
-                """
             elif sys.platform.lower().startswith("linux"):
                 from LinuxVirtualboxMvm import LinuxVirtualboxMvm
                 self.mvm = LinuxVirtualboxMvm(self.logger)
+                """
         elif self.framework == "utm" and sys.platform.lower().startswith("darwin"):
             from mvm.MacosUtmMvm import MacosUtmMvm
             self.mvm = MacosUtmMvm(self.logger)

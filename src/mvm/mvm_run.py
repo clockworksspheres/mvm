@@ -7,13 +7,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 from ManageVirtualMachines import ManageVirtualMachines
 from lib.libHelperExceptions import HypervisorNotApplicable, HypervisorNotAvailableError
 
-hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
-
-if sys.platform.lower().startswith("win"):
-    hypervisorMap = {"vmware": "vmware.exe", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
-elif sys.platform.lower().startswith("linux"):
-    hypervisorMap = {"vmware": "VMware Workstation", "qemu": "virt-manager", "virtualbox": "VirtualBox"}
-
 
 class HypervisorNotValid(BaseException):
     """
@@ -21,6 +14,20 @@ class HypervisorNotValid(BaseException):
     """
     def __init__(self, *args, **kwargs):
         BaseException.__init__(self, *args, **kwargs)
+
+
+if sys.platform.lower().startswith("darwin"):
+    hypervisorMap = {"vmware": "VMware Fusion", "virtualbox": "VirtualBox", "utm": "UTM"}
+elif sys.platform.lower().startswith("win"):
+    hypervisorMap = {"vmware": "vmware.exe", "virtualbox": "VBoxSDS.exe", "hyperv": "vmms.exe"}
+elif sys.platform.lower().startswith("linux"):
+    """
+    Removing Virtualbox and Vmware from Linux
+    hypervisorMap = {"vmware": "VMware Workstation", "qemu": "virt-manager", "virtualbox": "VirtualBox"}
+    """
+    hypervisorMap = {"qemu": "virt-manager"}
+else:
+    raise HypervisorNotApplicable("Unsupported Hypervisor for this OS")
 
 
 def is_proc_running(myprocess=""):

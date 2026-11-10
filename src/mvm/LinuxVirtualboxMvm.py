@@ -1,3 +1,7 @@
+"""
+NOT YET VIABLE - no hardware to test on.
+
+"""
 import sys
 from pathlib import Path
 
