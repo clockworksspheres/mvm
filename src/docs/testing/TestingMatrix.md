@@ -34,9 +34,9 @@ Time has allowed for the following
  ---|------------|-------------|---------------
 UTM | Yes | N/A | N/A
 HyperV | N/A | Yes | N/A
-VirtualBox | Yes | Yes | Yes (nested vm)
+VirtualBox | Yes | Yes | Yes (nested vm on x86-64)
 VMware | Yes | No | No
-QEMU | (via UTM) | No | No
+QEMU | (via UTM) | No | Yes (nested VM on apple silicon)
 KVM | No | No | No
 
 ### OS's Tested
@@ -52,29 +52,31 @@ Ubuntu | Yes | Yes | Yes
 Rocky Linux | Yes | No | No
 Alma Linux | Yes | No | No
 
-## As a Guest on macOS
+## As a Guest on macOS on Apple Silicon
 
-Time has allowed for the following
+Time has allowed for the following guest OS testing:
 
 []() | macOS | Windows | Debian | Ubuntu | Rocky | Alma
  ---| --- | --- | --- | --- | --- | ---
 UTM | Yes | Yes | Yes | No | No | No 
-HyperV | N/A | Yes | Yes | Yes | No | No
-VirtualBox | No | Yes | Yes | Yes | No | No
-VMware | No | No | Yes | Yes | Yes | Yes
-QEMU | (via UTM) | (via UTM) | (via UTM) | No | No | No
-KVM | N/A | No | No | No | No | No
+VirtualBox | No | No | Yes | Yes | No | No
+VMware | No | Yes | Yes | Yes | Yes | Yes
 
-## As a Guest on Windows
+KVM and HyperV are not available or tested on a macOS host
+
+## As a Guest on Windows x86_64
 
 Time has allowed for the following
 
 Virtualbox - Debian & Ubuntu
+</br>VMware Workstation - Debian
 </br>HyperV - Ubuntu & Windows
 
 ## As a Guest on Linux
 
-Time has allowed for the following - project doesn't have hardware to put Linux on to test guest OSs.  Linux Guest OS's on a Linux Host have to be tested in a hyperV provided Linux OS, where the guest inside the Linux OS being emulated rather than virtualized.
+Time has allowed for the following - project doesn't have hardware to use Linux as a host directly on hardware to test guest OSs.  Linux Guest OS's on a Linux Host have to be tested in a hyperV provided Linux OS, where the guest inside the Linux OS being emulated rather than virtualized.
 
-Virtualbox (Emulated as a VM in a Ubuntu VM, on HyperV)- Debian
+Debian guest on a UTM virtualized Debian host on Apple Silicon
+Debian guest on an HyperV virtualized Ubuntu host on x86_64
+
 
