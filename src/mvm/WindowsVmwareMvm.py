@@ -163,15 +163,30 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         self.run.setCommand(cmd)
         self.run.communicate()
 
-    def get_vm_status(self, vm: str):
+    def get_vm_status(self, vm: str, quiet: bool=False):
         """
-        Get the status of a virtual machine 
+        Get the status of a virtual machine
         """
-        cmd = [self.vmrun, "list"]
-        self.run.setCommand(cmd)
-        out, _, _ = self.run.communicate()
-        print(f"{out.strip()}")
-        return out.strip()
+        vmState=""
+        myvm = self.find_vm_by_display_name(vm)
+        if myvm:
+            status = detect_vm_status(str(myvm))
+            if status == 'suspended':
+                status = 'paused'
+
+            #ip = get_vm_ip(str(myvm)) if status == "running" else "N/A"
+            #####
+            # vmState may include the IP in the future - {name, status, ip}
+            vmState = status
+            if not quiet:
+                print(f"{vmState}")
+        else:
+            vmState = "<< VM does not exist >>"
+        return vmState
+
+    def get_vm_status_json(self, vm: str=""):
+        state = self.get_vm_status_json(vm, True)
+        return {'state': state}
 
     def get_ip(self, vm: str = ""):
         """
