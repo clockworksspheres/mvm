@@ -43,11 +43,12 @@ class WindowsVmwareMvm(ManageVirtualMachinesTemplate):
         vmpath = ""
         vmpaths = find_vm_by_display_name(vmname)
         for vmpath in vmpaths:
-            print("Found:", vmpath)
-            # return the first found in the search
-            break
+            if vmname in vmpath:
+                print("Found:", vmpath)
+                # return the first found in the search
+                break
 
-        return vmpath[0]
+        return vmpath
 
     def list_vms_json(self, **kwargs):
         """

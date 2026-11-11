@@ -62,24 +62,26 @@ def get_vm_display_name(vm_dir):
 
 def list_vmware_vms(vm_dir: str = "~/Virtual Machines.localized") -> dict[str, str]:
     """Returns {vmx_path: display_name} for all VMs in the library."""
+
     if not vm_dir and sys.platform.lower().startswith("darwin"):
         vm_dir = Path.home() / "Virtual Machines.localized"
     elif not vm_dir and sys.platform.lower().startswith("linux"):
         vm_dir = Path.home() / "Documents" / "Virtual Machines" 
     elif not vm_dir and sys.platform.lower().startswith("win"):
-        vm_dir = Path.home() / "Virtual Machines"
+        vm_dir = Path.home() / "Documents" / "Virtual Machines"
     elif vm_dir:
         print(str(vm_dir))
     else:
         raise ValueError("no vm_dir defined")
 
     base = Path(vm_dir).expanduser()
+    print(f"BASE: {base}")
     vms = {}
     for vmx in base.rglob("*.vmx"):
         text = vmx.read_text(errors="replace")
         m = re.search(r'^displayName\s*=\s*"(.*)"$', text, re.MULTILINE)
         vms[str(vmx)] = m.group(1) if m else vmx.stem
-    # print(str(vms))
+    print(str(vms))
     return vms
 
 
@@ -90,6 +92,8 @@ def detect_vm_status(vmx_path, running_set=None):
 
     if not running_set:
         running_set = list_running_vms()
+
+    print(f"{running_set}")
 
     if str(vmx_path) in running_set:
         return "running"
