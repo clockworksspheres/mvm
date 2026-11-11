@@ -12,6 +12,11 @@ import sys
 import unittest
 from pathlib import Path
 
+# Get the parent directory of the current file's parent directory
+#  and add it to sys.path
+parent_dir = Path(__file__).parent.parent
+sys.path.append(str(parent_dir))
+
 
 # ---------------------------------------------------------------------------
 # On non-Linux platforms, provide a minimal skipped suite so discovery
