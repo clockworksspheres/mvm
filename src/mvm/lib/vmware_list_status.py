@@ -48,7 +48,7 @@ def get_vm_ip(vmx_path):
     rw.setCommand(cmd)
     _, output =  rw.runCommand2check("Encrypted virtual machine password:")
 
-    if "Error" in output or "Unable" in output:
+    if "Cannot perform this in Windows" in output or "Unable" in output:
         return None
 
     return output.strip()
