@@ -1,7 +1,17 @@
+import sys
+import json
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent))
+
 from mvm.lib.loggers import CyLogger
 from mvm.lib.loggers import LogPriority as lp
 from mvm.lib.run_commands import RunWith
 from mvm.ManageVirtualMachinesTemplate import ManageVirtualMachinesTemplate
+from mvm.lib.virtualbox_list_status import (list_vms,
+                                            list_running_vms,
+                                            get_vm_state,
+                                            get_vm_ip)
 
 
 class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
@@ -19,16 +29,69 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
 
         self.vboxmanage = "C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe"
 
-    def list_vms(self):
+    def list_vms_json(self):
         """
         List available VMs 
         """
-        cmd = [self.vboxmanage, "list", "vms"]
-        self.run.setCommand(cmd)
-        out, _, _ = self.run.communicate()
-        table = f"{out}"
-        print(table)
+
+        vms = list_vms()
+
+        json_table = {}
+        i = 0
+        for name, uuid in vms.items():
+            state = get_vm_state(uuid)
+
+            if state == 'poweroff':
+                state = 'off'
+
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+            json_table[i] = {}
+            json_table[i]["name"] = name
+            json_table[i]["status"] = state
+            json_table[i]["ip"] = ip or 'N/A'
+
+            i = i + 1
+
+        print(json.dumps(json_table, indent=2))
+
+        return json_table
+
+    def list_vms_table(self):
+        """
+        List available VMs 
+        """
+
+        vms = list_vms()
+
+        print(f"{'VM Name':25} {'State':15} {'IP Address'}")
+        print("-" * 60) 
+        table = f"{'VM Name':25} {'State':15} {'IP Address'}\n"
+        table = table + ("-" * 60) 
+
+        for name, uuid in vms.items():
+            state = get_vm_state(uuid)
+
+            if state == 'poweroff':
+                state = 'off'
+
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+
+            print(f"{name:25} {state:15} {ip or 'N/A'}")
+
+            table = table + f"\n{name:25} {state:15} {ip or 'N/A'}"
+
         return table
+
+    def list_vms(self):
+        return self.list_vms_table()
 
     def start_vm(self, vm: str = "", headless: bool = False):
         """
@@ -60,7 +123,7 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
         """
         Suspend a virtual machine
         """
-        cmd = [self.vboxmanage, "controlvm", vm, "resume"]
+        cmd = [self.vboxmanage, "startvm", vm]
         self.run.setCommand(cmd)
         self.run.communicate()
 
@@ -75,15 +138,42 @@ class WindowsVirtualboxMvm(ManageVirtualMachinesTemplate):
         # self.run.setCommand(cmd2)
         # self.run.communicate()
 
-    def get_vm_status(self, vm: str):
+    def get_vm_status(self, vm: str, quiet=False):
         """
         Get the status of a virtual machine 
         """
-        cmd = [self.vboxmanage, "showvminfo", vm]
-        self.run.setCommand(cmd)
-        out, _, _ = self.run.communicate()
-        print(f"{out.strip()}")
-        return out.strip()
+        state = ""
+        found = False
+        vms = list_vms()
+        for name, uuid in vms.items():
+            if name == vm:
+                state = get_vm_state(uuid)
+
+                if state == 'poweroff':
+                    state = 'off'
+
+                found=True
+                break
+            else:
+                continue
+            ''' in the future, may return IP as part of status.
+            if state == "running":
+                ip = get_vm_ip(uuid)
+            else:
+                ip = None
+            '''
+        if not found:
+            state = "<< VM does not exist >>"
+            if not quiet:
+                print("<< VM does not exist >>")
+        return state
+
+    def get_vm_status_json(self, vm: str=""):
+        """
+        Get the status of a virtual machine in JSON format
+        """
+        state = self.get_vm_status(vm, True)
+        return {'state': state}
 
     def get_ip(self, vm: str = ""):
         """
